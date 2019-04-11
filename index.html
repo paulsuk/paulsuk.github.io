@@ -1,63 +1,129 @@
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <title>Paul Suk - Aspiring Computer Engineer</title>
-    
-    <!-- Imported CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha256-k2/8zcNbxVIh5mnQ52A0r3a6jAgMGxFJFE2707UxGCk= sha512-ZV9KawG2Legkwp3nAlxLIVFudTauWuBpC10uEafMHYL0Sarrz5A7G79kXh5+5+woxQ5HM559XX2UZjMJ36Wplg==" crossorigin="anonymous">
-    
-    <!-- Custom styles for this template -->
-    <link href="css/main.css" rel="stylesheet">
-    
-    <!-- Fonts -->
-    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+<!DOCTYPE html>
+<html lang="zxx">
+<head>
+	<title>Minkang Suk</title>
+	<!-- Meta tag Keywords -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8" />
+	<script>
+		addEventListener("load", function () {
+			setTimeout(hideURLbar, 0);
+		}, false);
 
-  </head>
+		function hideURLbar() {
+			window.scrollTo(0, 1);
+		}
+	</script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>	<script src="js/work.js"></script>
 
-  <body>
-      
-    <div id="hero">
+	<!-- Bootstrap-Core-CSS -->
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<!-- Style-CSS -->
+	<link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
+	<!-- Font-Awesome-Icons-CSS -->
+	<link rel="stylesheet" href="css/font-awesome.css">
+</head>
+<body>
+	<!-- header -->
+		<!-- navigation -->
+		<div class="main-top">
+		 <header>
+			<div class="container-fluid px-lg-5 ">
+				<nav class="mnu mx-auto">
+				  <label for="drop" class="toggle">Menu</label>
+					<input type="checkbox" id="drop">
+					<ul class="menu">
+						<li class="mr-lg-4 mr-3 active"><a href="index.html">Home</a></li>
+						 <li class="mr-lg-4 mr-3"><a href="#work" class="scroll">My Work</a></li>
+						<li><a href="#contact" class="scroll">Contact</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+		</div>
+		<!-- //navigation-->
+
+	<section class="banner-bottom" id="about">
 		<div class="container">
-			<div class="row centered">
-				<div class="col-lg-12">
-					<h1>Paul Suk</h1>
-					<h3>Computer Engineer | paul.suk@mail.utoronto.ca</h3>
-				</div>
+            <div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="advantage_left_img text-center">
+                            <img src="images/me.jpg" class="img-fluid" alt="">
+                        </div>
+                    </div> 
+					 <div class="col-lg-8">
+                        <div class="">
+                             <h1 class="heading text-capitalize mb-sm-5 mb-4">Hi. I'm <span>Paul Minkang Suk.</span></h1>
+							<p class="mt-4"> I am a soon-to-be graduate of Engineering Science - Robotics at the University of Toronto. While my life and career goals seem to change every few months, what hasn't changed is my love of solving tough technical problems that affect real people. </p>
+							<p class="mt-4"> I've developed my technical chops alongside my leadership skills, and I hope to keep adding more tools to my toolbox as I continue to grow in my career. </p>
+						</div>
+                    </div>
+            		<div class="row">
+						<div class="col-lg-6 col-md-6">
+							<a href="Resume_Minkang_Suk.pdf" class="banner-button btn mt-5" download>Check out my resume</a>
+						</div>
+						<div class="col-lg-6 col-md-6">
+							<a href="#work" class="banner-button btn mt-5 scroll">Learn More About My Work!</a>
+						</div>
+					</div>
+                </div>
+            </div>
+		</div>
+    </section>
+	<!-- works -->
+	<section class="news text-center" id="work">
+		<div class="container">
+			 <h3 class="heading text-capitalize"> My Work </h3>
+		   <p class="subs mt-4">These are some of the things I've worked on recently</p>
+			<div class="row mt-5" id="works_div">
+			</div>
+		</section>
+		<!-- //works -->
+<!-- contact -->
+	 <section class="wedo" id="contact">
+		<div class="container">
+			<h3 class="heading text-capitalize text-white text-center"> Contact </h3>
+		    <p class="subs mt-4 text-center">Feel free to contact me on these platforms or at <em>paul.suk (at) mail.utoronto.ca </em></p>
+			<div class="cpy-right text-center">
+			<div class="follow">
+				<ul class="social_section_1info">
+					<li><a href="https://www.facebook.com/paoul.sukii"><span class="fa fa-facebook"></span></a></li>
+					<li><a href="https://github.com/paulsuk"><span class="fa fa-github"></span></a></li>
+					<li><a href="https://www.instagram.com/paul.suk/"><span class="fa fa-instagram"></span></a></li>
+					<li><a href="https://www.linkedin.com/in/paulsuk1/"><span class="fa fa-linkedin"></span></a></li>
+				</ul>
+			</div>
 			</div>
 		</div>
-	</div>
-	
-	<div id="about">
-		<div class="container">
-			<div class="row">
-				
-				<div class="col-lg-2 col-lg-offset-1">
-					<h5>ABOUT</h5>
-				</div>
-				<div class="col-lg-6">
-					<p>
-					    I'm a second year student in the rigorous engineering science program at the University of Toronto. I am planning to enter the Electrical and Computer Engineering stream; leaning more towards the software side. 
-					</p>
-					<p>
-					    I'm interested in learning about all kinds of software development. I am currently focused on working on mobile interfaces.
-					    I am also passionate about leadership, student development, and mentorship. In my free time I am interested in dance, music, baseball, and esports.
-						Feel free to contact me to find out more!
-					</p>
-				</div>
-				<div class="col-lg-3">
-					<p><a href="paulsuk-resume.pdf"><i class="fa fa-file-pdf-o"></i></a> <sm>DOWNLOAD RESUME</sm></p>
-				</div>
-				
-			</div>
-		</div>
-	</div>
-	
-	
-  </body>
+	</section>
+	 <!-- //contact -->
+
+<!-- The Modal -->
+<div class="modal" id="work_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title"></h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
 </html>
