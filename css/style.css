@@ -239,8 +239,30 @@ li > a:only-child:after {
     cursor: pointer;
 }
 
+.modal-body p {
+    text-indent: 1.5em;
+}
 
+.modal-body p + p {
+    margin-top: 20px;
+}
 
+.modal-date {
+    color: gray;
+    position: relative;
+    padding-left: 2em;
+    padding-top: 2em;
+    -webkit-box-flex: 1;
+}
+
+.box-img {
+    height: 200px;
+    object-fit: contain;
+}
+
+.me {
+    object-fit: contain;
+}
 
 
 
