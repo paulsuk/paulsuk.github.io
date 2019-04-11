@@ -68,6 +68,3 @@ function populate_modal(work) {
 addEventListener("load", () => {
 	load_projects(projects)
 })
-window.onunload = () => {
-	continue;
-}
