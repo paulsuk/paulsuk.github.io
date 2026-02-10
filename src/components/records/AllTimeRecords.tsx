@@ -3,52 +3,76 @@ import Card from "../shared/Card";
 
 interface AllTimeRecordsProps {
   records: RecordsResponse;
+  currentManagerNames: Set<string> | null;
+  viewMode: "manager" | "team";
 }
 
-export default function AllTimeRecords({ records }: AllTimeRecordsProps) {
+export default function AllTimeRecords({ records, currentManagerNames, viewMode }: AllTimeRecordsProps) {
   const { category_records, streaks, matchup_records } = records;
+  const byTeam = viewMode === "team";
+
+  const filteredCategoryRecords = currentManagerNames
+    ? category_records.filter((r) => currentManagerNames.has(r.manager))
+    : category_records;
+
+  const isCurrent = (name: string) => !currentManagerNames || currentManagerNames.has(name);
+
+  const streakEntries = [
+    { label: "Longest win streak", data: streaks.longest_win_streak },
+    { label: "Longest undefeated streak", data: streaks.longest_undefeated_streak },
+    { label: "Longest losing streak", data: streaks.longest_loss_streak },
+  ].filter((s) => isCurrent(s.data.manager));
+
+  const blowout = matchup_records.biggest_blowout;
+  const closest = matchup_records.closest_match;
+  const showBlowout = blowout && isCurrent(blowout.winner) && isCurrent(blowout.loser);
+  const showClosest = closest && isCurrent(closest.winner) && isCurrent(closest.loser);
 
   return (
     <div className="space-y-6">
       {/* Streaks */}
       <Card title="Streaks">
         <div className="space-y-2">
-          <RecordRow
-            label="Longest win streak"
-            value={`${streaks.longest_win_streak.streak} games`}
-            holder={streaks.longest_win_streak.manager}
-          />
-          <RecordRow
-            label="Longest undefeated streak"
-            value={`${streaks.longest_undefeated_streak.streak} games`}
-            holder={streaks.longest_undefeated_streak.manager}
-          />
-          <RecordRow
-            label="Longest losing streak"
-            value={`${streaks.longest_loss_streak.streak} games`}
-            holder={streaks.longest_loss_streak.manager}
-          />
+          {streakEntries.length > 0 ? (
+            streakEntries.map((s) => (
+              <RecordRow
+                key={s.label}
+                label={s.label}
+                value={`${s.data.streak} games`}
+                holder={byTeam ? s.data.team_name : s.data.manager}
+              />
+            ))
+          ) : (
+            <p className="text-sm text-gray-400">No streak records for current managers.</p>
+          )}
         </div>
       </Card>
 
       {/* Matchup Records */}
       <Card title="Matchup Records">
         <div className="space-y-2">
-          {matchup_records.biggest_blowout && (
+          {showBlowout && (
             <RecordRow
               label="Biggest blowout"
-              value={matchup_records.biggest_blowout.score}
-              holder={`${matchup_records.biggest_blowout.winner} over ${matchup_records.biggest_blowout.loser}`}
-              detail={`${matchup_records.biggest_blowout.season} Week ${matchup_records.biggest_blowout.week}`}
+              value={blowout.score}
+              holder={byTeam
+                ? `${blowout.winner_team} over ${blowout.loser_team}`
+                : `${blowout.winner} over ${blowout.loser}`}
+              detail={`${blowout.season} Week ${blowout.week}`}
             />
           )}
-          {matchup_records.closest_match && (
+          {showClosest && (
             <RecordRow
               label="Closest match"
-              value={matchup_records.closest_match.score}
-              holder={`${matchup_records.closest_match.winner} over ${matchup_records.closest_match.loser}`}
-              detail={`${matchup_records.closest_match.season} Week ${matchup_records.closest_match.week}`}
+              value={closest.score}
+              holder={byTeam
+                ? `${closest.winner_team} over ${closest.loser_team}`
+                : `${closest.winner} over ${closest.loser}`}
+              detail={`${closest.season} Week ${closest.week}`}
             />
+          )}
+          {!showBlowout && !showClosest && (
+            <p className="text-sm text-gray-400">No matchup records for current managers.</p>
           )}
         </div>
       </Card>
@@ -61,18 +85,20 @@ export default function AllTimeRecords({ records }: AllTimeRecordsProps) {
               <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-500">
                 <th className="pb-2 pr-4">Category</th>
                 <th className="pb-2 pr-4">Record</th>
-                <th className="pb-2 pr-4">Manager</th>
+                <th className="pb-2 pr-4">{byTeam ? "Team" : "Manager"}</th>
                 <th className="pb-2 pr-4">When</th>
               </tr>
             </thead>
             <tbody>
-              {category_records.map((r) => (
+              {filteredCategoryRecords.map((r) => (
                 <tr key={r.category} className="border-b border-gray-50">
                   <td className="py-1.5 pr-4 font-medium">{r.category}</td>
                   <td className="py-1.5 pr-4 tabular-nums font-semibold">
                     {formatValue(r.value, r.category)}
                   </td>
-                  <td className="py-1.5 pr-4 text-gray-600">{r.manager}</td>
+                  <td className="py-1.5 pr-4 text-gray-600">
+                    {byTeam ? r.team_name : r.manager}
+                  </td>
                   <td className="py-1.5 pr-4 text-gray-400">
                     {r.season} Wk {r.week}
                   </td>

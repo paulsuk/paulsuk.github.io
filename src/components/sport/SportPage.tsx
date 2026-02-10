@@ -1,4 +1,4 @@
-import { useParams, useSearchParams, Link } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap, useArticles } from "../../api/hooks";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
@@ -76,16 +76,6 @@ export default function SportPage() {
       )}
 
       <ArticleFeed articles={articles} slug={slug!} />
-
-      {/* Records link */}
-      <div className="pt-2">
-        <Link
-          to={`/${slug}/records`}
-          className="text-sm font-medium text-blue-600 hover:text-blue-800"
-        >
-          View Records & History &rarr;
-        </Link>
-      </div>
     </div>
   );
 }

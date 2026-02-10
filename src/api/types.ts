@@ -91,9 +91,18 @@ export interface RecapResponse {
   profiles: TeamProfile[];
 }
 
+export interface SeasonRecord {
+  season: number;
+  team_name: string;
+  wins: number;
+  losses: number;
+  ties: number;
+}
+
 export interface ManagerSummary {
   guid: string;
   name: string;
+  is_current: boolean;
   seasons: number[];
   wins: number;
   losses: number;
@@ -103,6 +112,7 @@ export interface ManagerSummary {
   championships: number;
   best_finish: number | null;
   worst_finish: number | null;
+  season_records: SeasonRecord[];
 }
 
 export interface H2HRecord {
@@ -118,12 +128,15 @@ export interface ManagersResponse {
 
 export interface StreakRecord {
   manager: string;
+  team_name: string;
   streak: number;
 }
 
 export interface MatchupRecord {
   winner: string;
   loser: string;
+  winner_team: string;
+  loser_team: string;
   score: string;
   season: number;
   week: number;
@@ -133,6 +146,7 @@ export interface CategoryRecord {
   category: string;
   value: number;
   manager: string;
+  team_name: string;
   season: number;
   week: number;
   higher_is_better: boolean;

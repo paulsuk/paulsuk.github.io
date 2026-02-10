@@ -4,10 +4,15 @@ import Card from "../shared/Card";
 
 interface ManagersTabProps {
   managers: ManagerSummary[];
+  viewMode: "manager" | "team";
 }
 
-export default function ManagersTab({ managers }: ManagersTabProps) {
+export default function ManagersTab({ managers, viewMode }: ManagersTabProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
+
+  if (viewMode === "team") {
+    return <TeamView managers={managers} />;
+  }
 
   return (
     <Card title="Managers">
@@ -49,12 +54,72 @@ export default function ManagersTab({ managers }: ManagersTabProps) {
                   {m.best_finish && <Stat label="Best Finish" value={ordinal(m.best_finish)} />}
                   {m.worst_finish && <Stat label="Worst Finish" value={ordinal(m.worst_finish)} />}
                 </div>
+                {m.season_records.length > 0 && (
+                  <div className="mt-3 border-t border-gray-100 pt-2">
+                    <div className="mb-1 text-gray-400">Season Breakdown</div>
+                    {m.season_records.map((sr) => (
+                      <div key={sr.season} className="flex justify-between py-0.5">
+                        <span className="text-gray-500">{sr.season} — {sr.team_name}</span>
+                        <span className="font-medium tabular-nums text-gray-700">
+                          {sr.wins}-{sr.losses}{sr.ties > 0 ? `-${sr.ties}` : ""}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
         ))}
       </div>
     </Card>
+  );
+}
+
+function TeamView({ managers }: { managers: ManagerSummary[] }) {
+  // Flatten all season_records across all managers, sorted by season desc then wins desc
+  const teams = managers.flatMap((m) =>
+    m.season_records.map((sr) => ({
+      ...sr,
+      manager: m.name,
+      guid: m.guid,
+    }))
+  );
+  teams.sort((a, b) => b.season - a.season || (b.wins - b.losses) - (a.wins - a.losses));
+
+  // Group by season
+  const bySeason: Record<number, typeof teams> = {};
+  for (const t of teams) {
+    if (!bySeason[t.season]) bySeason[t.season] = [];
+    bySeason[t.season].push(t);
+  }
+
+  return (
+    <div className="space-y-4">
+      {Object.entries(bySeason)
+        .sort(([a], [b]) => Number(b) - Number(a))
+        .map(([season, seasonTeams]) => (
+          <Card key={season} title={`${season} Season`}>
+            <div className="space-y-1">
+              {seasonTeams.map((t, i) => (
+                <div
+                  key={`${t.guid}-${t.season}`}
+                  className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 p-2.5"
+                >
+                  <div>
+                    <span className="mr-2 text-xs font-medium text-gray-400">#{i + 1}</span>
+                    <span className="text-sm font-medium">{t.team_name}</span>
+                    <span className="ml-2 text-xs text-gray-500">({t.manager})</span>
+                  </div>
+                  <div className="text-sm font-semibold tabular-nums">
+                    {t.wins}-{t.losses}{t.ties > 0 ? `-${t.ties}` : ""}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        ))}
+    </div>
   );
 }
 
