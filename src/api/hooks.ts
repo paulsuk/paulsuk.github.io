@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchApi, fetchText } from "./client";
-import type { Franchise, Season, RecapResponse, Article } from "./types";
+import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, Article } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -46,6 +46,14 @@ export function useRecap(slug: string, week?: number, season?: number) {
   const qs = params.toString();
   const path = `/api/${slug}/recap${qs ? `?${qs}` : ""}`;
   return useApiData<RecapResponse>(path);
+}
+
+export function useManagers(slug: string) {
+  return useApiData<ManagersResponse>(`/api/${slug}/managers`);
+}
+
+export function useRecords(slug: string) {
+  return useApiData<RecordsResponse>(`/api/${slug}/records`);
 }
 
 let articlesCache: Article[] | null = null;

@@ -91,6 +91,66 @@ export interface RecapResponse {
   profiles: TeamProfile[];
 }
 
+export interface ManagerSummary {
+  guid: string;
+  name: string;
+  seasons: number[];
+  wins: number;
+  losses: number;
+  ties: number;
+  playoff_wins: number;
+  playoff_losses: number;
+  championships: number;
+  best_finish: number | null;
+  worst_finish: number | null;
+}
+
+export interface H2HRecord {
+  wins: number;
+  losses: number;
+  ties: number;
+}
+
+export interface ManagersResponse {
+  managers: ManagerSummary[];
+  h2h: Record<string, Record<string, H2HRecord>>;
+}
+
+export interface StreakRecord {
+  manager: string;
+  streak: number;
+}
+
+export interface MatchupRecord {
+  winner: string;
+  loser: string;
+  score: string;
+  season: number;
+  week: number;
+}
+
+export interface CategoryRecord {
+  category: string;
+  value: number;
+  manager: string;
+  season: number;
+  week: number;
+  higher_is_better: boolean;
+}
+
+export interface RecordsResponse {
+  category_records: CategoryRecord[];
+  streaks: {
+    longest_win_streak: StreakRecord;
+    longest_loss_streak: StreakRecord;
+    longest_undefeated_streak: StreakRecord;
+  };
+  matchup_records: {
+    biggest_blowout: MatchupRecord | null;
+    closest_match: MatchupRecord | null;
+  };
+}
+
 export interface Article {
   id: string;
   slug: string;
