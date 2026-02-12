@@ -16,7 +16,7 @@ export default function SeasonOverview({ recap }: SeasonOverviewProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-500">
+              <tr className="table-header">
                 <th className="pb-2 pr-4">Rank</th>
                 <th className="pb-2 pr-4">Team</th>
                 <th className="pb-2 pr-4">Manager</th>

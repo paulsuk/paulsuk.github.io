@@ -17,7 +17,7 @@ function MatchupCard({ matchup }: { matchup: MatchupSummary }) {
       : null;
 
   return (
-    <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+    <div className="item-card">
       <button
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center justify-between text-left"
@@ -33,12 +33,12 @@ function MatchupCard({ matchup }: { matchup: MatchupSummary }) {
             {matchup.team_2_manager}
           </span>
           {tag && (
-            <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-purple-700">
+            <span className="badge-tag">
               {tag}
             </span>
           )}
         </div>
-        <span className="text-xs text-gray-400">{expanded ? "−" : "+"}</span>
+        <span className="text-meta">{expanded ? "−" : "+"}</span>
       </button>
 
       {expanded && (

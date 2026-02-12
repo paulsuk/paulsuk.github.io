@@ -21,14 +21,14 @@ export default function ManagersTab({ managers, viewMode }: ManagersTabProps) {
           <div key={m.guid}>
             <button
               onClick={() => setExpanded(expanded === m.guid ? null : m.guid)}
-              className="flex w-full items-center justify-between rounded-lg border border-gray-100 bg-gray-50 p-3 text-left transition-colors hover:bg-gray-100"
+              className="flex w-full items-center justify-between item-card-interactive text-left"
             >
               <div>
                 <div className="text-sm font-medium">{m.name}</div>
-                <div className="text-xs text-gray-500">
+                <div className="text-label">
                   {m.seasons.length} season{m.seasons.length !== 1 ? "s" : ""}
                   {m.championships > 0 && (
-                    <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700">
+                    <span className="ml-2 badge-championship">
                       {m.championships}x champ
                     </span>
                   )}
@@ -38,7 +38,7 @@ export default function ManagersTab({ managers, viewMode }: ManagersTabProps) {
                 <div className="text-sm font-semibold tabular-nums">
                   {m.wins}-{m.losses}{m.ties > 0 ? `-${m.ties}` : ""}
                 </div>
-                <div className="text-xs text-gray-400">
+                <div className="text-meta">
                   {((m.wins / Math.max(m.wins + m.losses, 1)) * 100).toFixed(0)}%
                 </div>
               </div>
@@ -109,7 +109,7 @@ function TeamView({ managers }: { managers: ManagerSummary[] }) {
                   <div>
                     <span className="mr-2 text-xs font-medium text-gray-400">#{i + 1}</span>
                     <span className="text-sm font-medium">{t.team_name}</span>
-                    <span className="ml-2 text-xs text-gray-500">({t.manager})</span>
+                    <span className="ml-2 text-label">({t.manager})</span>
                   </div>
                   <div className="text-sm font-semibold tabular-nums">
                     {t.wins}-{t.losses}{t.ties > 0 ? `-${t.ties}` : ""}

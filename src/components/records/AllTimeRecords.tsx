@@ -82,7 +82,7 @@ export default function AllTimeRecords({ records, currentManagerNames, viewMode 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-500">
+              <tr className="table-header">
                 <th className="pb-2 pr-4">Category</th>
                 <th className="pb-2 pr-4">Record</th>
                 <th className="pb-2 pr-4">{byTeam ? "Team" : "Manager"}</th>
@@ -119,11 +119,11 @@ function RecordRow({ label, value, holder, detail }: {
   detail?: string;
 }) {
   return (
-    <div className="flex items-start justify-between rounded-lg border border-gray-100 bg-gray-50 p-3">
+    <div className="flex items-start justify-between item-card">
       <div>
         <div className="text-sm font-medium">{label}</div>
-        <div className="text-xs text-gray-500">{holder}</div>
-        {detail && <div className="text-xs text-gray-400">{detail}</div>}
+        <div className="text-label">{holder}</div>
+        {detail && <div className="text-meta">{detail}</div>}
       </div>
       <div className="text-lg font-bold tabular-nums text-gray-800">{value}</div>
     </div>

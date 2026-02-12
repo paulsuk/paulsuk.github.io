@@ -14,7 +14,7 @@ export default function SportLayout() {
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.label}
-            to={`/${slug}/${item.to}`}
+            to={item.to ? `/${slug}/${item.to}` : `/${slug}`}
             end={item.end}
             className={({ isActive }) =>
               `px-4 py-2 text-sm font-medium transition-colors ${

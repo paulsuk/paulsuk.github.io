@@ -15,14 +15,14 @@ function AwardRow({ label, player }: { label: string; player: PlayerAward }) {
     .join(", ");
 
   return (
-    <div className="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 p-3">
+    <div className="flex items-start gap-3 item-card">
       <div className="min-w-0 flex-1">
         <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">{label}</div>
         <div className="mt-0.5 text-sm font-medium">{player.name}</div>
-        <div className="text-xs text-gray-500">
+        <div className="text-label">
           {player.manager} &middot; {player.position}
         </div>
-        {topStats && <div className="mt-1 text-xs text-gray-400">{topStats}</div>}
+        {topStats && <div className="mt-1 text-meta">{topStats}</div>}
       </div>
       <div className="text-right">
         <div className="text-lg font-bold tabular-nums text-blue-600">

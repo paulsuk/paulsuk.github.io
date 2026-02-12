@@ -16,7 +16,7 @@ function ArticleCard({ article, slug }: { article: Article; slug: string }) {
   return (
     <Link
       to={`/${slug}/article/${article.id}`}
-      className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 p-3 no-underline transition-colors hover:border-gray-200 hover:bg-gray-100"
+      className="flex items-center justify-between item-card-interactive no-underline hover:border-gray-200"
     >
       <div className="flex items-center gap-2">
         <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase ${typeColors[article.type] ?? "bg-gray-100 text-gray-600"}`}>
@@ -24,7 +24,7 @@ function ArticleCard({ article, slug }: { article: Article; slug: string }) {
         </span>
         <span className="text-sm font-medium text-gray-800">{article.title}</span>
       </div>
-      <span className="text-xs text-gray-400">{article.date}</span>
+      <span className="text-meta">{article.date}</span>
     </Link>
   );
 }

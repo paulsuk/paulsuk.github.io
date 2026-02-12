@@ -14,10 +14,10 @@ function RankChange({ rank, prevRank }: { rank: number; prevRank: number }) {
 
 function StreakBadge({ streak }: { streak: number }) {
   if (streak > 0) {
-    return <span className="rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-700">W{streak}</span>;
+    return <span className="badge-win">W{streak}</span>;
   }
   if (streak < 0) {
-    return <span className="rounded bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">L{Math.abs(streak)}</span>;
+    return <span className="badge-loss">L{Math.abs(streak)}</span>;
   }
   return null;
 }
@@ -27,13 +27,13 @@ export default function RankingsSection({ profiles }: RankingsSectionProps) {
     <Card title="Power Rankings">
       <div className="space-y-2">
         {profiles.map((p) => (
-          <div key={p.team_key ?? p.team_name} className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+          <div key={p.team_key ?? p.team_name} className="item-card">
             <div className="flex items-center gap-2">
               <span className="w-6 text-center text-sm font-bold text-gray-700">{p.rank}</span>
               <RankChange rank={p.rank} prevRank={p.prev_rank} />
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium">{p.team_name}</div>
-                <div className="text-xs text-gray-500">{p.manager}</div>
+                <div className="text-label">{p.manager}</div>
               </div>
               <div className="text-right text-xs">
                 <div className="tabular-nums">

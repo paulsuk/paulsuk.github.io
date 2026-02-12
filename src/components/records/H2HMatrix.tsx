@@ -35,7 +35,15 @@ export default function H2HMatrix({ managers, h2h }: H2HMatrixProps) {
               <td className="sticky left-0 bg-white p-1 pr-2 font-medium text-gray-700 whitespace-nowrap">
                 {shortName(row.name)}
               </td>
-              {active.map((col) => {
+              {active.map((col, colIndex) => {
+                const rowIndex = active.indexOf(row);
+
+                // Lower triangle: empty cell
+                if (colIndex < rowIndex) {
+                  return <td key={col.guid} className="p-1" />;
+                }
+
+                // Diagonal: gray block
                 if (row.guid === col.guid) {
                   return (
                     <td key={col.guid} className="p-1 text-center">
@@ -44,6 +52,7 @@ export default function H2HMatrix({ managers, h2h }: H2HMatrixProps) {
                   );
                 }
 
+                // Upper triangle: show record
                 const record = h2h[row.guid]?.[col.guid];
                 if (!record) {
                   return (

@@ -1,1 +1,41 @@
 @import "tailwindcss";
+
+/* Item cards */
+.item-card {
+  @apply rounded-lg border border-gray-100 bg-gray-50 p-3;
+}
+
+.item-card-interactive {
+  @apply rounded-lg border border-gray-100 bg-gray-50 p-3 transition-colors hover:bg-gray-100;
+}
+
+/* Badges */
+.badge-win {
+  @apply rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-700;
+}
+
+.badge-loss {
+  @apply rounded bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700;
+}
+
+.badge-championship {
+  @apply rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700;
+}
+
+.badge-tag {
+  @apply rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-purple-700;
+}
+
+/* Tables */
+.table-header {
+  @apply border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-500;
+}
+
+/* Text utilities */
+.text-label {
+  @apply text-xs text-gray-500;
+}
+
+.text-meta {
+  @apply text-xs text-gray-400;
+}
