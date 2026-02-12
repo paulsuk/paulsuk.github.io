@@ -17,7 +17,7 @@ function AwardRow({ label, player }: { label: string; player: PlayerAward }) {
   return (
     <div className="flex items-start gap-3 item-card">
       <div className="min-w-0 flex-1">
-        <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">{label}</div>
+        <div className="section-label">{label}</div>
         <div className="mt-0.5 text-sm font-medium">{player.name}</div>
         <div className="text-label">
           {player.manager} &middot; {player.position}

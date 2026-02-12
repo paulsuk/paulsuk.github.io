@@ -26,7 +26,7 @@ function MatchupCard({ matchup }: { matchup: MatchupSummary }) {
           <span className={matchup.cats_won_1 > matchup.cats_won_2 ? "font-semibold" : "text-gray-600"}>
             {matchup.team_1_manager}
           </span>
-          <span className="rounded bg-white px-2 py-0.5 font-mono text-xs tabular-nums shadow-sm">
+          <span className="score-pill">
             {matchup.cats_won_1}-{matchup.cats_won_2}{matchup.cats_tied > 0 ? `-${matchup.cats_tied}` : ""}
           </span>
           <span className={matchup.cats_won_2 > matchup.cats_won_1 ? "font-semibold" : "text-gray-600"}>

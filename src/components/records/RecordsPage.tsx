@@ -7,11 +7,11 @@ import AllTimeRecords from "./AllTimeRecords";
 import ManagersTab from "./ManagersTab";
 import H2HMatrix from "./H2HMatrix";
 
-type Tab = "records" | "managers" | "h2h";
+type Tab = "records" | "franchises" | "h2h";
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "records", label: "All-Time Records" },
-  { key: "managers", label: "Managers" },
+  { key: "franchises", label: "Franchises" },
   { key: "h2h", label: "Head-to-Head" },
 ];
 
@@ -44,11 +44,10 @@ export default function RecordsPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold capitalize">{slug} Records & History</h1>
         <div className="flex items-center gap-4">
-          {/* View mode toggle */}
-          <div className="flex rounded-md border border-gray-200 text-xs">
+          <div className="toggle-group">
             <button
               onClick={() => setViewMode("manager")}
-              className={`px-3 py-1.5 font-medium transition-colors ${
+              className={`toggle-btn ${
                 viewMode === "manager"
                   ? "bg-gray-900 text-white"
                   : "text-gray-500 hover:text-gray-700"
@@ -58,7 +57,7 @@ export default function RecordsPage() {
             </button>
             <button
               onClick={() => setViewMode("team")}
-              className={`px-3 py-1.5 font-medium transition-colors ${
+              className={`toggle-btn ${
                 viewMode === "team"
                   ? "bg-gray-900 text-white"
                   : "text-gray-500 hover:text-gray-700"
@@ -81,13 +80,12 @@ export default function RecordsPage() {
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="mb-6 flex gap-1 rounded-lg bg-gray-100 p-1">
+      <div className="tab-bar">
         {TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+            className={`tab-btn ${
               tab === t.key
                 ? "bg-white text-gray-900 shadow-sm"
                 : "text-gray-500 hover:text-gray-700"
@@ -110,11 +108,21 @@ export default function RecordsPage() {
               viewMode={viewMode}
             />
           )}
-          {tab === "managers" && managersData && (
-            <ManagersTab managers={filteredManagers} viewMode={viewMode} />
+          {tab === "franchises" && managersData && (
+            <ManagersTab
+              managers={filteredManagers}
+              viewMode={viewMode}
+              franchiseStats={managersData.franchise_stats}
+            />
           )}
           {tab === "h2h" && managersData && (
-            <H2HMatrix managers={filteredManagers} h2h={managersData.h2h} />
+            <H2HMatrix
+              managers={filteredManagers}
+              h2h={managersData.h2h}
+              viewMode={viewMode}
+              franchiseStats={managersData.franchise_stats}
+              franchiseH2h={managersData.franchise_h2h}
+            />
           )}
         </>
       )}

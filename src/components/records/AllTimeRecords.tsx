@@ -93,7 +93,7 @@ export default function AllTimeRecords({ records, currentManagerNames, viewMode 
               {filteredCategoryRecords.map((r) => (
                 <tr key={r.category} className="border-b border-gray-50">
                   <td className="py-1.5 pr-4 font-medium">{r.category}</td>
-                  <td className="py-1.5 pr-4 tabular-nums font-semibold">
+                  <td className="py-1.5 pr-4 stat-value">
                     {formatValue(r.value, r.category)}
                   </td>
                   <td className="py-1.5 pr-4 text-gray-600">
@@ -125,7 +125,7 @@ function RecordRow({ label, value, holder, detail }: {
         <div className="text-label">{holder}</div>
         {detail && <div className="text-meta">{detail}</div>}
       </div>
-      <div className="text-lg font-bold tabular-nums text-gray-800">{value}</div>
+      <div className="stat-hero">{value}</div>
     </div>
   );
 }

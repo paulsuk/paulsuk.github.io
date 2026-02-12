@@ -1,18 +1,23 @@
 import { useState } from "react";
-import type { ManagerSummary } from "../../api/types";
+import type { ManagerSummary, FranchiseStats } from "../../api/types";
 import Card from "../shared/Card";
 
 interface ManagersTabProps {
   managers: ManagerSummary[];
   viewMode: "manager" | "team";
+  franchiseStats?: FranchiseStats[];
 }
 
-export default function ManagersTab({ managers, viewMode }: ManagersTabProps) {
-  const [expanded, setExpanded] = useState<string | null>(null);
-
-  if (viewMode === "team") {
-    return <TeamView managers={managers} />;
+export default function ManagersTab({ managers, viewMode, franchiseStats }: ManagersTabProps) {
+  if (viewMode === "team" && franchiseStats) {
+    return <FranchiseView franchises={franchiseStats} />;
   }
+
+  return <ManagerView managers={managers} />;
+}
+
+function ManagerView({ managers }: { managers: ManagerSummary[] }) {
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
     <Card title="Managers">
@@ -28,16 +33,12 @@ export default function ManagersTab({ managers, viewMode }: ManagersTabProps) {
                 <div className="text-label">
                   {m.seasons.length} season{m.seasons.length !== 1 ? "s" : ""}
                   {m.championships > 0 && (
-                    <span className="ml-2 badge-championship">
-                      {m.championships}x champ
-                    </span>
+                    <span className="ml-2 badge-championship">{m.championships}x champ</span>
                   )}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-semibold tabular-nums">
-                  {m.wins}-{m.losses}{m.ties > 0 ? `-${m.ties}` : ""}
-                </div>
+                <div className="stat-value">{m.wins}-{m.losses}{m.ties > 0 ? `-${m.ties}` : ""}</div>
                 <div className="text-meta">
                   {((m.wins / Math.max(m.wins + m.losses, 1)) * 100).toFixed(0)}%
                 </div>
@@ -45,7 +46,7 @@ export default function ManagersTab({ managers, viewMode }: ManagersTabProps) {
             </button>
 
             {expanded === m.guid && (
-              <div className="ml-4 mt-1 rounded-lg border border-gray-100 bg-white p-3 text-xs">
+              <div className="detail-panel">
                 <div className="grid grid-cols-2 gap-2">
                   <Stat label="Regular Season" value={`${m.wins}-${m.losses}${m.ties > 0 ? `-${m.ties}` : ""}`} />
                   <Stat label="Playoffs" value={`${m.playoff_wins}-${m.playoff_losses}`} />
@@ -55,8 +56,8 @@ export default function ManagersTab({ managers, viewMode }: ManagersTabProps) {
                   {m.worst_finish && <Stat label="Worst Finish" value={ordinal(m.worst_finish)} />}
                 </div>
                 {m.season_records.length > 0 && (
-                  <div className="mt-3 border-t border-gray-100 pt-2">
-                    <div className="mb-1 text-gray-400">Season Breakdown</div>
+                  <div className="divider">
+                    <div className="section-label">Season Breakdown</div>
                     {m.season_records.map((sr) => (
                       <div key={sr.season} className="flex justify-between py-0.5">
                         <span className="text-gray-500">{sr.season} — {sr.team_name}</span>
@@ -76,50 +77,71 @@ export default function ManagersTab({ managers, viewMode }: ManagersTabProps) {
   );
 }
 
-function TeamView({ managers }: { managers: ManagerSummary[] }) {
-  // Flatten all season_records across all managers, sorted by season desc then wins desc
-  const teams = managers.flatMap((m) =>
-    m.season_records.map((sr) => ({
-      ...sr,
-      manager: m.name,
-      guid: m.guid,
-    }))
-  );
-  teams.sort((a, b) => b.season - a.season || (b.wins - b.losses) - (a.wins - a.losses));
-
-  // Group by season
-  const bySeason: Record<number, typeof teams> = {};
-  for (const t of teams) {
-    if (!bySeason[t.season]) bySeason[t.season] = [];
-    bySeason[t.season].push(t);
-  }
+function FranchiseView({ franchises }: { franchises: FranchiseStats[] }) {
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
-    <div className="space-y-4">
-      {Object.entries(bySeason)
-        .sort(([a], [b]) => Number(b) - Number(a))
-        .map(([season, seasonTeams]) => (
-          <Card key={season} title={`${season} Season`}>
-            <div className="space-y-1">
-              {seasonTeams.map((t, i) => (
-                <div
-                  key={`${t.guid}-${t.season}`}
-                  className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 p-2.5"
-                >
-                  <div>
-                    <span className="mr-2 text-xs font-medium text-gray-400">#{i + 1}</span>
-                    <span className="text-sm font-medium">{t.team_name}</span>
-                    <span className="ml-2 text-label">({t.manager})</span>
-                  </div>
-                  <div className="text-sm font-semibold tabular-nums">
-                    {t.wins}-{t.losses}{t.ties > 0 ? `-${t.ties}` : ""}
-                  </div>
+    <Card title="Franchises">
+      <div className="space-y-2">
+        {franchises.map((f) => (
+          <div key={f.id}>
+            <button
+              onClick={() => setExpanded(expanded === f.id ? null : f.id)}
+              className="flex w-full items-center justify-between item-card-interactive text-left"
+            >
+              <div>
+                <div className="text-sm font-medium">{f.current_team_name}</div>
+                <div className="text-label">
+                  {f.ownership.length > 1
+                    ? `${f.ownership.length} managers — ${f.seasons.length} seasons`
+                    : `${f.current_manager} — ${f.seasons.length} season${f.seasons.length !== 1 ? "s" : ""}`}
                 </div>
-              ))}
-            </div>
-          </Card>
+              </div>
+              <div className="text-right">
+                <div className="stat-value">{f.wins}-{f.losses}{f.ties > 0 ? `-${f.ties}` : ""}</div>
+                <div className="text-meta">
+                  {((f.wins / Math.max(f.wins + f.losses, 1)) * 100).toFixed(0)}%
+                </div>
+              </div>
+            </button>
+
+            {expanded === f.id && (
+              <div className="detail-panel">
+                {f.ownership.length > 1 && (
+                  <div className="mb-3">
+                    <div className="section-label">Ownership History</div>
+                    {f.ownership.map((o) => (
+                      <div key={o.guid} className="flex justify-between py-0.5">
+                        <span className="text-gray-600">{o.manager}</span>
+                        <span className="text-gray-400">{o.from}{o.to ? `–${o.to}` : "+"}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {f.season_records.length > 0 && (
+                  <div className={f.ownership.length > 1 ? "divider" : ""}>
+                    <div className="section-label">Season Breakdown</div>
+                    {f.season_records.map((sr) => (
+                      <div key={sr.season} className="flex justify-between py-0.5">
+                        <span className="text-gray-500">
+                          {sr.season} — {sr.team_name}
+                          {f.ownership.length > 1 && (
+                            <span className="text-gray-400"> ({sr.manager})</span>
+                          )}
+                        </span>
+                        <span className="font-medium tabular-nums text-gray-700">
+                          {sr.wins}-{sr.losses}{sr.ties > 0 ? `-${sr.ties}` : ""}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         ))}
-    </div>
+      </div>
+    </Card>
   );
 }
 

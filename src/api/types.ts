@@ -121,9 +121,48 @@ export interface H2HRecord {
   ties: number;
 }
 
+export interface FranchiseOwnership {
+  manager: string;
+  guid: string;
+  from: number;
+  to: number | null;
+}
+
+export interface FranchiseSummary {
+  id: string;
+  name: string;
+  current_manager: string;
+  ownership: FranchiseOwnership[];
+}
+
+export interface FranchiseSeasonRecord {
+  season: number;
+  team_name: string;
+  manager: string;
+  wins: number;
+  losses: number;
+  ties: number;
+}
+
+export interface FranchiseStats {
+  id: string;
+  name: string;
+  current_manager: string;
+  current_team_name: string;
+  ownership: FranchiseOwnership[];
+  seasons: number[];
+  wins: number;
+  losses: number;
+  ties: number;
+  season_records: FranchiseSeasonRecord[];
+}
+
 export interface ManagersResponse {
   managers: ManagerSummary[];
   h2h: Record<string, Record<string, H2HRecord>>;
+  franchises?: FranchiseSummary[];
+  franchise_h2h?: Record<string, Record<string, H2HRecord>>;
+  franchise_stats?: FranchiseStats[];
 }
 
 export interface StreakRecord {
