@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import type { ManagerSummary, FranchiseStats } from "../../api/types";
 import type { ScoringMode } from "./RecordsPage";
 import Card from "../shared/Card";
@@ -12,6 +13,7 @@ interface ManagersTabProps {
 }
 
 export default function ManagersTab({ managers, viewMode, franchiseStats, scoringMode }: ManagersTabProps) {
+  const { slug } = useParams<{ slug: string }>();
   const [expanded, setExpanded] = useState<string | null>(null);
   const toggle = (id: string) => setExpanded(expanded === id ? null : id);
   const useCats = scoringMode === "category";
@@ -38,6 +40,7 @@ export default function ManagersTab({ managers, viewMode, franchiseStats, scorin
               ownership={f.ownership}
               showManagerInSeasons
               seasons={f.seasons}
+              slug={slug}
               expanded={expanded === f.id}
               onToggle={() => toggle(f.id)}
             />

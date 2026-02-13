@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { SeasonRecord, FranchiseSeasonRecord, FranchiseOwnership } from "../../api/types";
 import type { ScoringMode } from "./RecordsPage";
 import { getMedals, getChampionshipYears, getFinishGroups, ordinal } from "../../utils/records-helpers";
@@ -20,6 +21,7 @@ interface EntityCardProps {
   ownership?: FranchiseOwnership[];
   showManagerInSeasons?: boolean;
   seasons?: number[];
+  slug?: string;
   expanded: boolean;
   onToggle: () => void;
 }
@@ -40,6 +42,7 @@ export default function EntityCard({
   ownership,
   showManagerInSeasons,
   seasons,
+  slug,
   expanded,
   onToggle,
 }: EntityCardProps) {
@@ -118,6 +121,15 @@ export default function EntityCard({
                 <SeasonRow key={sr.season} season={sr} showManager={showManagerInSeasons} scoringMode={scoringMode} />
               ))}
             </div>
+          )}
+
+          {slug && ownership && (
+            <Link
+              to={`/${slug}/franchise/${id}`}
+              className="mt-3 inline-block text-sm font-medium text-gray-500 hover:text-gray-900"
+            >
+              View Details &rarr;
+            </Link>
           )}
         </div>
       )}

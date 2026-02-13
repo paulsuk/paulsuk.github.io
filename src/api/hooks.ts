@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchApi, fetchText } from "./client";
-import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article } from "./types";
+import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, FranchiseDetailResponse } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -50,6 +50,10 @@ export function useRecap(slug: string, week?: number, season?: number) {
 
 export function useManagers(slug: string) {
   return useApiData<ManagersResponse>(`/api/${slug}/managers`);
+}
+
+export function useFranchiseDetail(slug: string, franchiseId: string) {
+  return useApiData<FranchiseDetailResponse>(`/api/${slug}/franchise/${franchiseId}`);
 }
 
 export function useRecords(slug: string, includePlayoffs = false) {

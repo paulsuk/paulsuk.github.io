@@ -1,3 +1,4 @@
+import { Link, useParams } from "react-router-dom";
 import type { TeamProfile } from "../../api/types";
 import Card from "../shared/Card";
 
@@ -23,6 +24,7 @@ function StreakBadge({ streak }: { streak: number }) {
 }
 
 export default function RankingsSection({ profiles }: RankingsSectionProps) {
+  const { slug } = useParams<{ slug: string }>();
   return (
     <Card title="Power Rankings">
       <div className="space-y-2">
@@ -32,7 +34,13 @@ export default function RankingsSection({ profiles }: RankingsSectionProps) {
               <span className="w-6 text-center text-sm font-bold text-gray-700">{p.rank}</span>
               <RankChange rank={p.rank} prevRank={p.prev_rank} />
               <div className="min-w-0 flex-1">
-                <div className="text-sm font-medium">{p.team_name}</div>
+                {p.franchise_id ? (
+                  <Link to={`/${slug}/franchise/${p.franchise_id}`} className="text-sm font-medium hover:text-gray-500">
+                    {p.team_name}
+                  </Link>
+                ) : (
+                  <div className="text-sm font-medium">{p.team_name}</div>
+                )}
                 <div className="text-label">{p.manager}</div>
               </div>
               <div className="text-right text-xs">

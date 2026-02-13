@@ -58,6 +58,7 @@ export interface StandingEntry {
   cat_losses: number;
   cat_ties: number;
   rank: number;
+  franchise_id?: string | null;
 }
 
 export interface TeamProfile {
@@ -77,6 +78,7 @@ export interface TeamProfile {
   mvp_z: number;
   opponent_name: string;
   h2h_record: string;
+  franchise_id?: string | null;
 }
 
 export interface RecapResponse {
@@ -260,4 +262,85 @@ export interface Article {
   week: number;
   date: string;
   file: string;
+}
+
+// --- Franchise Detail ---
+
+export interface ManagerEra {
+  name: string;
+  guid: string;
+  from: number;
+  to: number | null;
+  wins: number;
+  losses: number;
+  ties: number;
+  cat_wins: number;
+  cat_losses: number;
+  cat_ties: number;
+  championships: number;
+  seasons: number[];
+}
+
+export interface FranchiseH2HEntry {
+  franchise_id: string;
+  name: string;
+  wins: number;
+  losses: number;
+  ties: number;
+}
+
+export interface RosterPlayer {
+  full_name: string;
+  primary_position: string;
+  selected_position: string;
+  is_starter: boolean;
+}
+
+export interface TransactionCount {
+  season: number;
+  adds: number;
+  drops: number;
+}
+
+export interface TradePlayer {
+  name: string;
+  source_team: string;
+  dest_team: string;
+}
+
+export interface Trade {
+  season: number;
+  week: number | null;
+  timestamp: string;
+  players: TradePlayer[];
+}
+
+export interface FranchiseDetailResponse {
+  overview: {
+    id: string;
+    name: string;
+    current_manager: string;
+    current_team_name: string;
+    ownership: FranchiseOwnership[];
+    seasons: number[];
+  };
+  stats: {
+    wins: number;
+    losses: number;
+    ties: number;
+    cat_wins: number;
+    cat_losses: number;
+    cat_ties: number;
+    championships: number;
+    best_finish: number | null;
+    worst_finish: number | null;
+  };
+  season_records: FranchiseSeasonRecord[];
+  manager_eras: ManagerEra[];
+  h2h: FranchiseH2HEntry[];
+  rosters: Record<number, RosterPlayer[]>;
+  transactions: {
+    counts: TransactionCount[];
+    trades: Trade[];
+  };
 }
