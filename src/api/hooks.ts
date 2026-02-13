@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchApi, fetchText } from "./client";
-import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, Article } from "./types";
+import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -52,8 +52,19 @@ export function useManagers(slug: string) {
   return useApiData<ManagersResponse>(`/api/${slug}/managers`);
 }
 
-export function useRecords(slug: string) {
-  return useApiData<RecordsResponse>(`/api/${slug}/records`);
+export function useRecords(slug: string, includePlayoffs = false) {
+  const path = includePlayoffs
+    ? `/api/${slug}/records?include_playoffs=true`
+    : `/api/${slug}/records`;
+  return useApiData<RecordsResponse>(path);
+}
+
+export function usePlayoffs(slug: string, season?: number, enabled = true) {
+  const params = new URLSearchParams();
+  if (season) params.set("season", String(season));
+  const qs = params.toString();
+  const path = enabled ? `/api/${slug}/playoffs${qs ? `?${qs}` : ""}` : null;
+  return useApiData<PlayoffResponse>(path);
 }
 
 let articlesCache: Article[] | null = null;

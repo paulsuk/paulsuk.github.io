@@ -1,11 +1,12 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { useSeasons, useRecap, useArticles } from "../../api/hooks";
+import { useSeasons, useRecap, useArticles, usePlayoffs } from "../../api/hooks";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
 import MatchupsSection from "./MatchupsSection";
 import AwardsSection from "./AwardsSection";
 import RankingsSection from "./RankingsSection";
 import ArticleFeed from "./ArticleFeed";
+import PlayoffBracket from "./PlayoffBracket";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 
@@ -31,6 +32,10 @@ export default function SportPage() {
   );
 
   const { articles } = useArticles(slug!, selectedSeason ?? undefined);
+
+  const selectedSeasonInfo = seasons?.find((s) => s.season === selectedSeason);
+  const isFinished = selectedSeasonInfo?.is_finished ?? false;
+  const { data: playoffData } = usePlayoffs(slug!, selectedSeason ?? undefined, isFinished);
 
   function handleSeasonChange(season: number) {
     setSearchParams({ season: String(season) });
@@ -73,6 +78,13 @@ export default function SportPage() {
           />
           <RankingsSection profiles={recap.profiles} />
         </>
+      )}
+
+      {isFinished && playoffData && playoffData.rounds.length > 0 && (
+        <PlayoffBracket
+          rounds={playoffData.rounds}
+          totalRounds={playoffData.rounds.length}
+        />
       )}
 
       <ArticleFeed articles={articles} slug={slug!} />

@@ -97,6 +97,11 @@ export interface SeasonRecord {
   wins: number;
   losses: number;
   ties: number;
+  cat_wins: number;
+  cat_losses: number;
+  cat_ties: number;
+  finish: number | null;
+  playoff_seed: number | null;
 }
 
 export interface ManagerSummary {
@@ -110,6 +115,7 @@ export interface ManagerSummary {
   playoff_wins: number;
   playoff_losses: number;
   championships: number;
+  regular_season_firsts: number;
   best_finish: number | null;
   worst_finish: number | null;
   season_records: SeasonRecord[];
@@ -142,6 +148,11 @@ export interface FranchiseSeasonRecord {
   wins: number;
   losses: number;
   ties: number;
+  cat_wins: number;
+  cat_losses: number;
+  cat_ties: number;
+  finish: number | null;
+  playoff_seed: number | null;
 }
 
 export interface FranchiseStats {
@@ -154,6 +165,7 @@ export interface FranchiseStats {
   wins: number;
   losses: number;
   ties: number;
+  championships: number;
   season_records: FranchiseSeasonRecord[];
 }
 
@@ -202,6 +214,31 @@ export interface RecordsResponse {
     biggest_blowout: MatchupRecord | null;
     closest_match: MatchupRecord | null;
   };
+}
+
+export interface PlayoffMatchup {
+  team_1_name: string;
+  team_1_manager: string;
+  team_1_seed: number | null;
+  team_2_name: string;
+  team_2_manager: string;
+  team_2_seed: number | null;
+  cats_won_1: number;
+  cats_won_2: number;
+  cats_tied: number;
+  winner: string | null;
+  is_tied: boolean;
+}
+
+export interface PlayoffRound {
+  week: number;
+  matchups: PlayoffMatchup[];
+  consolation: PlayoffMatchup[];
+}
+
+export interface PlayoffResponse {
+  league_key: string;
+  rounds: PlayoffRound[];
 }
 
 export interface Article {

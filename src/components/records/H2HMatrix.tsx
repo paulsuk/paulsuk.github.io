@@ -3,7 +3,7 @@ import type { ManagerSummary, H2HRecord, FranchiseStats } from "../../api/types"
 interface H2HMatrixProps {
   managers: ManagerSummary[];
   h2h: Record<string, Record<string, H2HRecord>>;
-  viewMode: "manager" | "team";
+  viewMode: "manager" | "franchise";
   franchiseStats?: FranchiseStats[];
   franchiseH2h?: Record<string, Record<string, H2HRecord>>;
 }
@@ -14,7 +14,7 @@ interface MatrixEntry {
 }
 
 export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, franchiseH2h }: H2HMatrixProps) {
-  const useFranchiseMode = viewMode === "team" && franchiseStats && franchiseH2h;
+  const useFranchiseMode = viewMode === "franchise" && franchiseStats && franchiseH2h;
 
   let entries: MatrixEntry[];
   let matrix: Record<string, Record<string, H2HRecord>>;

@@ -1,43 +1,36 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useManagers, useRecords } from "../../api/hooks";
+import { useManagers } from "../../api/hooks";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
-import AllTimeRecords from "./AllTimeRecords";
 import ManagersTab from "./ManagersTab";
 import H2HMatrix from "./H2HMatrix";
 
-type Tab = "records" | "franchises" | "h2h";
+type Tab = "teams" | "h2h";
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: "records", label: "All-Time Records" },
-  { key: "franchises", label: "Franchises" },
+  { key: "teams", label: "Teams" },
   { key: "h2h", label: "Head-to-Head" },
 ];
 
-type ViewMode = "manager" | "team";
+type ViewMode = "manager" | "franchise";
 
 export default function RecordsPage() {
   const { slug } = useParams<{ slug: string }>();
-  const [tab, setTab] = useState<Tab>("records");
+  const [tab, setTab] = useState<Tab>("teams");
   const [currentOnly, setCurrentOnly] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("manager");
 
   const { data: managersData, loading: mLoading, error: mError } = useManagers(slug!);
-  const { data: recordsData, loading: rLoading, error: rError } = useRecords(slug!);
 
-  const loading = mLoading || rLoading;
-  const error = mError || rError;
+  const loading = mLoading;
+  const error = mError;
 
   const hasFormer = managersData?.managers.some((m) => !m.is_current) ?? false;
 
   const filteredManagers = currentOnly
     ? managersData?.managers.filter((m) => m.is_current) ?? []
     : managersData?.managers ?? [];
-
-  const currentNames = new Set(
-    managersData?.managers.filter((m) => m.is_current).map((m) => m.name) ?? []
-  );
 
   return (
     <div>
@@ -56,14 +49,14 @@ export default function RecordsPage() {
               By Manager
             </button>
             <button
-              onClick={() => setViewMode("team")}
+              onClick={() => setViewMode("franchise")}
               className={`toggle-btn ${
-                viewMode === "team"
+                viewMode === "franchise"
                   ? "bg-gray-900 text-white"
                   : "text-gray-500 hover:text-gray-700"
               } rounded-r-md`}
             >
-              By Team
+              By Franchise
             </button>
           </div>
           {hasFormer && viewMode === "manager" && (
@@ -101,14 +94,7 @@ export default function RecordsPage() {
 
       {!loading && !error && (
         <>
-          {tab === "records" && recordsData && (
-            <AllTimeRecords
-              records={recordsData}
-              currentManagerNames={currentOnly ? currentNames : null}
-              viewMode={viewMode}
-            />
-          )}
-          {tab === "franchises" && managersData && (
+          {tab === "teams" && managersData && (
             <ManagersTab
               managers={filteredManagers}
               viewMode={viewMode}
