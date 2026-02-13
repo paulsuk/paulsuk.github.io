@@ -54,6 +54,9 @@ export interface StandingEntry {
   wins: number;
   losses: number;
   ties: number;
+  cat_wins: number;
+  cat_losses: number;
+  cat_ties: number;
   rank: number;
 }
 
@@ -112,6 +115,9 @@ export interface ManagerSummary {
   wins: number;
   losses: number;
   ties: number;
+  cat_wins: number;
+  cat_losses: number;
+  cat_ties: number;
   playoff_wins: number;
   playoff_losses: number;
   championships: number;
@@ -165,6 +171,9 @@ export interface FranchiseStats {
   wins: number;
   losses: number;
   ties: number;
+  cat_wins: number;
+  cat_losses: number;
+  cat_ties: number;
   championships: number;
   season_records: FranchiseSeasonRecord[];
 }
@@ -201,6 +210,7 @@ export interface CategoryRecord {
   season: number;
   week: number;
   higher_is_better: boolean;
+  seasons_active: number[];
 }
 
 export interface RecordsResponse {

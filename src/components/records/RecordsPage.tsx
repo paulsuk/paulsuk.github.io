@@ -14,12 +14,16 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 type ViewMode = "manager" | "franchise";
+export type ScoringMode = "category" | "matchup";
 
 export default function RecordsPage() {
   const { slug } = useParams<{ slug: string }>();
   const [tab, setTab] = useState<Tab>("teams");
   const [currentOnly, setCurrentOnly] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("manager");
+  const [scoringMode, setScoringMode] = useState<ScoringMode>(
+    slug === "baseball" ? "category" : "matchup"
+  );
 
   const { data: managersData, loading: mLoading, error: mError } = useManagers(slug!);
 
@@ -37,6 +41,28 @@ export default function RecordsPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold capitalize">{slug} Records & History</h1>
         <div className="flex items-center gap-4">
+          <div className="toggle-group">
+            <button
+              onClick={() => setScoringMode("category")}
+              className={`toggle-btn ${
+                scoringMode === "category"
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-500 hover:text-gray-700"
+              } rounded-l-md`}
+            >
+              Categories
+            </button>
+            <button
+              onClick={() => setScoringMode("matchup")}
+              className={`toggle-btn ${
+                scoringMode === "matchup"
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-500 hover:text-gray-700"
+              } rounded-r-md`}
+            >
+              Matchups
+            </button>
+          </div>
           <div className="toggle-group">
             <button
               onClick={() => setViewMode("manager")}
@@ -99,6 +125,7 @@ export default function RecordsPage() {
               managers={filteredManagers}
               viewMode={viewMode}
               franchiseStats={managersData.franchise_stats}
+              scoringMode={scoringMode}
             />
           )}
           {tab === "h2h" && managersData && (

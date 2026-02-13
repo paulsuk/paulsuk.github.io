@@ -1,4 +1,5 @@
 import type { SeasonRecord, FranchiseSeasonRecord, FranchiseOwnership } from "../../api/types";
+import type { ScoringMode } from "./RecordsPage";
 import { getMedals, getChampionshipYears, getFinishGroups, ordinal } from "../../utils/records-helpers";
 import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
@@ -11,6 +12,7 @@ interface EntityCardProps {
   losses: number;
   ties: number;
   seasonRecords: (SeasonRecord | FranchiseSeasonRecord)[];
+  scoringMode: ScoringMode;
   playoffWins?: number;
   playoffLosses?: number;
   bestFinish?: number | null;
@@ -30,6 +32,7 @@ export default function EntityCard({
   losses,
   ties,
   seasonRecords,
+  scoringMode,
   playoffWins,
   playoffLosses,
   bestFinish,
@@ -112,7 +115,7 @@ export default function EntityCard({
             <div className="divider">
               <div className="section-label">Season Breakdown</div>
               {seasonRecords.map((sr) => (
-                <SeasonRow key={sr.season} season={sr} showManager={showManagerInSeasons} />
+                <SeasonRow key={sr.season} season={sr} showManager={showManagerInSeasons} scoringMode={scoringMode} />
               ))}
             </div>
           )}

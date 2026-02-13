@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ManagerSummary, FranchiseStats } from "../../api/types";
+import type { ScoringMode } from "./RecordsPage";
 import Card from "../shared/Card";
 import EntityCard from "./EntityCard";
 
@@ -7,11 +8,13 @@ interface ManagersTabProps {
   managers: ManagerSummary[];
   viewMode: "manager" | "franchise";
   franchiseStats?: FranchiseStats[];
+  scoringMode: ScoringMode;
 }
 
-export default function ManagersTab({ managers, viewMode, franchiseStats }: ManagersTabProps) {
+export default function ManagersTab({ managers, viewMode, franchiseStats, scoringMode }: ManagersTabProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const toggle = (id: string) => setExpanded(expanded === id ? null : id);
+  const useCats = scoringMode === "category";
 
   if (viewMode === "franchise" && franchiseStats) {
     return (
@@ -27,10 +30,11 @@ export default function ManagersTab({ managers, viewMode, franchiseStats }: Mana
                   ? `${f.ownership.length} managers \u2014 ${f.seasons.length} seasons`
                   : `${f.current_manager} \u2014 ${f.seasons.length} season${f.seasons.length !== 1 ? "s" : ""}`
               }
-              wins={f.wins}
-              losses={f.losses}
-              ties={f.ties}
+              wins={useCats ? f.cat_wins : f.wins}
+              losses={useCats ? f.cat_losses : f.losses}
+              ties={useCats ? f.cat_ties : f.ties}
               seasonRecords={f.season_records}
+              scoringMode={scoringMode}
               ownership={f.ownership}
               showManagerInSeasons
               seasons={f.seasons}
@@ -52,10 +56,11 @@ export default function ManagersTab({ managers, viewMode, franchiseStats }: Mana
             id={m.guid}
             name={m.name}
             subtitle={`${m.seasons.length} season${m.seasons.length !== 1 ? "s" : ""}`}
-            wins={m.wins}
-            losses={m.losses}
-            ties={m.ties}
+            wins={useCats ? m.cat_wins : m.wins}
+            losses={useCats ? m.cat_losses : m.losses}
+            ties={useCats ? m.cat_ties : m.ties}
             seasonRecords={m.season_records}
+            scoringMode={scoringMode}
             playoffWins={m.playoff_wins}
             playoffLosses={m.playoff_losses}
             bestFinish={m.best_finish}

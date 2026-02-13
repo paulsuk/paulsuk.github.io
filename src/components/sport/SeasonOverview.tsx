@@ -1,11 +1,13 @@
 import type { RecapResponse } from "../../api/types";
+import type { ScoringMode } from "../records/RecordsPage";
 import Card from "../shared/Card";
 
 interface SeasonOverviewProps {
   recap: RecapResponse;
+  scoringMode: ScoringMode;
 }
 
-export default function SeasonOverview({ recap }: SeasonOverviewProps) {
+export default function SeasonOverview({ recap, scoringMode }: SeasonOverviewProps) {
   const leader = recap.standings[0];
   const topProfile = recap.profiles[0];
 
@@ -24,16 +26,21 @@ export default function SeasonOverview({ recap }: SeasonOverviewProps) {
               </tr>
             </thead>
             <tbody>
-              {recap.standings.map((s) => (
-                <tr key={s.team_key} className="border-b border-gray-50">
-                  <td className="py-1.5 pr-4 font-medium text-gray-600">{s.rank}</td>
-                  <td className="py-1.5 pr-4 font-medium">{s.team_name}</td>
-                  <td className="py-1.5 pr-4 text-gray-500">{s.manager}</td>
-                  <td className="py-1.5 pr-4 tabular-nums">
-                    {s.wins}-{s.losses}{s.ties > 0 ? `-${s.ties}` : ""}
-                  </td>
-                </tr>
-              ))}
+              {recap.standings.map((s) => {
+                const w = scoringMode === "category" ? s.cat_wins : s.wins;
+                const l = scoringMode === "category" ? s.cat_losses : s.losses;
+                const t = scoringMode === "category" ? s.cat_ties : s.ties;
+                return (
+                  <tr key={s.team_key} className="border-b border-gray-50">
+                    <td className="py-1.5 pr-4 font-medium text-gray-600">{s.rank}</td>
+                    <td className="py-1.5 pr-4 font-medium">{s.team_name}</td>
+                    <td className="py-1.5 pr-4 text-gray-500">{s.manager}</td>
+                    <td className="py-1.5 pr-4 tabular-nums">
+                      {w}-{l}{t > 0 ? `-${t}` : ""}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

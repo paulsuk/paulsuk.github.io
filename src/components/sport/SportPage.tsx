@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap, useArticles, usePlayoffs } from "../../api/hooks";
+import type { ScoringMode } from "../records/RecordsPage";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
 import MatchupsSection from "./MatchupsSection";
@@ -13,6 +15,9 @@ import ErrorBanner from "../shared/ErrorBanner";
 export default function SportPage() {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [scoringMode, setScoringMode] = useState<ScoringMode>(
+    slug === "baseball" ? "category" : "matchup"
+  );
 
   const seasonParam = searchParams.get("season");
 
@@ -57,11 +62,35 @@ export default function SportPage() {
             {selectedSeason} Season{recap ? ` — Week ${recap.week}` : ""}
           </p>
         </div>
-        <SeasonPicker
-          seasons={seasons}
-          selected={selectedSeason}
-          onChange={handleSeasonChange}
-        />
+        <div className="flex items-center gap-4">
+          <div className="toggle-group">
+            <button
+              onClick={() => setScoringMode("category")}
+              className={`toggle-btn ${
+                scoringMode === "category"
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-500 hover:text-gray-700"
+              } rounded-l-md`}
+            >
+              Categories
+            </button>
+            <button
+              onClick={() => setScoringMode("matchup")}
+              className={`toggle-btn ${
+                scoringMode === "matchup"
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-500 hover:text-gray-700"
+              } rounded-r-md`}
+            >
+              Matchups
+            </button>
+          </div>
+          <SeasonPicker
+            seasons={seasons}
+            selected={selectedSeason}
+            onChange={handleSeasonChange}
+          />
+        </div>
       </div>
 
       {recapLoading && <LoadingSpinner />}
@@ -69,7 +98,7 @@ export default function SportPage() {
 
       {recap && (
         <>
-          <SeasonOverview recap={recap} />
+          <SeasonOverview recap={recap} scoringMode={scoringMode} />
           <MatchupsSection matchups={recap.matchups} week={recap.week} />
           <AwardsSection
             batter_of_week={recap.batter_of_week}
