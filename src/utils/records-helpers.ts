@@ -39,7 +39,7 @@ export function getFinishGroups(records: AnySeasonRecord[], field: "playoff_seed
   const groups = new Map<number, number[]>();
   for (const sr of records) {
     const val = sr[field];
-    if (val == null) continue;
+    if (val == null || val <= 0) continue;
     const years = groups.get(val) ?? [];
     years.push(sr.season);
     groups.set(val, years);

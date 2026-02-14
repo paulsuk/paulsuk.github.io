@@ -19,6 +19,7 @@ interface EntityCardProps {
   bestFinish?: number | null;
   worstFinish?: number | null;
   ownership?: FranchiseOwnership[];
+  franchiseId?: string;
   showManagerInSeasons?: boolean;
   seasons?: number[];
   slug?: string;
@@ -40,6 +41,7 @@ export default function EntityCard({
   bestFinish,
   worstFinish,
   ownership,
+  franchiseId,
   showManagerInSeasons,
   seasons,
   slug,
@@ -49,8 +51,9 @@ export default function EntityCard({
   const medals = getMedals(seasonRecords);
   const champYears = getChampionshipYears(seasonRecords);
   const regSeasonFinishes = getFinishGroups(seasonRecords, "playoff_seed").filter((g) => g.rank <= 3);
+  const playoffFinishes = getFinishGroups(seasonRecords, "finish").filter((g) => g.rank <= 3);
   const record = `${wins}-${losses}${ties > 0 ? `-${ties}` : ""}`;
-  const winPct = ((wins / Math.max(wins + losses, 1)) * 100).toFixed(0);
+  const winPct = ((wins / Math.max(wins + losses + ties, 1)) * 100).toFixed(0);
 
   return (
     <div key={id}>
@@ -97,6 +100,10 @@ export default function EntityCard({
               label="Reg Season Finishes"
               value={formatFinishGroups(regSeasonFinishes)}
             />
+            <Stat
+              label="Playoff Finishes"
+              value={formatFinishGroups(playoffFinishes)}
+            />
             {seasons && <Stat label="Seasons" value={seasons.join(", ")} />}
             {bestFinish != null && <Stat label="Best Finish" value={ordinal(bestFinish)} />}
             {worstFinish != null && <Stat label="Worst Finish" value={ordinal(worstFinish)} />}
@@ -123,9 +130,9 @@ export default function EntityCard({
             </div>
           )}
 
-          {slug && ownership && (
+          {slug && (ownership || franchiseId) && (
             <Link
-              to={`/${slug}/franchise/${id}`}
+              to={`/${slug}/franchise/${franchiseId ?? id}`}
               className="mt-3 inline-block text-sm font-medium text-gray-500 hover:text-gray-900"
             >
               View Details &rarr;

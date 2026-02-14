@@ -69,6 +69,8 @@ export default function ManagersTab({ managers, viewMode, franchiseStats, scorin
             bestFinish={m.best_finish}
             worstFinish={m.worst_finish}
             seasons={m.seasons}
+            slug={slug}
+            franchiseId={m.franchise_id ?? undefined}
             expanded={expanded === m.guid}
             onToggle={() => toggle(m.guid)}
           />

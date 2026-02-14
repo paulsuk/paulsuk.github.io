@@ -127,6 +127,7 @@ export interface ManagerSummary {
   best_finish: number | null;
   worst_finish: number | null;
   season_records: SeasonRecord[];
+  franchise_id?: string | null;
 }
 
 export interface H2HRecord {
@@ -264,6 +265,19 @@ export interface Article {
   file: string;
 }
 
+// --- Current Matchup ---
+
+export interface CurrentMatchup {
+  season: number;
+  week: number;
+  opponent_team_name: string;
+  opponent_manager: string;
+  cats_won: number;
+  cats_lost: number;
+  cats_tied: number;
+  is_playoffs: boolean;
+}
+
 // --- Franchise Detail ---
 
 export interface ManagerEra {
@@ -294,6 +308,29 @@ export interface RosterPlayer {
   primary_position: string;
   selected_position: string;
   is_starter: boolean;
+  is_keeper?: boolean;
+  keeper_round?: number | null;
+}
+
+export interface KeeperEntry {
+  name: string;
+  position: string | null;
+  round_cost: number | null;
+  kept_from_season: number | null;
+  tenure: number | null;
+}
+
+export interface RosterCostPlayer {
+  full_name: string;
+  primary_position: string;
+  selected_position: string;
+  is_starter: boolean;
+  draft_cost: number;
+}
+
+export interface SeasonKeepers {
+  season: number;
+  keepers: KeeperEntry[];
 }
 
 export interface TransactionCount {
@@ -339,8 +376,11 @@ export interface FranchiseDetailResponse {
   manager_eras: ManagerEra[];
   h2h: FranchiseH2HEntry[];
   rosters: Record<number, RosterPlayer[]>;
+  roster_costs: Record<number, RosterCostPlayer[]>;
+  keepers: SeasonKeepers[];
   transactions: {
     counts: TransactionCount[];
     trades: Trade[];
   };
+  current_matchup: CurrentMatchup | null;
 }

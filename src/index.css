@@ -68,7 +68,11 @@
 }
 
 .tab-btn {
-  @apply flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors;
+  @apply flex-1 rounded-md px-3 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-700;
+}
+
+.tab-btn-active {
+  @apply bg-white text-gray-900 shadow-sm;
 }
 
 .toggle-group {

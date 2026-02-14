@@ -16,19 +16,19 @@ export default function SeasonRow({ season: sr, showManager, scoringMode = "matc
   return (
     <div className="flex items-center justify-between py-0.5 gap-2">
       <span className="text-gray-500 min-w-0 truncate">
-        {sr.season} — {sr.team_name}
+        <span className="text-gray-400">{sr.season}</span> — {sr.team_name}
         {showManager && manager && (
           <span className="text-gray-400"> ({manager})</span>
         )}
       </span>
       <span className="font-medium tabular-nums text-gray-700 flex items-center gap-1.5 flex-shrink-0">
         {w}-{l}{t > 0 ? `-${t}` : ""}
-        {sr.playoff_seed != null && (
+        {sr.playoff_seed != null && sr.playoff_seed > 0 && (
           <span className="text-gray-400 text-xs">
             seed {sr.playoff_seed}
           </span>
         )}
-        {sr.finish != null && (
+        {sr.finish != null && sr.finish > 0 && (
           <span className="text-xs">
             {finishBadge(sr.finish)}
           </span>
