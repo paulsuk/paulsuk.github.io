@@ -5,7 +5,6 @@ import type { ScoringMode } from "../records/RecordsPage";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
 import MatchupsSection from "./MatchupsSection";
-import AwardsSection from "./AwardsSection";
 import RankingsSection from "./RankingsSection";
 import ArticleFeed from "./ArticleFeed";
 import PlayoffBracket from "./PlayoffBracket";
@@ -100,11 +99,6 @@ export default function SportPage() {
         <>
           <SeasonOverview recap={recap} scoringMode={scoringMode} />
           <MatchupsSection matchups={recap.matchups} week={recap.week} />
-          <AwardsSection
-            batter_of_week={recap.batter_of_week}
-            pitcher_of_week={recap.pitcher_of_week}
-            player_of_week={recap.player_of_week}
-          />
           <RankingsSection profiles={recap.profiles} />
         </>
       )}

@@ -49,37 +49,6 @@ export default function StatsSidebar({ recap }: StatsSidebarProps) {
         </div>
       </div>
 
-      {/* Awards */}
-      {(recap.batter_of_week || recap.pitcher_of_week || recap.player_of_week) && (
-        <div>
-          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-            Awards
-          </h4>
-          <div className="space-y-1 text-xs">
-            {recap.batter_of_week && (
-              <div>
-                <span className="text-gray-500">BOTW:</span>{" "}
-                <span className="font-medium">{recap.batter_of_week.name}</span>{" "}
-                <span className="text-gray-400">({recap.batter_of_week.manager})</span>
-              </div>
-            )}
-            {recap.pitcher_of_week && (
-              <div>
-                <span className="text-gray-500">POTW:</span>{" "}
-                <span className="font-medium">{recap.pitcher_of_week.name}</span>{" "}
-                <span className="text-gray-400">({recap.pitcher_of_week.manager})</span>
-              </div>
-            )}
-            {recap.player_of_week && (
-              <div>
-                <span className="text-gray-500">POTW:</span>{" "}
-                <span className="font-medium">{recap.player_of_week.name}</span>{" "}
-                <span className="text-gray-400">({recap.player_of_week.manager})</span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
