@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchApi, fetchText } from "./client";
-import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, FranchiseDetailResponse } from "./types";
+import { fetchApi } from "./client";
+import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, ArticleDetail, FranchiseDetailResponse } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -71,54 +71,34 @@ export function usePlayoffs(slug: string, season?: number, enabled = true) {
   return useApiData<PlayoffResponse>(path);
 }
 
-let articlesCache: Article[] | null = null;
-
 export function useArticles(slug: string, season?: number) {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (articlesCache) {
-      const filtered = articlesCache.filter(
-        (a) => a.slug === slug && (!season || a.season === season)
-      );
-      setArticles(filtered);
-      setLoading(false);
-      return;
-    }
-
-    fetchText(`${import.meta.env.BASE_URL}articles/index.json`)
-      .then((text) => {
-        const all: Article[] = text ? JSON.parse(text) : [];
-        articlesCache = all;
-        const filtered = all.filter(
-          (a) => a.slug === slug && (!season || a.season === season)
-        );
-        setArticles(filtered);
-      })
-      .catch(() => setArticles([]))
-      .finally(() => setLoading(false));
-  }, [slug, season]);
-
-  return { articles, loading };
+  const params = new URLSearchParams();
+  if (season) params.set("season", String(season));
+  const qs = params.toString();
+  const path = `/api/${slug}/articles${qs ? `?${qs}` : ""}`;
+  const { data, loading, error } = useApiData<{ articles: Article[] }>(path);
+  return { articles: data?.articles ?? [], loading, error };
 }
 
-export function useArticleContent(filePath: string | null) {
-  const [content, setContent] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+interface ArticleDetailResponse {
+  article: Article & { content: string };
+  prev_id: string | null;
+  next_id: string | null;
+  season_articles: { id: string; title: string; date: string }[];
+}
 
-  useEffect(() => {
-    if (!filePath) {
-      setLoading(false);
-      return;
-    }
+export function useArticle(slug: string, articleId: string | undefined) {
+  const path = articleId ? `/api/${slug}/articles/${articleId}` : null;
+  const { data, loading, error } = useApiData<ArticleDetailResponse>(path);
 
-    setLoading(true);
-    fetchText(`${import.meta.env.BASE_URL}articles/${filePath}`)
-      .then(setContent)
-      .catch(() => setContent(null))
-      .finally(() => setLoading(false));
-  }, [filePath]);
+  const detail: ArticleDetail | null = data
+    ? {
+        ...data.article,
+        prev_id: data.prev_id,
+        next_id: data.next_id,
+        season_articles: data.season_articles,
+      }
+    : null;
 
-  return { content, loading };
+  return { article: detail, loading, error };
 }

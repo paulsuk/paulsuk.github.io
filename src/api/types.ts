@@ -256,13 +256,19 @@ export interface PlayoffResponse {
 
 export interface Article {
   id: string;
-  slug: string;
   title: string;
-  type: "recap" | "rankings";
   season: number;
-  week: number;
+  week: number | null;
   date: string;
-  file: string;
+  author: string | null;
+  summary: string | null;
+}
+
+export interface ArticleDetail extends Article {
+  content: string;
+  prev_id: string | null;
+  next_id: string | null;
+  season_articles: { id: string; title: string; date: string }[];
 }
 
 // --- Current Matchup ---
