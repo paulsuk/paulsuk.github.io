@@ -6,12 +6,14 @@ import SportPage from "./components/sport/SportPage";
 import ArticlePage from "./components/article/ArticlePage";
 import RecordsPage from "./components/records/RecordsPage";
 import FranchiseDetailPage from "./components/franchise/FranchiseDetailPage";
+import LabPage from "./components/lab/LabPage";
 
 export default function App() {
   return (
     <Routes>
       <Route element={<AppShell />}>
         <Route index element={<HomePage />} />
+        <Route path="lab" element={<LabPage />} />
         <Route path=":slug" element={<SportLayout />}>
           <Route index element={<SportPage />} />
           <Route path="records" element={<RecordsPage />} />

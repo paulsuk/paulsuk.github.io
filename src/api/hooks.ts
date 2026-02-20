@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchApi } from "./client";
-import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, ArticleDetail, FranchiseDetailResponse } from "./types";
+import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, ArticleDetail, FranchiseDetailResponse, LabRun, LabPlayer } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -85,6 +85,22 @@ interface ArticleDetailResponse {
   prev_id: string | null;
   next_id: string | null;
   season_articles: { id: string; title: string; date: string }[];
+}
+
+export function useLabRuns() {
+  return useApiData<LabRun[]>("/lab/runs");
+}
+
+export function useLabPlayers(
+  model: string | null,
+  sport: string | null,
+  season: string | null,
+) {
+  const path =
+    model && sport && season
+      ? `/lab/runs/${model}/${sport}/${season}/players`
+      : null;
+  return useApiData<LabPlayer[]>(path);
 }
 
 export function useArticle(slug: string, articleId: string | undefined) {

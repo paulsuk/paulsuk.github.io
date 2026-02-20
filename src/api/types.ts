@@ -284,6 +284,28 @@ export interface CurrentMatchup {
   is_playoffs: boolean;
 }
 
+// --- Lab / Rankings ---
+
+export interface LabRun {
+  model: string;
+  sport: string;
+  season: string;
+  run_id: string;
+  timestamp: string;
+  num_players: number;
+  data_desc: string;
+  notes?: string | null;
+}
+
+export interface LabPlayer {
+  player_id: string | number;
+  name: string;
+  value: number;
+  rank: number;
+  team?: string;
+  [key: string]: unknown;
+}
+
 // --- Franchise Detail ---
 
 export interface ManagerEra {
