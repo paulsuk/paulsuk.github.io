@@ -1,4 +1,5 @@
 import type { ManagerSummary, H2HRecord, FranchiseStats } from "../../api/types";
+import { winPct } from "../../utils/records-helpers";
 
 interface H2HMatrixProps {
   managers: ManagerSummary[];
@@ -75,16 +76,19 @@ export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, fra
                 }
 
                 const total = record.wins + record.losses + record.ties;
-                const winPct = total > 0 ? record.wins / total : 0.5;
-                const bg = cellColor(winPct);
+                const pctVal = total > 0 ? (record.wins + record.ties) / total : 0.5;
+                const pct = winPct(record.wins, record.losses, record.ties);
+                const bg = cellColor(pctVal);
+                const recStr = `${record.wins}-${record.losses}${record.ties > 0 ? `-${record.ties}` : ""}`;
 
                 return (
                   <td key={col.id} className="p-1 text-center">
                     <div
-                      className={`flex h-8 w-14 items-center justify-center rounded text-[10px] font-medium ${bg}`}
-                      title={`${row.name} vs ${col.name}: ${record.wins}-${record.losses}${record.ties > 0 ? `-${record.ties}` : ""}`}
+                      className={`flex h-8 w-14 flex-col items-center justify-center rounded text-[10px] font-medium leading-tight ${bg}`}
+                      title={`${row.name} vs ${col.name}: ${recStr} (${pct})`}
                     >
-                      {record.wins}-{record.losses}
+                      <div>{recStr}</div>
+                      <div className="opacity-75">{pct}</div>
                     </div>
                   </td>
                 );
@@ -97,10 +101,16 @@ export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, fra
   );
 }
 
+const LEADING_ARTICLES = new Set(["the", "a", "an"]);
+
 function shortName(name: string): string {
-  const parts = name.split(" ");
-  if (parts.length >= 2) return parts[0];
-  return name;
+  const parts = name.trim().split(/\s+/);
+  // Skip a leading article so "The Batmans" → "Batmans" not "The"
+  const start = parts.length > 1 && LEADING_ARTICLES.has(parts[0].toLowerCase()) ? 1 : 0;
+  const remaining = parts.slice(start);
+  // Take up to 2 words from the meaningful portion, cap at 10 chars
+  const short = remaining.slice(0, 2).join(" ");
+  return short.length > 10 ? short.slice(0, 9) + "…" : short;
 }
 
 function cellColor(winPct: number): string {

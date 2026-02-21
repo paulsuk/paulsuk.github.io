@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap, useArticles, usePlayoffs } from "../../api/hooks";
 import type { ScoringMode } from "../../api/types";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
-import MatchupsSection from "./MatchupsSection";
 import RankingsSection from "./RankingsSection";
 import ArticleFeed from "./ArticleFeed";
 import PlayoffBracket from "./PlayoffBracket";
@@ -14,10 +12,8 @@ import ErrorBanner from "../shared/ErrorBanner";
 export default function SportPage() {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [scoringMode, setScoringMode] = useState<ScoringMode>(
-    slug === "baseball" ? "category" : "matchup"
-  );
 
+  const scoringMode: ScoringMode = slug === "baseball" ? "category" : "matchup";
   const seasonParam = searchParams.get("season");
 
   const { data: seasons, loading: seasonsLoading, error: seasonsError } = useSeasons(slug!);
@@ -35,7 +31,11 @@ export default function SportPage() {
     selectedSeason ?? undefined
   );
 
-  const { data: articles } = useArticles(slug!, selectedSeason ?? undefined);
+  const { data: rawArticles } = useArticles(slug!, selectedSeason ?? undefined);
+  // Also filter client-side to guarantee only current season articles appear
+  const articles = selectedSeason != null
+    ? rawArticles.filter((a) => a.season === selectedSeason)
+    : rawArticles;
 
   const selectedSeasonInfo = seasons?.find((s) => s.season === selectedSeason);
   const isFinished = selectedSeasonInfo?.is_finished ?? false;
@@ -61,35 +61,11 @@ export default function SportPage() {
             {selectedSeason} Season{recap ? ` — Week ${recap.week}` : ""}
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="toggle-group">
-            <button
-              onClick={() => setScoringMode("category")}
-              className={`toggle-btn ${
-                scoringMode === "category"
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-500 hover:text-gray-700"
-              } rounded-l-md`}
-            >
-              Categories
-            </button>
-            <button
-              onClick={() => setScoringMode("matchup")}
-              className={`toggle-btn ${
-                scoringMode === "matchup"
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-500 hover:text-gray-700"
-              } rounded-r-md`}
-            >
-              Matchups
-            </button>
-          </div>
-          <SeasonPicker
-            seasons={seasons}
-            selected={selectedSeason}
-            onChange={handleSeasonChange}
-          />
-        </div>
+        <SeasonPicker
+          seasons={seasons}
+          selected={selectedSeason}
+          onChange={handleSeasonChange}
+        />
       </div>
 
       {recapLoading && <LoadingSpinner />}
@@ -98,8 +74,7 @@ export default function SportPage() {
       {recap && (
         <>
           <SeasonOverview recap={recap} scoringMode={scoringMode} />
-          <MatchupsSection matchups={recap.matchups} week={recap.week} />
-          <RankingsSection profiles={recap.profiles} />
+          <RankingsSection profiles={recap.profiles} season={selectedSeason ?? recap.season} />
         </>
       )}
 

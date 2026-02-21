@@ -1,5 +1,5 @@
 import type { SeasonRecord, FranchiseSeasonRecord } from "../../api/types";
-import { finishBadge } from "../../utils/records-helpers";
+import { finishBadge, winPct } from "../../utils/records-helpers";
 
 interface SeasonRowProps {
   season: SeasonRecord | FranchiseSeasonRecord;
@@ -13,6 +13,8 @@ export default function SeasonRow({ season: sr, showManager, scoringMode = "matc
   const l = scoringMode === "category" ? sr.cat_losses : sr.losses;
   const t = scoringMode === "category" ? sr.cat_ties : sr.ties;
 
+  const pct = winPct(w, l, t);
+
   return (
     <div className="flex items-center justify-between py-0.5 gap-2">
       <span className="text-gray-500 min-w-0 truncate">
@@ -23,6 +25,7 @@ export default function SeasonRow({ season: sr, showManager, scoringMode = "matc
       </span>
       <span className="font-medium tabular-nums text-gray-700 flex items-center gap-1.5 flex-shrink-0">
         {w}-{l}-{t}
+        <span className="text-gray-400 font-normal text-xs">({pct})</span>
         {sr.playoff_seed != null && sr.playoff_seed > 0 && (
           <span className="text-gray-400 text-xs">
             seed {sr.playoff_seed}

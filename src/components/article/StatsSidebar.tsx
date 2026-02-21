@@ -2,9 +2,12 @@ import type { RecapResponse } from "../../api/types";
 
 interface StatsSidebarProps {
   recap: RecapResponse;
+  slug: string;
 }
 
-export default function StatsSidebar({ recap }: StatsSidebarProps) {
+export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
+  const useCats = slug === "baseball";
+
   return (
     <div className="space-y-5">
       {/* Standings */}
@@ -13,17 +16,22 @@ export default function StatsSidebar({ recap }: StatsSidebarProps) {
           Standings — Week {recap.week}
         </h4>
         <div className="space-y-1">
-          {recap.standings.map((s) => (
-            <div key={s.team_key} className="flex items-center justify-between text-xs">
-              <span>
-                <span className="font-medium text-gray-600">{s.rank}.</span>{" "}
-                <span className="text-gray-800">{s.manager}</span>
-              </span>
-              <span className="tabular-nums text-gray-500">
-                {s.wins}-{s.losses}-{s.ties}
-              </span>
-            </div>
-          ))}
+          {recap.standings.map((s) => {
+            const w = useCats ? s.cat_wins : s.wins;
+            const l = useCats ? s.cat_losses : s.losses;
+            const t = useCats ? s.cat_ties : s.ties;
+            return (
+              <div key={s.team_key} className="flex items-center justify-between text-xs">
+                <span>
+                  <span className="font-medium text-gray-600">{s.rank}.</span>{" "}
+                  <span className="text-gray-800">{s.manager}</span>
+                </span>
+                <span className="tabular-nums text-gray-500">
+                  {w}-{l}-{t}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
 

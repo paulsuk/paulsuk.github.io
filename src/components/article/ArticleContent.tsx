@@ -45,6 +45,7 @@ export default function ArticleContent({ content, slug }: ArticleContentProps) {
             src={resolvedSrc}
             alt={alt ?? ""}
             className="team-logo"
+            onError={(e) => { e.currentTarget.style.display = "none"; }}
             {...props}
           />
         );

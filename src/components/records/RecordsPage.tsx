@@ -41,28 +41,30 @@ export default function RecordsPage() {
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-bold capitalize">{slug} Records & History</h1>
         <div className="flex items-center gap-4">
-          <div className="toggle-group">
-            <button
-              onClick={() => setScoringMode("category")}
-              className={`toggle-btn ${
-                scoringMode === "category"
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-500 hover:text-gray-700"
-              } rounded-l-md`}
-            >
-              Categories
-            </button>
-            <button
-              onClick={() => setScoringMode("matchup")}
-              className={`toggle-btn ${
-                scoringMode === "matchup"
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-500 hover:text-gray-700"
-              } rounded-r-md`}
-            >
-              Matchups
-            </button>
-          </div>
+          {tab === "teams" && (
+            <div className="toggle-group">
+              <button
+                onClick={() => setScoringMode("category")}
+                className={`toggle-btn ${
+                  scoringMode === "category"
+                    ? "bg-gray-900 text-white"
+                    : "text-gray-500 hover:text-gray-700"
+                } rounded-l-md`}
+              >
+                Categories
+              </button>
+              <button
+                onClick={() => setScoringMode("matchup")}
+                className={`toggle-btn ${
+                  scoringMode === "matchup"
+                    ? "bg-gray-900 text-white"
+                    : "text-gray-500 hover:text-gray-700"
+                } rounded-r-md`}
+              >
+                Matchups
+              </button>
+            </div>
+          )}
           <div className="toggle-group">
             <button
               onClick={() => setViewMode("manager")}

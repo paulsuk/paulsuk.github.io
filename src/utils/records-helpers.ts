@@ -35,6 +35,15 @@ export function getChampionshipYears(records: AnySeasonRecord[]): number[] {
   return records.filter((sr) => sr.finish === 1).map((sr) => sr.season);
 }
 
+/**
+ * Winning percentage: (wins + ties) / total, formatted as ".xxx" (no leading zero).
+ * Ties count as wins because they don't belong in the loss column.
+ */
+export function winPct(wins: number, losses: number, ties: number): string {
+  const total = wins + losses + ties;
+  return total > 0 ? ((wins + ties) / total).toFixed(3).slice(1) : ".000";
+}
+
 export function getFinishGroups(records: AnySeasonRecord[], field: "playoff_seed" | "finish"): FinishGroup[] {
   const groups = new Map<number, number[]>();
   for (const sr of records) {

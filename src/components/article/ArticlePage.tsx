@@ -111,7 +111,7 @@ export default function ArticlePage() {
           <div className="sticky top-6 space-y-4">
             <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
               {recapLoading && <LoadingSpinner />}
-              {recap && <StatsSidebar recap={recap} />}
+              {recap && <StatsSidebar recap={recap} slug={slug!} />}
             </div>
 
             {/* Season article list */}
