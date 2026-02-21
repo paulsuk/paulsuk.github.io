@@ -1,8 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useFranchiseDetail } from "../../api/hooks";
-import type { FranchiseSeasonRecord, FranchiseH2HEntry, Trade, TransactionCount, SeasonKeepers, KeeperEntry, RosterCostPlayer, RosterPlayer } from "../../api/types";
-import type { ScoringMode } from "../records/RecordsPage";
+import type { FranchiseSeasonRecord, FranchiseH2HEntry, Trade, TransactionCount, SeasonKeepers, KeeperEntry, RosterCostPlayer, RosterPlayer, ScoringMode } from "../../api/types";
 import Card from "../shared/Card";
 import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
@@ -91,7 +90,7 @@ export default function FranchiseDetailPage() {
   const w = scoringMode === "category" ? displayStats.cat_wins : displayStats.wins;
   const l = scoringMode === "category" ? displayStats.cat_losses : displayStats.losses;
   const t = scoringMode === "category" ? displayStats.cat_ties : displayStats.ties;
-  const record = `${w}-${l}${t > 0 ? `-${t}` : ""}`;
+  const record = `${w}-${l}-${t}`;
 
   return (
     <div className="space-y-6">

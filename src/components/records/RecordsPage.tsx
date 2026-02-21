@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useManagers } from "../../api/hooks";
+import type { ScoringMode } from "../../api/types";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import ManagersTab from "./ManagersTab";
@@ -14,7 +15,6 @@ const TABS: { key: Tab; label: string }[] = [
 ];
 
 type ViewMode = "manager" | "franchise";
-export type ScoringMode = "category" | "matchup";
 
 export default function RecordsPage() {
   const { slug } = useParams<{ slug: string }>();

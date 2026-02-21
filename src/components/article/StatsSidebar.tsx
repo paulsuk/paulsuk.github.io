@@ -20,7 +20,7 @@ export default function StatsSidebar({ recap }: StatsSidebarProps) {
                 <span className="text-gray-800">{s.manager}</span>
               </span>
               <span className="tabular-nums text-gray-500">
-                {s.wins}-{s.losses}{s.ties > 0 ? `-${s.ties}` : ""}
+                {s.wins}-{s.losses}-{s.ties}
               </span>
             </div>
           ))}

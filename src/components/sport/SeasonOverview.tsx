@@ -1,5 +1,4 @@
-import type { RecapResponse } from "../../api/types";
-import type { ScoringMode } from "../records/RecordsPage";
+import type { RecapResponse, ScoringMode } from "../../api/types";
 import Card from "../shared/Card";
 
 interface SeasonOverviewProps {
@@ -36,7 +35,7 @@ export default function SeasonOverview({ recap, scoringMode }: SeasonOverviewPro
                     <td className="py-1.5 pr-4 font-medium">{s.team_name}</td>
                     <td className="py-1.5 pr-4 text-gray-500">{s.manager}</td>
                     <td className="py-1.5 pr-4 tabular-nums">
-                      {w}-{l}{t > 0 ? `-${t}` : ""}
+                      {w}-{l}-{t}
                     </td>
                   </tr>
                 );

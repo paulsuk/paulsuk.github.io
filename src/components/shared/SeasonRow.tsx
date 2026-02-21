@@ -22,7 +22,7 @@ export default function SeasonRow({ season: sr, showManager, scoringMode = "matc
         )}
       </span>
       <span className="font-medium tabular-nums text-gray-700 flex items-center gap-1.5 flex-shrink-0">
-        {w}-{l}{t > 0 ? `-${t}` : ""}
+        {w}-{l}-{t}
         {sr.playoff_seed != null && sr.playoff_seed > 0 && (
           <span className="text-gray-400 text-xs">
             seed {sr.playoff_seed}

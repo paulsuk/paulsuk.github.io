@@ -45,7 +45,7 @@ export default function RankingsSection({ profiles }: RankingsSectionProps) {
               </div>
               <div className="text-right text-xs">
                 <div className="tabular-nums">
-                  {p.wins}-{p.losses}{p.ties > 0 ? `-${p.ties}` : ""}
+                  {p.wins}-{p.losses}-{p.ties}
                 </div>
                 <div className="mt-0.5 text-gray-400">{p.last_3.join("-")}</div>
               </div>

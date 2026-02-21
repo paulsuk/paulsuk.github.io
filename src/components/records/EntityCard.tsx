@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import type { SeasonRecord, FranchiseSeasonRecord, FranchiseOwnership } from "../../api/types";
-import type { ScoringMode } from "./RecordsPage";
+import type { SeasonRecord, FranchiseSeasonRecord, FranchiseOwnership, ScoringMode } from "../../api/types";
 import { getMedals, getChampionshipYears, getFinishGroups, ordinal } from "../../utils/records-helpers";
 import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
@@ -52,7 +51,7 @@ export default function EntityCard({
   const champYears = getChampionshipYears(seasonRecords);
   const regSeasonFinishes = getFinishGroups(seasonRecords, "playoff_seed").filter((g) => g.rank <= 3);
   const playoffFinishes = getFinishGroups(seasonRecords, "finish").filter((g) => g.rank <= 3);
-  const record = `${wins}-${losses}${ties > 0 ? `-${ties}` : ""}`;
+  const record = `${wins}-${losses}-${ties}`;
   const winPct = ((wins / Math.max(wins + losses + ties, 1)) * 100).toFixed(0);
 
   return (

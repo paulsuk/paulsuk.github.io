@@ -2,8 +2,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
 import type { ReactNode } from "react";
-
-const API_URL = import.meta.env.VITE_API_URL ?? "";
+import { API_URL } from "../../api/client";
 
 interface ArticleContentProps {
   content: string;

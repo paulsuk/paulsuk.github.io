@@ -3,6 +3,7 @@ import { NavLink, Outlet, useParams } from "react-router-dom";
 const NAV_ITEMS = [
   { to: "", label: "Season", end: true },
   { to: "records", label: "Records & History", end: false },
+  { to: "articles", label: "Articles", end: false },
 ];
 
 export default function SportLayout() {

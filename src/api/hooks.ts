@@ -77,7 +77,7 @@ export function useArticles(slug: string, season?: number) {
   const qs = params.toString();
   const path = `/api/${slug}/articles${qs ? `?${qs}` : ""}`;
   const { data, loading, error } = useApiData<{ articles: Article[] }>(path);
-  return { articles: data?.articles ?? [], loading, error };
+  return { data: data?.articles ?? [], loading, error };
 }
 
 interface ArticleDetailResponse {

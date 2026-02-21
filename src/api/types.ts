@@ -1,3 +1,5 @@
+export type ScoringMode = "category" | "matchup";
+
 export interface Franchise {
   sport: string;
   name: string;

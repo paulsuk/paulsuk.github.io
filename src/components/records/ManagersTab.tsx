@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import type { ManagerSummary, FranchiseStats } from "../../api/types";
-import type { ScoringMode } from "./RecordsPage";
+import type { ManagerSummary, FranchiseStats, ScoringMode } from "../../api/types";
 import Card from "../shared/Card";
 import EntityCard from "./EntityCard";
 

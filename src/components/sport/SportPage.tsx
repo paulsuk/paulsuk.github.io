@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap, useArticles, usePlayoffs } from "../../api/hooks";
-import type { ScoringMode } from "../records/RecordsPage";
+import type { ScoringMode } from "../../api/types";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
 import MatchupsSection from "./MatchupsSection";
@@ -35,7 +35,7 @@ export default function SportPage() {
     selectedSeason ?? undefined
   );
 
-  const { articles } = useArticles(slug!, selectedSeason ?? undefined);
+  const { data: articles } = useArticles(slug!, selectedSeason ?? undefined);
 
   const selectedSeasonInfo = seasons?.find((s) => s.season === selectedSeason);
   const isFinished = selectedSeasonInfo?.is_finished ?? false;
