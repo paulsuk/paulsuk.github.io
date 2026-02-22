@@ -273,6 +273,13 @@ export interface ArticleDetail extends Article {
   season_articles: { id: string; title: string; date: string }[];
 }
 
+export interface ArticleDetailResponse {
+  article: Article & { content: string };
+  prev_id: string | null;
+  next_id: string | null;
+  season_articles: { id: string; title: string; date: string }[];
+}
+
 // --- Current Matchup ---
 
 export interface CurrentMatchup {

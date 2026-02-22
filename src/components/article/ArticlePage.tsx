@@ -9,7 +9,7 @@ export default function ArticlePage() {
   const { slug, articleId } = useParams<{ slug: string; articleId: string }>();
 
   // Fetch full article with navigation context
-  const { article, loading: articleLoading } = useArticle(slug!, articleId);
+  const { data: article, loading: articleLoading } = useArticle(slug!, articleId);
 
   // Fetch contextual stats for sidebar
   const { data: recap, loading: recapLoading } = useRecap(

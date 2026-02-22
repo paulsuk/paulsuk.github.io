@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 
-const SITE_PASSWORD = "perge";
+const SITE_PASSWORD = import.meta.env.VITE_SITE_PASSWORD ?? "";
 const AUTH_KEY = "fa_authenticated";
 
 function PasswordGate({ children }: { children: React.ReactNode }) {

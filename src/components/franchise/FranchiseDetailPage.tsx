@@ -1,14 +1,17 @@
 import { useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useFranchiseDetail } from "../../api/hooks";
-import type { FranchiseSeasonRecord, FranchiseH2HEntry, Trade, TransactionCount, SeasonKeepers, KeeperEntry, RosterCostPlayer, RosterPlayer, ScoringMode } from "../../api/types";
+import type { FranchiseSeasonRecord, FranchiseH2HEntry, Trade, TransactionCount, SeasonKeepers, ScoringMode } from "../../api/types";
 import Card from "../shared/Card";
 import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
 import SeasonRoster from "./SeasonRoster";
+import KeepersCard from "./KeepersCard";
+import RosterTab from "./RosterTab";
+import TradeCard from "./TradeCard";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
-import { ordinal, getMedals, getChampionshipYears, getFinishGroups } from "../../utils/records-helpers";
+import { ordinal, getMedals, getChampionshipYears, getFinishGroups, winPct } from "../../utils/records-helpers";
 
 type ViewScope = "franchise" | "manager";
 type DetailTab = "overview" | "roster";
@@ -175,10 +178,7 @@ export default function FranchiseDetailPage() {
             value={formatFinishGroups(getFinishGroups(filteredRecords, "finish").filter((g) => g.rank <= 3))}
           />
           <Stat label="Seasons" value={filteredRecords.map((sr) => sr.season).join(", ")} />
-          <Stat
-            label="Win %"
-            value={`${((w / Math.max(w + l + t, 1)) * 100).toFixed(0)}%`}
-          />
+          <Stat label="Win %" value={winPct(w, l, t)} />
         </div>
       </Card>
 
@@ -282,8 +282,7 @@ export default function FranchiseDetailPage() {
               </thead>
               <tbody>
                 {h2h.map((entry: FranchiseH2HEntry) => {
-                  const total = entry.wins + entry.losses + entry.ties;
-                  const pct = total > 0 ? (entry.wins / total).toFixed(3) : "—";
+                  const pct = winPct(entry.wins, entry.losses, entry.ties);
                   const isWinning = entry.wins > entry.losses;
                   const isLosing = entry.wins < entry.losses;
                   return (
@@ -392,205 +391,4 @@ function formatFinishGroups(groups: ReturnType<typeof getFinishGroups>): string 
   return groups
     .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.join(", ")})`)
     .join(", ");
-}
-
-function KeepersCard({
-  keepers,
-  isBaseball,
-  selectedSeason,
-  onSeasonChange,
-}: {
-  keepers: SeasonKeepers[];
-  isBaseball: boolean;
-  selectedSeason: number | null;
-  onSeasonChange: (s: number | null) => void;
-}) {
-  const seasons = keepers.map((sk) => sk.season);
-  const activeSeason = selectedSeason ?? seasons[seasons.length - 1];
-  const activeKeepers = keepers.find((sk) => sk.season === activeSeason)?.keepers ?? [];
-
-  return (
-    <Card title="Keepers">
-      {/* Year toggle */}
-      <div className="flex flex-wrap gap-1 mb-3">
-        {seasons.map((s) => (
-          <button
-            key={s}
-            onClick={() => onSeasonChange(s)}
-            className={`px-2 py-0.5 text-xs rounded-full transition-colors ${
-              s === activeSeason
-                ? "bg-gray-900 text-white"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-            }`}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-
-      {/* Keeper rows */}
-      <div className="space-y-1.5">
-        {activeKeepers.map((k: KeeperEntry) => (
-          <div key={k.name} className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2">
-              <span className="font-medium text-gray-700">{k.name}</span>
-              {k.position && (
-                <span className="badge-position">{k.position}</span>
-              )}
-              {k.tenure != null && k.tenure > 1 && (
-                <span className="inline-flex items-center rounded px-1 py-0.5 text-[10px] font-medium bg-blue-100 text-blue-700">
-                  {k.tenure}yr
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2 text-xs text-gray-400">
-              {isBaseball && k.round_cost != null && (
-                <span>Cost: {k.round_cost}</span>
-              )}
-              {k.kept_from_season != null && (
-                <span>since {k.kept_from_season}</span>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-function RosterTab({
-  rosters,
-  rosterCosts,
-  isBaseball,
-  selectedSeason,
-  onSeasonChange,
-  seasons,
-}: {
-  rosters: Record<number, RosterPlayer[]>;
-  rosterCosts: Record<number, RosterCostPlayer[]>;
-  isBaseball: boolean;
-  selectedSeason: number | null;
-  onSeasonChange: (s: number | null) => void;
-  seasons: number[];
-}) {
-  const activeSeason = selectedSeason ?? seasons[seasons.length - 1];
-
-  // Use roster_costs for baseball (has draft_cost), fall back to rosters
-  const costRoster = isBaseball ? rosterCosts[activeSeason] : undefined;
-  const baseRoster = rosters[activeSeason];
-  const hasData = costRoster || baseRoster;
-
-  const starters = costRoster
-    ? costRoster.filter((p) => p.is_starter)
-    : baseRoster?.filter((p) => p.is_starter) ?? [];
-  const bench = costRoster
-    ? costRoster.filter((p) => !p.is_starter)
-    : baseRoster?.filter((p) => !p.is_starter) ?? [];
-
-  return (
-    <Card title="End-of-Season Roster">
-      {/* Season dropdown */}
-      <div className="mb-3">
-        <select
-          value={activeSeason}
-          onChange={(e) => onSeasonChange(Number(e.target.value))}
-          className="text-sm border border-gray-200 rounded px-2 py-1 bg-white"
-        >
-          {seasons.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-      </div>
-
-      {!hasData ? (
-        <p className="text-sm text-gray-400">No roster data for {activeSeason}.</p>
-      ) : (
-        <div className="space-y-3">
-          <RosterSection
-            label="Starters"
-            players={starters}
-            showCost={isBaseball && !!costRoster}
-          />
-          {bench.length > 0 && (
-            <RosterSection
-              label="Bench"
-              players={bench}
-              showCost={isBaseball && !!costRoster}
-              isBench
-            />
-          )}
-        </div>
-      )}
-    </Card>
-  );
-}
-
-function RosterSection({
-  label,
-  players,
-  showCost,
-  isBench,
-}: {
-  label: string;
-  players: (RosterCostPlayer | RosterPlayer)[];
-  showCost: boolean;
-  isBench?: boolean;
-}) {
-  return (
-    <div>
-      <div className="section-label">{label}</div>
-      <div className="space-y-0.5">
-        {players.map((p) => {
-          const name = "full_name" in p ? p.full_name : "";
-          const pos = "primary_position" in p ? p.primary_position : "";
-          const selPos = "selected_position" in p ? p.selected_position : "";
-          const cost = "draft_cost" in p ? (p as RosterCostPlayer).draft_cost : null;
-          return (
-            <div
-              key={name}
-              className={`flex items-center justify-between text-xs ${
-                isBench ? "text-gray-400" : "text-gray-700"
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span className={isBench ? "" : "font-medium"}>{name}</span>
-                {pos && <span className="text-gray-400">{pos}</span>}
-              </div>
-              <div className="flex items-center gap-3">
-                {showCost && cost != null && (
-                  <span className="text-gray-400 tabular-nums">Cost: {cost}</span>
-                )}
-                <span className={isBench ? "text-gray-300" : "text-gray-400"}>{selPos}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function TradeCard({ trade }: { trade: Trade }) {
-  // Group players by direction
-  const byDest = new Map<string, string[]>();
-  for (const p of trade.players) {
-    const key = `${p.source_team} \u2192 ${p.dest_team}`;
-    const list = byDest.get(key) ?? [];
-    list.push(p.name);
-    byDest.set(key, list);
-  }
-
-  return (
-    <div className="item-card">
-      <div className="text-label mb-1">
-        {trade.season} &middot; Week {trade.week ?? "?"}
-      </div>
-      {Array.from(byDest.entries()).map(([direction, players]) => (
-        <div key={direction} className="text-sm">
-          <span className="text-gray-400">{direction}:</span>{" "}
-          <span className="font-medium text-gray-700">{players.join(", ")}</span>
-        </div>
-      ))}
-    </div>
-  );
 }
