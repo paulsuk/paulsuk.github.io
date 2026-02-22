@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { useManagers } from "../../api/hooks";
-import type { ScoringMode } from "../../api/types";
+import { useSport } from "../../context/SportContext";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import ManagersTab from "./ManagersTab";
@@ -17,15 +16,12 @@ const TABS: { key: Tab; label: string }[] = [
 type ViewMode = "manager" | "franchise";
 
 export default function RecordsPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug, scoringMode, setScoringMode } = useSport();
   const [tab, setTab] = useState<Tab>("teams");
   const [currentOnly, setCurrentOnly] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("manager");
-  const [scoringMode, setScoringMode] = useState<ScoringMode>(
-    slug === "baseball" ? "category" : "matchup"
-  );
 
-  const { data: managersData, loading: mLoading, error: mError } = useManagers(slug!);
+  const { data: managersData, loading: mLoading, error: mError } = useManagers(slug);
 
   const loading = mLoading;
   const error = mError;
@@ -127,7 +123,6 @@ export default function RecordsPage() {
               managers={filteredManagers}
               viewMode={viewMode}
               franchiseStats={managersData.franchise_stats}
-              scoringMode={scoringMode}
             />
           )}
           {tab === "h2h" && managersData && (

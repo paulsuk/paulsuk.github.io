@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import type { ManagerSummary, FranchiseStats, ScoringMode } from "../../api/types";
+import type { ManagerSummary, FranchiseStats } from "../../api/types";
+import { useSport } from "../../context/SportContext";
 import Card from "../shared/Card";
 import EntityCard from "./EntityCard";
 
@@ -8,11 +8,10 @@ interface ManagersTabProps {
   managers: ManagerSummary[];
   viewMode: "manager" | "franchise";
   franchiseStats?: FranchiseStats[];
-  scoringMode: ScoringMode;
 }
 
-export default function ManagersTab({ managers, viewMode, franchiseStats, scoringMode }: ManagersTabProps) {
-  const { slug } = useParams<{ slug: string }>();
+export default function ManagersTab({ managers, viewMode, franchiseStats }: ManagersTabProps) {
+  const { scoringMode } = useSport();
   const [expanded, setExpanded] = useState<string | null>(null);
   const toggle = (id: string) => setExpanded(expanded === id ? null : id);
   const useCats = scoringMode === "category";
@@ -35,11 +34,9 @@ export default function ManagersTab({ managers, viewMode, franchiseStats, scorin
               losses={useCats ? f.cat_losses : f.losses}
               ties={useCats ? f.cat_ties : f.ties}
               seasonRecords={f.season_records}
-              scoringMode={scoringMode}
               ownership={f.ownership}
               showManagerInSeasons
               seasons={f.seasons}
-              slug={slug}
               expanded={expanded === f.id}
               onToggle={() => toggle(f.id)}
             />
@@ -62,13 +59,11 @@ export default function ManagersTab({ managers, viewMode, franchiseStats, scorin
             losses={useCats ? m.cat_losses : m.losses}
             ties={useCats ? m.cat_ties : m.ties}
             seasonRecords={m.season_records}
-            scoringMode={scoringMode}
             playoffWins={m.playoff_wins}
             playoffLosses={m.playoff_losses}
             bestFinish={m.best_finish}
             worstFinish={m.worst_finish}
             seasons={m.seasons}
-            slug={slug}
             franchiseId={m.franchise_id ?? undefined}
             expanded={expanded === m.guid}
             onToggle={() => toggle(m.guid)}

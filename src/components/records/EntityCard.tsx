@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import type { SeasonRecord, FranchiseSeasonRecord, FranchiseOwnership, ScoringMode } from "../../api/types";
+import type { SeasonRecord, FranchiseSeasonRecord, FranchiseOwnership } from "../../api/types";
+import { useSport } from "../../context/SportContext";
 import { getMedals, getChampionshipYears, getFinishGroups, ordinal, winPct } from "../../utils/records-helpers";
 import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
@@ -12,7 +13,6 @@ interface EntityCardProps {
   losses: number;
   ties: number;
   seasonRecords: (SeasonRecord | FranchiseSeasonRecord)[];
-  scoringMode: ScoringMode;
   playoffWins?: number;
   playoffLosses?: number;
   bestFinish?: number | null;
@@ -21,7 +21,6 @@ interface EntityCardProps {
   franchiseId?: string;
   showManagerInSeasons?: boolean;
   seasons?: number[];
-  slug?: string;
   expanded: boolean;
   onToggle: () => void;
 }
@@ -34,7 +33,6 @@ export default function EntityCard({
   losses,
   ties,
   seasonRecords,
-  scoringMode,
   playoffWins,
   playoffLosses,
   bestFinish,
@@ -43,10 +41,10 @@ export default function EntityCard({
   franchiseId,
   showManagerInSeasons,
   seasons,
-  slug,
   expanded,
   onToggle,
 }: EntityCardProps) {
+  const { slug, scoringMode } = useSport();
   const medals = getMedals(seasonRecords);
   const champYears = getChampionshipYears(seasonRecords);
   const regSeasonFinishes = getFinishGroups(seasonRecords, "playoff_seed").filter((g) => g.rank <= 3);

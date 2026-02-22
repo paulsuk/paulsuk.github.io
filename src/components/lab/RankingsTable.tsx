@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { LabPlayer } from "../../api/types";
 
 type SortKey = "rank" | "value" | "name";
@@ -14,32 +14,38 @@ export default function RankingsTable({
   const [sortAsc, setSortAsc] = useState(true);
   const [search, setSearch] = useState("");
 
-  const filtered = players.filter((p) =>
-    search ? p.name.toLowerCase().includes(search.toLowerCase()) : true
+  const filtered = useMemo(
+    () => players.filter((p) =>
+      search ? p.name.toLowerCase().includes(search.toLowerCase()) : true
+    ),
+    [players, search],
   );
 
-  const sorted = [...filtered].sort((a, b) => {
-    let cmp = 0;
-    if (sortKey === "rank") cmp = (a.rank ?? 9999) - (b.rank ?? 9999);
-    else if (sortKey === "value") cmp = b.value - a.value;
-    else cmp = a.name.localeCompare(b.name);
-    return sortAsc ? cmp : -cmp;
-  });
+  const sorted = useMemo(
+    () => [...filtered].sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "rank") cmp = (a.rank ?? 9999) - (b.rank ?? 9999);
+      else if (sortKey === "value") cmp = b.value - a.value;
+      else cmp = a.name.localeCompare(b.name);
+      return sortAsc ? cmp : -cmp;
+    }),
+    [filtered, sortKey, sortAsc],
+  );
 
   // Detect category columns (not base columns)
-  const baseCols = new Set(["player_id", "name", "value", "rank", "team", "nba_person_id"]);
-  const catCols = players.length
-    ? Object.keys(players[0]).filter(
-        (k) => !baseCols.has(k) && !k.endsWith("_z") && typeof players[0][k] === "number"
-      )
-    : [];
+  const catCols = useMemo(() => {
+    const baseCols = new Set(["player_id", "name", "value", "rank", "team", "nba_person_id"]);
+    return players.length
+      ? Object.keys(players[0]).filter(
+          (k) => !baseCols.has(k) && !k.endsWith("_z") && typeof players[0][k] === "number"
+        )
+      : [];
+  }, [players]);
 
   function handleSort(key: SortKey) {
-    if (sortKey === key) setSearchAsc(!sortAsc);
+    if (sortKey === key) setSortAsc(!sortAsc);
     else { setSortKey(key); setSortAsc(key === "rank"); }
   }
-
-  function setSearchAsc(v: boolean) { setSortAsc(v); }
 
   function SortTh({ label, k }: { label: string; k: SortKey }) {
     const active = sortKey === k;
@@ -60,6 +66,7 @@ export default function RankingsTable({
         <input
           type="search"
           placeholder="Search player..."
+          aria-label="Search players"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="rounded border border-gray-200 px-3 py-1.5 text-sm w-52 shadow-sm"

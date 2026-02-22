@@ -78,8 +78,8 @@ export interface TeamProfile {
   cat_weaknesses: string[];
   mvp_name: string;
   mvp_z: number;
-  opponent_name: string;
-  h2h_record: string;
+  opponent_name: string | null;
+  h2h_record: string | null;
   franchise_id?: string | null;
 }
 
@@ -109,6 +109,7 @@ export interface SeasonRecord {
   cat_ties: number;
   finish: number | null;
   playoff_seed: number | null;
+  manager?: string | null;
 }
 
 export interface ManagerSummary {
