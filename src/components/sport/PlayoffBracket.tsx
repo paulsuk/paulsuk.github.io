@@ -20,16 +20,16 @@ export default function PlayoffBracket({ rounds, totalRounds }: PlayoffBracketPr
                 {roundLabel} — Week {round.week}
               </h4>
               <div className="space-y-2">
-                {round.matchups.map((m, j) => (
-                  <MatchupCard key={j} matchup={m} />
+                {round.matchups.map((m) => (
+                  <MatchupCard key={`${m.team_1_name}-${m.team_2_name}`} matchup={m} />
                 ))}
               </div>
               {round.consolation.length > 0 && (
                 <div className="mt-3">
                   <h5 className="mb-1 text-xs text-gray-400">Consolation</h5>
                   <div className="space-y-2">
-                    {round.consolation.map((m, j) => (
-                      <MatchupCard key={j} matchup={m} muted />
+                    {round.consolation.map((m) => (
+                      <MatchupCard key={`${m.team_1_name}-${m.team_2_name}`} matchup={m} muted />
                     ))}
                   </div>
                 </div>

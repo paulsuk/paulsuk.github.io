@@ -41,8 +41,8 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
           Matchups
         </h4>
         <div className="space-y-1">
-          {recap.matchups.map((m, i) => (
-            <div key={i} className="text-xs">
+          {recap.matchups.map((m) => (
+            <div key={`${m.team_1_manager}-${m.team_2_manager}`} className="text-xs">
               <span className={m.cats_won_1 > m.cats_won_2 ? "font-medium" : "text-gray-500"}>
                 {m.team_1_manager}
               </span>

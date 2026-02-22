@@ -75,8 +75,8 @@ export default function MatchupsSection({ matchups, week }: MatchupsSectionProps
   return (
     <Card title={`Matchups — Week ${week}`}>
       <div className="space-y-2">
-        {matchups.map((m, i) => (
-          <MatchupCard key={i} matchup={m} />
+        {matchups.map((m) => (
+          <MatchupCard key={`${m.team_1_manager}-${m.team_2_manager}`} matchup={m} />
         ))}
       </div>
     </Card>

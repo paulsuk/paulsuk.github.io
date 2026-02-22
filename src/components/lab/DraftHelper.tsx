@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { LabPlayer } from "../../api/types";
 
 export default function DraftHelper({
@@ -13,11 +13,19 @@ export default function DraftHelper({
 
   const playerKey = (p: LabPlayer) => String(p.player_id);
 
-  const remaining = players.filter((p) => !drafted.has(playerKey(p)));
-  const draftedList = players.filter((p) => drafted.has(playerKey(p)));
-
-  const filtered = remaining.filter((p) =>
-    search ? p.name.toLowerCase().includes(search.toLowerCase()) : true
+  const remaining = useMemo(
+    () => players.filter((p) => !drafted.has(playerKey(p))),
+    [players, drafted],
+  );
+  const draftedList = useMemo(
+    () => players.filter((p) => drafted.has(playerKey(p))),
+    [players, drafted],
+  );
+  const filtered = useMemo(
+    () => remaining.filter((p) =>
+      search ? p.name.toLowerCase().includes(search.toLowerCase()) : true
+    ),
+    [remaining, search],
   );
 
   function draft(p: LabPlayer) {
@@ -46,6 +54,7 @@ export default function DraftHelper({
           <input
             type="search"
             placeholder="Search available..."
+            aria-label="Search available players"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="rounded border border-gray-200 px-3 py-1.5 text-sm w-52 shadow-sm"
@@ -112,6 +121,7 @@ export default function DraftHelper({
                 onClick={() => undraft(p)}
                 className="ml-2 flex-shrink-0 text-xs text-gray-400 hover:text-red-500"
                 title="Remove"
+                aria-label={`Remove ${p.name}`}
               >
                 &times;
               </button>

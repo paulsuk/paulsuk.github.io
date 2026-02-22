@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { ManagerSummary, H2HRecord, FranchiseStats } from "../../api/types";
 import { winPct } from "../../utils/records-helpers";
 
@@ -9,30 +10,28 @@ interface H2HMatrixProps {
   franchiseH2h?: Record<string, Record<string, H2HRecord>>;
 }
 
-interface MatrixEntry {
-  id: string;
-  name: string;
-}
-
 export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, franchiseH2h }: H2HMatrixProps) {
-  const useFranchiseMode = viewMode === "franchise" && franchiseStats && franchiseH2h;
+  const { entries, matrix } = useMemo(() => {
+    const useFranchiseMode = viewMode === "franchise" && franchiseStats && franchiseH2h;
 
-  let entries: MatrixEntry[];
-  let matrix: Record<string, Record<string, H2HRecord>>;
+    if (useFranchiseMode) {
+      const activeIds = new Set(Object.keys(franchiseH2h));
+      return {
+        entries: franchiseStats
+          .filter((f) => activeIds.has(f.id))
+          .map((f) => ({ id: f.id, name: f.current_team_name })),
+        matrix: franchiseH2h,
+      };
+    }
 
-  if (useFranchiseMode) {
-    const activeIds = new Set(Object.keys(franchiseH2h));
-    entries = franchiseStats
-      .filter((f) => activeIds.has(f.id))
-      .map((f) => ({ id: f.id, name: f.current_team_name }));
-    matrix = franchiseH2h;
-  } else {
     const activeGuids = new Set(Object.keys(h2h));
-    entries = managers
-      .filter((m) => activeGuids.has(m.guid))
-      .map((m) => ({ id: m.guid, name: m.name }));
-    matrix = h2h;
-  }
+    return {
+      entries: managers
+        .filter((m) => activeGuids.has(m.guid))
+        .map((m) => ({ id: m.guid, name: m.name })),
+      matrix: h2h,
+    };
+  }, [viewMode, managers, h2h, franchiseStats, franchiseH2h]);
 
   if (entries.length === 0) {
     return <p className="text-sm text-gray-400">No head-to-head data available.</p>;
