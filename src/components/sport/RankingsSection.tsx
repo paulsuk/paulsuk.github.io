@@ -82,11 +82,18 @@ export default function RankingsSection({ profiles, season }: RankingsSectionPro
                 )}
               </div>
 
-              {p.mvp_name && (
-                <div className="mt-1 text-xs text-gray-400">
-                  MVP: {p.mvp_name} (z={p.mvp_z >= 0 ? "+" : ""}{p.mvp_z.toFixed(1)})
-                </div>
-              )}
+              <div className="mt-1 flex flex-wrap gap-x-4 text-xs text-gray-400">
+                {p.mvp_name && (
+                  <span>
+                    Week MVP: {p.mvp_name} ({p.mvp_z >= 0 ? "+" : ""}{p.mvp_z.toFixed(1)})
+                  </span>
+                )}
+                {p.season_mvp_name && (
+                  <span>
+                    Season MVP: {p.season_mvp_name} ({p.season_mvp_z >= 0 ? "+" : ""}{p.season_mvp_z.toFixed(1)})
+                  </span>
+                )}
+              </div>
             </div>
           );
         })}

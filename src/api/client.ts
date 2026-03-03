@@ -19,13 +19,33 @@ function getCached<T>(key: string): T | null {
   return entry.data as T;
 }
 
+async function fetchWithRetry(url: string, retries = 2, delay = 2000): Promise<Response> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (res.status === 503 && attempt < retries) {
+        await new Promise((r) => setTimeout(r, delay * (attempt + 1)));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, delay * (attempt + 1)));
+        continue;
+      }
+      throw err;
+    }
+  }
+  return fetch(url); // unreachable, satisfies TS
+}
+
 export async function fetchApi<T>(path: string): Promise<T> {
   const url = `${API_URL}${path}`;
 
   const cached = getCached<T>(url);
   if (cached) return cached;
 
-  const res = await fetch(url);
+  const res = await fetchWithRetry(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
   const data = await res.json();

@@ -36,12 +36,11 @@ export function getChampionshipYears(records: AnySeasonRecord[]): number[] {
 }
 
 /**
- * Winning percentage: (wins + ties) / total, formatted as ".xxx" (no leading zero).
- * Ties count as wins because they don't belong in the loss column.
+ * Winning percentage: (W + ½T) / (W + L + T), formatted as ".xxx" (no leading zero).
  */
 export function winPct(wins: number, losses: number, ties: number): string {
   const total = wins + losses + ties;
-  return total > 0 ? ((wins + ties) / total).toFixed(3).slice(1) : ".000";
+  return total > 0 ? ((wins + 0.5 * ties) / total).toFixed(3).slice(1) : ".000";
 }
 
 /**

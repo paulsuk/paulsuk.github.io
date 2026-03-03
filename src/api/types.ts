@@ -78,6 +78,8 @@ export interface TeamProfile {
   cat_weaknesses: string[];
   mvp_name: string;
   mvp_z: number;
+  season_mvp_name: string;
+  season_mvp_z: number;
   opponent_name: string | null;
   h2h_record: string | null;
   franchise_id?: string | null;
