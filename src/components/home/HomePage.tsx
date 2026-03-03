@@ -34,17 +34,6 @@ export default function HomePage() {
         ))}
       </div>
 
-      <div className="mt-16 max-w-md text-center">
-        <p className="text-sm text-gray-500">
-          Built by Paul Suk. Fantasy league recaps, power rankings, records, and
-          head-to-head history — powered by Yahoo Fantasy data.
-        </p>
-        <div className="mt-3 flex justify-center gap-4">
-          <a href="https://linkedin.com/in/paulsuk1" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 hover:text-gray-600">LinkedIn</a>
-          <a href="https://github.com/paulsuk" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 hover:text-gray-600">GitHub</a>
-          <a href="https://instagram.com/paul.suk" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 hover:text-gray-600">Instagram</a>
-        </div>
-      </div>
     </div>
   );
 }
