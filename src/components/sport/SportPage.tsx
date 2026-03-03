@@ -1,6 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap, useArticles, usePlayoffs } from "../../api/hooks";
 import type { ScoringMode } from "../../api/types";
+import { formatSeason } from "../../utils/records-helpers";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
 import RankingsSection from "./RankingsSection";
@@ -58,13 +59,14 @@ export default function SportPage() {
         <div>
           <h1 className="text-2xl font-bold">{recap?.league_name ?? slug}</h1>
           <p className="text-sm text-gray-500">
-            {selectedSeason} Season{recap ? ` — Week ${recap.week}` : ""}
+            {selectedSeason ? formatSeason(selectedSeason, slug!) : ""} Season{recap ? ` — Week ${recap.week}` : ""}
           </p>
         </div>
         <SeasonPicker
           seasons={seasons}
           selected={selectedSeason}
           onChange={handleSeasonChange}
+          slug={slug!}
         />
       </div>
 

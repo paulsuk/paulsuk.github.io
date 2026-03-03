@@ -44,6 +44,19 @@ export function winPct(wins: number, losses: number, ties: number): string {
   return total > 0 ? ((wins + ties) / total).toFixed(3).slice(1) : ".000";
 }
 
+/**
+ * Format a season number for display. Basketball uses "YY-YY" format (e.g. "24-25"),
+ * everything else returns the year as-is (e.g. "2024").
+ */
+export function formatSeason(season: number, slug: string): string {
+  if (slug === "basketball") {
+    const startYY = String(season).slice(-2);
+    const endYY = String(season + 1).slice(-2);
+    return `${startYY}-${endYY}`;
+  }
+  return String(season);
+}
+
 export function getFinishGroups(records: AnySeasonRecord[], field: "playoff_seed" | "finish"): FinishGroup[] {
   const groups = new Map<number, number[]>();
   for (const sr of records) {

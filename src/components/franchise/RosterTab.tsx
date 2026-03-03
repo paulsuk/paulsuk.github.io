@@ -1,4 +1,5 @@
 import type { RosterPlayer, RosterCostPlayer } from "../../api/types";
+import { formatSeason } from "../../utils/records-helpers";
 import Card from "../shared/Card";
 
 export default function RosterTab({
@@ -8,6 +9,7 @@ export default function RosterTab({
   selectedSeason,
   onSeasonChange,
   seasons,
+  slug,
 }: {
   rosters: Record<number, RosterPlayer[]>;
   rosterCosts: Record<number, RosterCostPlayer[]>;
@@ -15,6 +17,7 @@ export default function RosterTab({
   selectedSeason: number | null;
   onSeasonChange: (s: number | null) => void;
   seasons: number[];
+  slug: string;
 }) {
   const activeSeason = selectedSeason ?? seasons[seasons.length - 1];
 
@@ -40,13 +43,13 @@ export default function RosterTab({
           className="text-sm border border-gray-200 rounded px-2 py-1 bg-white"
         >
           {seasons.map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>{formatSeason(s, slug)}</option>
           ))}
         </select>
       </div>
 
       {!hasData ? (
-        <p className="text-sm text-gray-400">No roster data for {activeSeason}.</p>
+        <p className="text-sm text-gray-400">No roster data for {formatSeason(activeSeason, slug)}.</p>
       ) : (
         <div className="space-y-3">
           <RosterSection

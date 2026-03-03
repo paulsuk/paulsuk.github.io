@@ -18,7 +18,7 @@ import SeasonRow from "../shared/SeasonRow";
 import SeasonRoster from "./SeasonRoster";
 import KeepersCard from "./KeepersCard";
 import TradeCard from "./TradeCard";
-import { ordinal, getFinishGroups, winPct } from "../../utils/records-helpers";
+import { ordinal, getFinishGroups, winPct, formatSeason } from "../../utils/records-helpers";
 
 interface FranchiseOverviewProps {
   overview: FranchiseDetailResponse["overview"];
@@ -75,14 +75,14 @@ export default function FranchiseOverview({
           <Stat label="Overall Record" value={record} />
           <Stat
             label="Championships"
-            value={champYears.length > 0 ? `${champYears.length} (${champYears.join(", ")})` : "0"}
+            value={champYears.length > 0 ? `${champYears.length} (${champYears.map((y) => formatSeason(y, slug)).join(", ")})` : "0"}
           />
           <Stat label="Best Finish" value={displayStats.best_finish ? ordinal(displayStats.best_finish) : "N/A"} />
           <Stat
             label="Playoff Finishes"
-            value={formatFinishGroups(getFinishGroups(filteredRecords, "finish").filter((g) => g.rank <= 3))}
+            value={formatFinishGroups(getFinishGroups(filteredRecords, "finish").filter((g) => g.rank <= 3), slug)}
           />
-          <Stat label="Seasons" value={filteredRecords.map((sr) => sr.season).join(", ")} />
+          <Stat label="Seasons" value={filteredRecords.map((sr) => formatSeason(sr.season, slug)).join(", ")} />
           <Stat label="Win %" value={winPct(w, l, t)} />
         </div>
       </Card>
@@ -91,7 +91,7 @@ export default function FranchiseOverview({
       <Card title="Ownership History">
         {overview.ownership.length === 1 ? (
           <p className="text-sm text-gray-600">
-            {overview.ownership[0].manager} &middot; Est. <span className="text-gray-400">{overview.ownership[0].from}</span> &mdash; present
+            {overview.ownership[0].manager} &middot; Est. <span className="text-gray-400">{formatSeason(overview.ownership[0].from, slug)}</span> &mdash; present
           </p>
         ) : (
           <div className="space-y-1">
@@ -99,7 +99,7 @@ export default function FranchiseOverview({
               <div key={o.guid} className="flex items-center justify-between text-sm">
                 <span className="font-medium text-gray-700">{o.manager}</span>
                 <span className="text-gray-400 tabular-nums">
-                  {o.from}{o.to ? `\u2013${o.to}` : "+"}
+                  {formatSeason(o.from, slug)}{o.to ? `\u2013${formatSeason(o.to, slug)}` : "+"}
                 </span>
               </div>
             ))}
@@ -121,7 +121,7 @@ export default function FranchiseOverview({
                     <div>
                       <div className="text-sm font-medium">{era.name}</div>
                       <div className="text-label">
-                        <span className="text-gray-400">{era.from}{era.to ? `\u2013${era.to}` : "+"}</span> &middot; {era.seasons.length} season{era.seasons.length !== 1 ? "s" : ""}
+                        <span className="text-gray-400">{formatSeason(era.from, slug)}{era.to ? `\u2013${formatSeason(era.to, slug)}` : "+"}</span> &middot; {era.seasons.length} season{era.seasons.length !== 1 ? "s" : ""}
                         {era.championships > 0 && (
                           <span className="ml-2 badge-championship">
                             {era.championships}x champ
@@ -149,7 +149,7 @@ export default function FranchiseOverview({
                 onClick={() => setExpandedSeason(expandedSeason === sr.season ? null : sr.season)}
                 className="w-full text-left"
               >
-                <SeasonRow season={sr} showManager={managerEras.length > 1} scoringMode={scoringMode} />
+                <SeasonRow season={sr} showManager={managerEras.length > 1} scoringMode={scoringMode} slug={slug} />
               </button>
               {currentMatchup && currentMatchup.season === sr.season && (
                 <div className="pl-4 py-1 text-sm text-gray-500">
@@ -224,6 +224,7 @@ export default function FranchiseOverview({
           isBaseball={isBaseball}
           selectedSeason={keeperSeason}
           onSeasonChange={setKeeperSeason}
+          slug={slug}
         />
       )}
 
@@ -242,7 +243,7 @@ export default function FranchiseOverview({
             <tbody>
               {filteredCounts.map((c) => (
                 <tr key={c.season} className="border-b border-gray-50">
-                  <td className="py-1.5 pr-4 font-medium text-gray-400">{c.season}</td>
+                  <td className="py-1.5 pr-4 font-medium text-gray-400">{formatSeason(c.season, slug)}</td>
                   <td className="py-1.5 pr-4 tabular-nums">{c.adds}</td>
                   <td className="py-1.5 pr-4 tabular-nums">{c.drops}</td>
                   <td className="py-1.5 tabular-nums font-medium">{c.adds + c.drops}</td>
@@ -278,9 +279,9 @@ export default function FranchiseOverview({
   );
 }
 
-function formatFinishGroups(groups: ReturnType<typeof getFinishGroups>): string {
+function formatFinishGroups(groups: ReturnType<typeof getFinishGroups>, slug: string): string {
   if (groups.length === 0) return "N/A";
   return groups
-    .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.join(", ")})`)
+    .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.map((y) => formatSeason(y, slug)).join(", ")})`)
     .join(", ");
 }

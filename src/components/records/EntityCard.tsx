@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { SeasonRecord, FranchiseSeasonRecord, FranchiseOwnership } from "../../api/types";
 import { useSport } from "../../context/SportContext";
-import { getMedals, getChampionshipYears, getFinishGroups, ordinal, winPct } from "../../utils/records-helpers";
+import { getMedals, getChampionshipYears, getFinishGroups, ordinal, winPct, formatSeason } from "../../utils/records-helpers";
 import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
 
@@ -67,7 +67,7 @@ export default function EntityCard({
             {subtitle}
             {champYears.length > 0 && (
               <span className="ml-2 badge-championship">
-                {champYears.length}x champ ({champYears.join(", ")})
+                {champYears.length}x champ ({champYears.map((y) => formatSeason(y, slug)).join(", ")})
               </span>
             )}
           </div>
@@ -91,17 +91,17 @@ export default function EntityCard({
             )}
             <Stat
               label="Championships"
-              value={champYears.length > 0 ? `${champYears.length} (${champYears.join(", ")})` : "0"}
+              value={champYears.length > 0 ? `${champYears.length} (${champYears.map((y) => formatSeason(y, slug)).join(", ")})` : "0"}
             />
             <Stat
               label="Reg Season Finishes"
-              value={formatFinishGroups(regSeasonFinishes)}
+              value={formatFinishGroups(regSeasonFinishes, slug)}
             />
             <Stat
               label="Playoff Finishes"
-              value={formatFinishGroups(playoffFinishes)}
+              value={formatFinishGroups(playoffFinishes, slug)}
             />
-            {seasons && <Stat label="Seasons" value={seasons.join(", ")} />}
+            {seasons && <Stat label="Seasons" value={seasons.map((y) => formatSeason(y, slug)).join(", ")} />}
             {bestFinish != null && <Stat label="Best Finish" value={ordinal(bestFinish)} />}
             {worstFinish != null && <Stat label="Worst Finish" value={ordinal(worstFinish)} />}
           </div>
@@ -112,7 +112,7 @@ export default function EntityCard({
               {ownership.map((o) => (
                 <div key={o.guid} className="flex justify-between py-0.5">
                   <span className="text-gray-600">{o.manager}</span>
-                  <span className="text-gray-400">{o.from}{o.to ? `\u2013${o.to}` : "+"}</span>
+                  <span className="text-gray-400">{formatSeason(o.from, slug)}{o.to ? `\u2013${formatSeason(o.to, slug)}` : "+"}</span>
                 </div>
               ))}
             </div>
@@ -122,7 +122,7 @@ export default function EntityCard({
             <div className="divider">
               <div className="section-label">Season Breakdown</div>
               {seasonRecords.map((sr) => (
-                <SeasonRow key={sr.season} season={sr} showManager={showManagerInSeasons} scoringMode={scoringMode} />
+                <SeasonRow key={sr.season} season={sr} showManager={showManagerInSeasons} scoringMode={scoringMode} slug={slug} />
               ))}
             </div>
           )}
@@ -141,9 +141,9 @@ export default function EntityCard({
   );
 }
 
-function formatFinishGroups(groups: ReturnType<typeof getFinishGroups>): string {
+function formatFinishGroups(groups: ReturnType<typeof getFinishGroups>, slug: string): string {
   if (groups.length === 0) return "N/A";
   return groups
-    .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.join(", ")})`)
+    .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.map((y) => formatSeason(y, slug)).join(", ")})`)
     .join(", ");
 }

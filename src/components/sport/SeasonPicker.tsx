@@ -1,12 +1,14 @@
 import type { Season } from "../../api/types";
+import { formatSeason } from "../../utils/records-helpers";
 
 interface SeasonPickerProps {
   seasons: Season[];
   selected: number | null;
   onChange: (season: number) => void;
+  slug: string;
 }
 
-export default function SeasonPicker({ seasons, selected, onChange }: SeasonPickerProps) {
+export default function SeasonPicker({ seasons, selected, onChange, slug }: SeasonPickerProps) {
   if (seasons.length === 0) return null;
 
   return (
@@ -18,7 +20,7 @@ export default function SeasonPicker({ seasons, selected, onChange }: SeasonPick
     >
       {seasons.map((s) => (
         <option key={s.season} value={s.season}>
-          {s.season} {s.is_finished ? "" : "(in progress)"}
+          {formatSeason(s.season, slug)} {s.is_finished ? "" : "(in progress)"}
         </option>
       ))}
     </select>

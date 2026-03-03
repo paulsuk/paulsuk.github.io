@@ -185,6 +185,7 @@ export default function FranchiseDetailPage() {
           selectedSeason={rosterSeason}
           onSeasonChange={setRosterSeason}
           seasons={filteredRecords.map((sr: FranchiseSeasonRecord) => sr.season)}
+          slug={slug!}
         />
       )}
     </div>

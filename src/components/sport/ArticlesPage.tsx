@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useArticles } from "../../api/hooks";
 import type { Article } from "../../api/types";
+import { formatSeason } from "../../utils/records-helpers";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import ArticleCard from "../shared/ArticleCard";
@@ -29,7 +30,7 @@ export default function ArticlesPage() {
       {years.map((year) => (
         <div key={year}>
           <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-            {year} Season
+            {formatSeason(year, slug!)} Season
           </h3>
           <div className="space-y-1.5">
             {byYear[year].map((a) => (

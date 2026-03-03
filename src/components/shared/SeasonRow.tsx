@@ -1,13 +1,14 @@
 import type { SeasonRecord, FranchiseSeasonRecord } from "../../api/types";
-import { finishBadge, winPct } from "../../utils/records-helpers";
+import { finishBadge, winPct, formatSeason } from "../../utils/records-helpers";
 
 interface SeasonRowProps {
   season: SeasonRecord | FranchiseSeasonRecord;
   showManager?: boolean;
   scoringMode?: "category" | "matchup";
+  slug?: string;
 }
 
-export default function SeasonRow({ season: sr, showManager, scoringMode = "matchup" }: SeasonRowProps) {
+export default function SeasonRow({ season: sr, showManager, scoringMode = "matchup", slug }: SeasonRowProps) {
   const manager = "manager" in sr ? (sr as FranchiseSeasonRecord).manager : null;
   const w = scoringMode === "category" ? sr.cat_wins : sr.wins;
   const l = scoringMode === "category" ? sr.cat_losses : sr.losses;
@@ -18,7 +19,7 @@ export default function SeasonRow({ season: sr, showManager, scoringMode = "matc
   return (
     <div className="flex items-center justify-between py-0.5 gap-2">
       <span className="text-gray-500 min-w-0 truncate">
-        <span className="text-gray-400">{sr.season}</span> — {sr.team_name}
+        <span className="text-gray-400">{slug ? formatSeason(sr.season, slug) : sr.season}</span> — {sr.team_name}
         {showManager && manager && (
           <span className="text-gray-400"> ({manager})</span>
         )}

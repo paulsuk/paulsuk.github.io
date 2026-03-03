@@ -1,4 +1,5 @@
 import type { SeasonKeepers, KeeperEntry } from "../../api/types";
+import { formatSeason } from "../../utils/records-helpers";
 import Card from "../shared/Card";
 
 export default function KeepersCard({
@@ -6,11 +7,13 @@ export default function KeepersCard({
   isBaseball,
   selectedSeason,
   onSeasonChange,
+  slug,
 }: {
   keepers: SeasonKeepers[];
   isBaseball: boolean;
   selectedSeason: number | null;
   onSeasonChange: (s: number | null) => void;
+  slug: string;
 }) {
   const seasons = keepers.map((sk) => sk.season);
   const activeSeason = selectedSeason ?? seasons[seasons.length - 1];
@@ -30,7 +33,7 @@ export default function KeepersCard({
                 : "bg-gray-100 text-gray-500 hover:bg-gray-200"
             }`}
           >
-            {s}
+            {formatSeason(s, slug)}
           </button>
         ))}
       </div>
@@ -55,7 +58,7 @@ export default function KeepersCard({
                 <span>Cost: {k.round_cost}</span>
               )}
               {k.kept_from_season != null && (
-                <span>since {k.kept_from_season}</span>
+                <span>since {formatSeason(k.kept_from_season, slug)}</span>
               )}
             </div>
           </div>
