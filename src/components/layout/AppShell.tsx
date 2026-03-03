@@ -1,22 +1,45 @@
-import { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
-const SITE_PASSWORD = import.meta.env.VITE_SITE_PASSWORD ?? "";
-const AUTH_KEY = "fa_authenticated";
+const SITE_AUTH: Record<string, { password: string; prompt: string }> = {
+  baseball: { password: "blue jays", prompt: 'Let me root, root, root, for the ____ ____!' },
+  basketball: { password: "perge", prompt: "Press on?" },
+  lab: { password: "power overwhelming", prompt: "" },
+};
+
+function normalize(s: string): string {
+  return s.toLowerCase().replace(/\s+/g, "");
+}
 
 function PasswordGate({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const segment = location.pathname.split("/").filter(Boolean)[0] ?? "";
+  const auth = SITE_AUTH[segment];
+  const storageKey = auth ? `fa_auth_${segment}` : "";
+
   const [authenticated, setAuthenticated] = useState(
-    () => localStorage.getItem(AUTH_KEY) === "true"
+    () => !storageKey || localStorage.getItem(storageKey) === "true"
   );
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
+
+  // Re-check auth when navigating between sports
+  useEffect(() => {
+    if (!storageKey) {
+      setAuthenticated(true);
+    } else {
+      setAuthenticated(localStorage.getItem(storageKey) === "true");
+    }
+    setInput("");
+    setError(false);
+  }, [storageKey]);
 
   if (authenticated) return <>{children}</>;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (input === SITE_PASSWORD) {
-      localStorage.setItem(AUTH_KEY, "true");
+    if (normalize(input) === normalize(auth.password)) {
+      localStorage.setItem(storageKey, "true");
       setAuthenticated(true);
     } else {
       setError(true);
@@ -32,7 +55,7 @@ function PasswordGate({ children }: { children: React.ReactNode }) {
           type="password"
           value={input}
           onChange={(e) => { setInput(e.target.value); setError(false); }}
-          placeholder="Press on?"
+          placeholder={auth.prompt || "Password"}
           aria-label="Site password"
           autoFocus
           className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
