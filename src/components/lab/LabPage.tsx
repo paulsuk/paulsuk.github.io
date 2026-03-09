@@ -65,18 +65,13 @@ export default function LabPage() {
     selectedRun?.season ?? null
   );
 
-  if (runsLoading) return <p className="text-label p-6">Loading...</p>;
-  if (runsError) return <p className="p-6 text-red-600 text-sm">{runsError}</p>;
+  if (runsLoading) return <p className="text-label">Loading...</p>;
+  if (runsError) return <p className="text-red-600 text-sm">{runsError}</p>;
 
   const runList = runs ?? [];
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6">
-      <div className="mb-6">
-        <h1 className="mb-1 text-xl font-bold text-gray-900">Analytics Lab</h1>
-        <p className="text-label">Player rankings from valuation models</p>
-      </div>
-
+    <div>
       <div className="mb-6">
         <RunSelector
           runs={runList}

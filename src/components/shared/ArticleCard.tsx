@@ -4,12 +4,16 @@ import type { Article } from "../../api/types";
 interface ArticleCardProps {
   article: Article;
   slug: string;
+  basePath?: string;
 }
 
-export default function ArticleCard({ article, slug }: ArticleCardProps) {
+export default function ArticleCard({ article, slug, basePath }: ArticleCardProps) {
+  const to = basePath
+    ? `${basePath}/${article.id}`
+    : `/${slug}/article/${article.id}`;
   return (
     <Link
-      to={`/${slug}/article/${article.id}`}
+      to={to}
       className="block item-card-interactive no-underline hover:border-gray-200"
     >
       <div className="text-sm font-medium text-gray-800">{article.title}</div>

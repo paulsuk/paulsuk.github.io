@@ -5,12 +5,15 @@ import HomePage from "./components/home/HomePage";
 import SportLayout from "./components/sport/SportLayout";
 import SportPage from "./components/sport/SportPage";
 import ArticlesPage from "./components/sport/ArticlesPage";
+import LabLayout from "./components/lab/LabLayout";
 import LoadingSpinner from "./components/shared/LoadingSpinner";
 
 const ArticlePage = lazy(() => import("./components/article/ArticlePage"));
 const RecordsPage = lazy(() => import("./components/records/RecordsPage"));
 const FranchiseDetailPage = lazy(() => import("./components/franchise/FranchiseDetailPage"));
 const LabPage = lazy(() => import("./components/lab/LabPage"));
+const ResearchPage = lazy(() => import("./components/lab/ResearchPage"));
+const ResearchArticlePage = lazy(() => import("./components/lab/ResearchArticlePage"));
 
 export default function App() {
   return (
@@ -18,7 +21,11 @@ export default function App() {
       <Routes>
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
-          <Route path="lab" element={<LabPage />} />
+          <Route path="lab" element={<LabLayout />}>
+            <Route index element={<LabPage />} />
+            <Route path="research" element={<ResearchPage />} />
+            <Route path="research/:articleId" element={<ResearchArticlePage />} />
+          </Route>
           <Route path=":slug" element={<SportLayout />}>
             <Route index element={<SportPage />} />
             <Route path="records" element={<RecordsPage />} />
