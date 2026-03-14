@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { DraftGrid } from "./DraftGrid";
 import { BestAvailable } from "./BestAvailable";
 import { TeamProfile } from "./TeamProfile";
 import { useDraftSession } from "./useDraftSession";
-import { fetchApi } from "../../api/client";
+import { API_URL } from "../../api/client";
 import type { DraftCandidate } from "../../api/types";
 
 interface TeamProfileResponse {
@@ -24,42 +24,19 @@ export function DraftPage() {
 
   const [sessionId, setSessionId] = useState("");
 
-  // Load recommendations and grid whenever session updates
-  useEffect(() => {
-    if (!session) return;
-    refreshGrid();
-    loadRecommendations();
-  }, [session?.session_id, session?.picks_made]);
-
-  // Extract teams + player name map from grid
-  useEffect(() => {
-    if (grid.length === 0) return;
-    const teamSet = new Set<string>();
-    const names: Record<number, string> = { ...playerNames };
-    for (const pick of grid) {
-      teamSet.add(pick.team_id);
-    }
-    setTeams(Array.from(teamSet));
-    // Merge any new names from candidates
-    for (const c of candidates) {
-      if (c.player_id) names[c.player_id] = c.name;
-    }
-    setPlayerNames(names);
-  }, [grid, candidates]);
-
-  async function loadRecommendations() {
+  const loadRecommendations = useCallback(async () => {
     if (!session) return;
     try {
-      const data = await fetchApi<TeamProfileResponse>(
-        `/api/draft/sessions/${session.session_id}/recommendations?limit=50`
+      const res = await fetch(
+        `${API_URL}/api/draft/sessions/${session.session_id}/recommendations?limit=50`
       );
-      const recs = data.recommendations.map((r) => ({
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json() as TeamProfileResponse;
+      const recs = (data.recommendations ?? []).map((r) => ({
         ...r,
-        hscore: Number(r.hscore ?? r.h_score ?? 0),
+        hscore: Number((r as Record<string, unknown>).hscore ?? (r as Record<string, unknown>).h_score ?? 0),
       }));
       setCandidates(recs);
-
-      // Build category info for TeamProfile
       const profile = data.team_profile;
       const cats = Object.keys(profile.category_totals).map((name) => ({
         name,
@@ -68,17 +45,44 @@ export function DraftPage() {
         tier: profile.category_tiers[name] ?? "swing",
       }));
       setCategoryInfo(cats);
-
-      // Update player name map
-      const names: Record<number, string> = { ...playerNames };
-      for (const r of recs) {
-        if (r.player_id && r.name) names[r.player_id] = r.name;
-      }
-      setPlayerNames(names);
-    } catch {
-      // Recommendations may not be available yet
+      // Functional updater avoids stale closure overwriting concurrent updates
+      setPlayerNames((prev) => {
+        const next = { ...prev };
+        for (const r of recs) {
+          if (r.player_id && r.name) next[r.player_id] = r.name;
+        }
+        return next;
+      });
+    } catch (e) {
+      console.error("Failed to load recommendations:", e);
     }
-  }
+  }, [session]);
+
+  // Load recommendations and grid whenever session updates
+  useEffect(() => {
+    if (!session) return;
+    refreshGrid();
+    loadRecommendations();
+  }, [session?.session_id, session?.picks_made, refreshGrid, loadRecommendations]);
+
+  // Extract teams from grid
+  useEffect(() => {
+    if (grid.length === 0) return;
+    const teamSet = new Set<string>();
+    for (const pick of grid) teamSet.add(pick.team_id);
+    setTeams(Array.from(teamSet));
+  }, [grid]);
+
+  // Merge candidate names into playerNames map
+  useEffect(() => {
+    setPlayerNames((prev) => {
+      const next = { ...prev };
+      for (const c of candidates) {
+        if (c.player_id) next[c.player_id] = c.name;
+      }
+      return next;
+    });
+  }, [candidates]);
 
   const handleConnect = async () => {
     if (!sessionId.trim()) return;
@@ -115,14 +119,7 @@ export function DraftPage() {
         <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
 {`# Create session via API first:
 POST /api/draft/sessions
-{
-  "league_slug": "baseball",
-  "season": 2026,
-  "my_team_id": "...",
-  "draft_order": [...],
-  "keepers": [...]
-}
-# Then enter the returned session_id above`}
+...`}
         </pre>
       </div>
     );
