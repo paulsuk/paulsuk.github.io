@@ -24,9 +24,9 @@ export function DraftGrid({ grid, teams, playerNames, numRounds }: Props) {
         <thead className="sticky top-0 bg-white z-10">
           <tr>
             <th className="p-1 border text-left w-8">Rd</th>
-            {rounds[0]?.map((pick, i) => (
-              <th key={i} className="p-1 border text-center min-w-[90px]">
-                {pick.team_id.split(".").pop() || pick.team_id}
+            {teams.map((teamId) => (
+              <th key={teamId} className="p-1 border text-center min-w-[90px]">
+                {teamId.split(".").pop() || teamId}
               </th>
             ))}
           </tr>
