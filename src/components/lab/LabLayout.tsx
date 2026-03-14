@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 const NAV_ITEMS = [
   { to: "/lab", label: "Rankings", end: true },
   { to: "/lab/research", label: "Research", end: false },
+  { to: "/lab/draft", label: "Draft", end: false },
 ];
 
 export default function LabLayout() {
