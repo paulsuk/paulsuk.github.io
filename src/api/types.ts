@@ -424,3 +424,34 @@ export interface FranchiseDetailResponse {
   };
   current_matchup: CurrentMatchup | null;
 }
+
+// --- Draft Board Types ---
+
+export interface DraftPick {
+  pick_number: number;
+  team_id: string;
+  round: number;
+  player_id: number | null;
+  is_keeper: boolean;
+  is_current: boolean;
+}
+
+export interface DraftSession {
+  session_id: string;
+  picks_made: number;
+  current_pick: { pick_number: number; team_id: string; round: number } | null;
+  is_my_pick: boolean;
+}
+
+export interface DraftCandidate {
+  player_id: number;
+  name: string;
+  eligible_positions: string;
+  hscore: number;
+  [key: string]: unknown;
+}
+
+export interface TeamRoster {
+  team_id: string;
+  roster: number[];
+}
