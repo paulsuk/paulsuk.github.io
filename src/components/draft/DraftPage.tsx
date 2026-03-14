@@ -27,10 +27,12 @@ export function DraftPage() {
   const [createSlug, setCreateSlug] = useState("baseball");
   const [createSeason, setCreateSeason] = useState(new Date().getFullYear());
   const [createTeamId, setCreateTeamId] = useState("");
+  const [recError, setRecError] = useState<string | null>(null);
 
   const loadRecommendations = useCallback(async () => {
     if (!session) return;
     try {
+      setRecError(null);
       const res = await fetch(
         `${API_URL}/api/draft/sessions/${session.session_id}/recommendations?limit=50`
       );
@@ -38,7 +40,7 @@ export function DraftPage() {
       const data = await res.json() as TeamProfileResponse;
       const recs = (data.recommendations ?? []).map((r) => ({
         ...r,
-        hscore: Number((r as Record<string, unknown>).hscore ?? (r as Record<string, unknown>).h_score ?? 0),
+        hscore: r.hscore ?? 0,
       }));
       setCandidates(recs);
       const profile = data.team_profile;
@@ -58,7 +60,7 @@ export function DraftPage() {
         return next;
       });
     } catch (e) {
-      console.error("Failed to load recommendations:", e);
+      setRecError((e as Error).message);
     }
   }, [session]);
 
@@ -233,6 +235,9 @@ export function DraftPage() {
         {/* Right: Best Available */}
         <div className="w-1/3 p-2 flex flex-col">
           <h2 className="text-lg font-bold mb-2">Best Available</h2>
+          {recError && (
+            <div className="bg-red-100 text-red-700 p-2 text-sm rounded mb-2">{recError}</div>
+          )}
           <BestAvailable candidates={candidates} onPick={handlePick} />
         </div>
       </div>
