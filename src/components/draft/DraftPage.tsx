@@ -16,13 +16,17 @@ interface TeamProfileResponse {
 }
 
 export function DraftPage() {
-  const { session, grid, loading, error, logPick, undoPick, refreshGrid, connectSession } = useDraftSession();
+  const { session, grid, loading, error, logPick, undoPick, refreshGrid, connectSession, createSession } = useDraftSession();
   const [candidates, setCandidates] = useState<DraftCandidate[]>([]);
   const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
   const [teams, setTeams] = useState<string[]>([]);
   const [categoryInfo, setCategoryInfo] = useState<{ name: string; total: number; rank: number; tier: string }[]>([]);
 
   const [sessionId, setSessionId] = useState("");
+  const [createMode, setCreateMode] = useState(false);
+  const [createSlug, setCreateSlug] = useState("baseball");
+  const [createSeason, setCreateSeason] = useState(new Date().getFullYear());
+  const [createTeamId, setCreateTeamId] = useState("");
 
   const loadRecommendations = useCallback(async () => {
     if (!session) return;
@@ -89,38 +93,107 @@ export function DraftPage() {
     await connectSession(sessionId.trim());
   };
 
+  const handleCreate = async () => {
+    if (!createTeamId.trim()) return;
+    await createSession({
+      league_slug: createSlug,
+      season: createSeason,
+      my_team_id: createTeamId.trim(),
+      draft_order: [],
+      keepers: [],
+    });
+  };
+
   if (!session) {
     return (
       <div className="p-8 max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold mb-4">Draft Board</h1>
-        <p className="text-gray-600 mb-4">
-          Connect to a draft session (create one via the API first):
-        </p>
+
+        <div className="flex gap-2 mb-4 border-b border-gray-200">
+          <button
+            onClick={() => setCreateMode(false)}
+            className={`px-4 py-2 text-sm font-medium ${!createMode ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500 hover:text-gray-700"}`}
+          >
+            Connect
+          </button>
+          <button
+            onClick={() => setCreateMode(true)}
+            className={`px-4 py-2 text-sm font-medium ${createMode ? "border-b-2 border-blue-600 text-blue-600" : "text-gray-500 hover:text-gray-700"}`}
+          >
+            New Session
+          </button>
+        </div>
+
         {error && (
           <div className="bg-red-100 text-red-700 p-2 text-sm rounded mb-4">{error}</div>
         )}
-        <div className="flex gap-2 mb-4">
-          <input
-            type="text"
-            value={sessionId}
-            onChange={(e) => setSessionId(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleConnect()}
-            placeholder="Session ID (e.g. a1b2c3d4)"
-            className="flex-1 p-2 border rounded"
-          />
-          <button
-            onClick={handleConnect}
-            disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "..." : "Connect"}
-          </button>
-        </div>
-        <pre className="bg-gray-100 p-4 rounded text-sm overflow-x-auto">
-{`# Create session via API first:
-POST /api/draft/sessions
-...`}
-        </pre>
+
+        {!createMode ? (
+          <div>
+            <p className="text-gray-500 text-sm mb-3">Enter an existing session ID:</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={sessionId}
+                onChange={(e) => setSessionId(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleConnect()}
+                placeholder="Session ID (e.g. a1b2c3d4)"
+                className="flex-1 p-2 border rounded"
+              />
+              <button
+                onClick={handleConnect}
+                disabled={loading}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+              >
+                {loading ? "..." : "Connect"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-gray-500 text-sm">Create a new draft session:</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">League</label>
+                <select
+                  value={createSlug}
+                  onChange={(e) => setCreateSlug(e.target.value)}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="baseball">Baseball</option>
+                  <option value="basketball">Basketball</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Season</label>
+                <input
+                  type="number"
+                  value={createSeason}
+                  onChange={(e) => setCreateSeason(Number(e.target.value))}
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">My Team ID</label>
+              <input
+                type="text"
+                value={createTeamId}
+                onChange={(e) => setCreateTeamId(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+                placeholder="e.g. 458.l.25845.t.3"
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <button
+              onClick={handleCreate}
+              disabled={loading || !createTeamId.trim()}
+              className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            >
+              {loading ? "Creating..." : "Create Session"}
+            </button>
+          </div>
+        )}
       </div>
     );
   }
