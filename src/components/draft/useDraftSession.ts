@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { fetchApi, API_URL } from "../../api/client";
+import { API_URL } from "../../api/client";
 import type { DraftSession, DraftPick } from "../../api/types";
 
 const API = "/api/draft";
@@ -35,7 +35,9 @@ export function useDraftSession() {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchApi<DraftSession>(`${API}/sessions/${sessionId}`);
+      const res = await fetch(`${API_URL}${API}/sessions/${sessionId}`);
+      if (!res.ok) throw new Error(await res.text());
+      const data: DraftSession = await res.json();
       setSession(data);
       return data;
     } catch (e) {
@@ -49,7 +51,9 @@ export function useDraftSession() {
   const refreshGrid = useCallback(async () => {
     if (!session) return;
     try {
-      const data = await fetchApi<DraftPick[]>(`${API}/sessions/${session.session_id}/grid`);
+      const res = await fetch(`${API_URL}${API}/sessions/${session.session_id}/grid`);
+      if (!res.ok) throw new Error(await res.text());
+      const data: DraftPick[] = await res.json();
       setGrid(data);
     } catch (e) {
       setError((e as Error).message);
