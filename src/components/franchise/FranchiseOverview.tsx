@@ -4,8 +4,8 @@ import type {
   FranchiseDetailResponse,
   FranchiseSeasonRecord,
   FranchiseH2HEntry,
-  Trade,
   TransactionCount,
+  Trade,
   SeasonKeepers,
   ManagerEra,
   CurrentMatchup,
@@ -17,7 +17,7 @@ import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
 import SeasonRoster from "./SeasonRoster";
 import KeepersCard from "./KeepersCard";
-import TradeCard from "./TradeCard";
+import FranchiseTransactions from "./FranchiseTransactions";
 import { ordinal, getFinishGroups, formatFinishGroups, winPct, formatSeason } from "../../utils/records-helpers";
 
 interface FranchiseOverviewProps {
@@ -64,7 +64,6 @@ export default function FranchiseOverview({
   slug,
 }: FranchiseOverviewProps) {
   const [expandedSeason, setExpandedSeason] = useState<number | null>(null);
-  const [tradesExpanded, setTradesExpanded] = useState(false);
   const [keeperSeason, setKeeperSeason] = useState<number | null>(null);
 
   return (
@@ -228,53 +227,8 @@ export default function FranchiseOverview({
         />
       )}
 
-      {/* Transaction Activity */}
-      <Card title="Transaction Activity">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="table-header">
-                <th className="pb-2 pr-4">Season</th>
-                <th className="pb-2 pr-4">Adds</th>
-                <th className="pb-2 pr-4">Drops</th>
-                <th className="pb-2">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCounts.map((c) => (
-                <tr key={c.season} className="border-b border-gray-50">
-                  <td className="py-1.5 pr-4 font-medium text-gray-400">{formatSeason(c.season, slug)}</td>
-                  <td className="py-1.5 pr-4 tabular-nums">{c.adds}</td>
-                  <td className="py-1.5 pr-4 tabular-nums">{c.drops}</td>
-                  <td className="py-1.5 tabular-nums font-medium">{c.adds + c.drops}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Trade History */}
-        {filteredTrades.length > 0 && (
-          <div className="divider">
-            <button
-              onClick={() => setTradesExpanded(!tradesExpanded)}
-              className="flex w-full items-center justify-between text-left"
-            >
-              <div className="section-label">Trade History</div>
-              <span className="text-xs text-gray-400">
-                {filteredTrades.length} trade{filteredTrades.length !== 1 ? "s" : ""} {tradesExpanded ? "▲" : "▼"}
-              </span>
-            </button>
-            {tradesExpanded && (
-              <div className="space-y-3 mt-2">
-                {filteredTrades.map((trade: Trade) => (
-                  <TradeCard key={trade.timestamp} trade={trade} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </Card>
+      {/* Transaction Activity + Trades */}
+      <FranchiseTransactions counts={filteredCounts} trades={filteredTrades} slug={slug} />
     </>
   );
 }
