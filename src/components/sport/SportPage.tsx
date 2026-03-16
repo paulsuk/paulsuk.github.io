@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap, useArticles, usePlayoffs } from "../../api/hooks";
-import type { ScoringMode } from "../../api/types";
 import { formatSeason } from "../../utils/records-helpers";
+import { defaultScoringMode } from "../../utils/sport-config";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
 import RankingsSection from "./RankingsSection";
@@ -14,7 +14,7 @@ export default function SportPage() {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const scoringMode: ScoringMode = slug === "baseball" ? "category" : "matchup";
+  const scoringMode = defaultScoringMode(slug!);
   const seasonParam = searchParams.get("season");
 
   const { data: seasons, loading: seasonsLoading, error: seasonsError } = useSeasons(slug!);
