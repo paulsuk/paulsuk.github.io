@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { SeasonRecord, FranchiseSeasonRecord, FranchiseOwnership } from "../../api/types";
 import { useSport } from "../../context/SportContext";
-import { getMedals, getChampionshipYears, getFinishGroups, ordinal, winPct, formatSeason } from "../../utils/records-helpers";
+import { getMedals, getChampionshipYears, getFinishGroups, formatFinishGroups, ordinal, winPct, formatSeason } from "../../utils/records-helpers";
 import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
 
@@ -141,9 +141,3 @@ export default function EntityCard({
   );
 }
 
-function formatFinishGroups(groups: ReturnType<typeof getFinishGroups>, slug: string): string {
-  if (groups.length === 0) return "N/A";
-  return groups
-    .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.map((y) => formatSeason(y, slug)).join(", ")})`)
-    .join(", ");
-}

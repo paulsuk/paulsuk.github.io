@@ -18,7 +18,7 @@ import SeasonRow from "../shared/SeasonRow";
 import SeasonRoster from "./SeasonRoster";
 import KeepersCard from "./KeepersCard";
 import TradeCard from "./TradeCard";
-import { ordinal, getFinishGroups, winPct, formatSeason } from "../../utils/records-helpers";
+import { ordinal, getFinishGroups, formatFinishGroups, winPct, formatSeason } from "../../utils/records-helpers";
 
 interface FranchiseOverviewProps {
   overview: FranchiseDetailResponse["overview"];
@@ -279,9 +279,3 @@ export default function FranchiseOverview({
   );
 }
 
-function formatFinishGroups(groups: ReturnType<typeof getFinishGroups>, slug: string): string {
-  if (groups.length === 0) return "N/A";
-  return groups
-    .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.map((y) => formatSeason(y, slug)).join(", ")})`)
-    .join(", ");
-}

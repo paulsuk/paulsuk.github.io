@@ -69,3 +69,14 @@ export function getFinishGroups(records: AnySeasonRecord[], field: "playoff_seed
     .map(([rank, years]) => ({ rank, count: years.length, years }))
     .sort((a, b) => a.rank - b.rank);
 }
+
+/**
+ * Format finish groups as a compact string for display.
+ * Example: "1sts: 2 (2022, 2024), 2nds: 1 (2023)"
+ */
+export function formatFinishGroups(groups: FinishGroup[], slug: string): string {
+  if (groups.length === 0) return "N/A";
+  return groups
+    .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.map((y) => formatSeason(y, slug)).join(", ")})`)
+    .join(", ");
+}
