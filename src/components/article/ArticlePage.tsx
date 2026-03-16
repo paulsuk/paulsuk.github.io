@@ -4,6 +4,7 @@ import ArticleContent from "./ArticleContent";
 import StatsSidebar from "./StatsSidebar";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
+import PrevNextNav from "../shared/PrevNextNav";
 
 export default function ArticlePage() {
   const { slug, articleId } = useParams<{ slug: string; articleId: string }>();
@@ -53,28 +54,7 @@ export default function ArticlePage() {
       </p>
 
       {/* Prev / Next navigation */}
-      <div className="mb-6 flex items-center justify-between text-sm">
-        {article.prev_id ? (
-          <Link
-            to={`/${slug}/article/${article.prev_id}`}
-            className="text-blue-600 no-underline hover:text-blue-800"
-          >
-            &larr; Previous
-          </Link>
-        ) : (
-          <span />
-        )}
-        {article.next_id ? (
-          <Link
-            to={`/${slug}/article/${article.next_id}`}
-            className="text-blue-600 no-underline hover:text-blue-800"
-          >
-            Next &rarr;
-          </Link>
-        ) : (
-          <span />
-        )}
-      </div>
+      <PrevNextNav slug={slug!} prevId={article.prev_id} nextId={article.next_id} className="mb-6" />
 
       <div className="flex flex-col gap-8 lg:flex-row">
         {/* Article content */}
@@ -82,28 +62,12 @@ export default function ArticlePage() {
           <ArticleContent content={article.content} slug={slug!} />
 
           {/* Bottom prev/next */}
-          <div className="mt-8 flex items-center justify-between border-t border-gray-200 pt-4 text-sm">
-            {article.prev_id ? (
-              <Link
-                to={`/${slug}/article/${article.prev_id}`}
-                className="text-blue-600 no-underline hover:text-blue-800"
-              >
-                &larr; Previous
-              </Link>
-            ) : (
-              <span />
-            )}
-            {article.next_id ? (
-              <Link
-                to={`/${slug}/article/${article.next_id}`}
-                className="text-blue-600 no-underline hover:text-blue-800"
-              >
-                Next &rarr;
-              </Link>
-            ) : (
-              <span />
-            )}
-          </div>
+          <PrevNextNav
+            slug={slug!}
+            prevId={article.prev_id}
+            nextId={article.next_id}
+            className="mt-8 border-t border-gray-200 pt-4"
+          />
         </div>
 
         {/* Stats sidebar */}
