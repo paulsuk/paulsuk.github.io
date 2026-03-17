@@ -338,6 +338,18 @@ export interface LabUiConfig {
   scoring_categories: string[];
 }
 
+export interface RankingsFilter {
+  season: string;
+  model: string;
+  start: string;
+  end: string;
+  position: string;
+  team: string;
+  availableOnly: boolean;
+  punted: string[];
+  search: string;
+}
+
 export interface ValueBreakdownItem {
   category: string;
   raw_stat: number | null;

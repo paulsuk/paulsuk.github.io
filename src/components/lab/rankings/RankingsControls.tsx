@@ -1,21 +1,11 @@
 // web/src/components/lab/rankings/RankingsControls.tsx
 import PuntSelector from "./PuntSelector";
-import type { LabUiConfig } from "../../../api/types";
+import type { LabUiConfig, RankingsFilter } from "../../../api/types";
+
+export type { RankingsFilter };
 
 const MLB_POSITIONS = ["All", "C", "1B", "2B", "SS", "3B", "OF", "SP", "RP"];
 const NBA_POSITIONS = ["All", "PG", "SG", "SF", "PF", "C"];
-
-export interface RankingsFilter {
-  season: string;
-  model: string;
-  start: string;
-  end: string;
-  position: string;
-  team: string;
-  availableOnly: boolean;
-  punted: string[];
-  search: string;
-}
 
 interface Props {
   sport: string;

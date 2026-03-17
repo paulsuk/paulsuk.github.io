@@ -3,6 +3,35 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { RankingsPlayer } from "../../../api/types";
 
+interface ThProps {
+  label: string;
+  col: string;
+  sortCol: string;
+  sortAsc: boolean;
+  onSort: (col: string) => void;
+}
+
+function Th({ label, col, sortCol, sortAsc, onSort }: ThProps) {
+  const active = sortCol === col;
+  return (
+    <th
+      className="table-header cursor-pointer px-3 py-2 hover:text-gray-700 whitespace-nowrap"
+      onClick={() => onSort(col)}
+      tabIndex={0}
+      role="columnheader"
+      aria-sort={active ? (sortAsc ? "ascending" : "descending") : "none"}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onSort(col); }}
+    >
+      {label}
+      {active && (
+        <span className="ml-1 text-gray-400" aria-hidden="true">
+          {sortAsc ? "↑" : "↓"}
+        </span>
+      )}
+    </th>
+  );
+}
+
 interface Props {
   sport: string;
   players: RankingsPlayer[];
@@ -64,23 +93,11 @@ export default function RankingsTable({
     navigate(`/lab/players/${sport}/${playerId}?${params.toString()}`);
   }
 
-  function Th({ label, col }: { label: string; col: string }) {
-    const active = sortCol === col;
-    return (
-      <th
-        className="table-header cursor-pointer px-3 py-2 hover:text-gray-700 whitespace-nowrap"
-        onClick={() => handleSort(col)}
-      >
-        {label}
-        {active && <span className="ml-1 text-gray-400">{sortAsc ? "↑" : "↓"}</span>}
-      </th>
-    );
-  }
-
-  if (!players.length) {
+  if (!players.length || !sorted.length) {
+    const msg = !players.length ? "No players found." : `No players match "${search}".`;
     return (
       <div className="rounded-lg border border-dashed border-gray-200 p-8 text-center">
-        <p className="text-label">No players found.</p>
+        <p className="text-label">{msg}</p>
       </div>
     );
   }
@@ -92,13 +109,13 @@ export default function RankingsTable({
         <table className="w-full text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <Th label="#" col="rank" />
-              <Th label="Name" col="name" />
+              <Th label="#" col="rank" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
+              <Th label="Name" col="name" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               <th className="table-header px-3 py-2">Team</th>
               <th className="table-header px-3 py-2">Pos</th>
-              <Th label="Value" col="value" />
+              <Th label="Value" col="value" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               {statCols.map((c) => (
-                <Th key={c} label={c} col={c} />
+                <Th key={c} label={c} col={c} sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               ))}
             </tr>
           </thead>
