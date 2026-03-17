@@ -30,8 +30,11 @@ export default function PlayerDetailPage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
+  // Guard against invalid sport values (e.g. user-edited URL)
+  const validSport = sport === "mlb" || sport === "nba" ? sport : null;
+
   // Load all players for the current season/model (used for name search)
-  const { data: allRankings } = useRankings(sport, {
+  const { data: allRankings } = useRankings(validSport, {
     season,
     model,
     start: start || undefined,
@@ -141,7 +144,7 @@ export default function PlayerDetailPage() {
       {/* Sport-specific stats */}
       {sport === "mlb" ? (
         <>
-          <MLBStatsPanel stats={player.stats} />
+          <MLBStatsPanel stats={player.stats} isPitcher={isPitcher} />
           <StatcastPanel stats={player.stats} isPitcher={isPitcher} />
         </>
       ) : (

@@ -1,8 +1,7 @@
 const BATTER_COLS = ["HR", "R", "RBI", "SB", "AVG", "OBP", "SLG", "OPS", "BB%", "K%", "WAR"];
 const PITCHER_COLS = ["W", "SV", "ERA", "WHIP", "K", "IP", "K%", "BB%", "FIP", "WAR"];
 
-export default function MLBStatsPanel({ stats }: { stats: Record<string, number | null> }) {
-  const isPitcher = "ERA" in stats && !("HR" in stats);
+export default function MLBStatsPanel({ stats, isPitcher }: { stats: Record<string, number | null>; isPitcher: boolean }) {
   const cols = (isPitcher ? PITCHER_COLS : BATTER_COLS).filter((c) => c in stats);
 
   if (!cols.length) return null;
