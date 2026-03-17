@@ -107,9 +107,10 @@ export function useRankings(
     ...(params.available_only ? { available_only: "true" } : {}),
     ...(params.punt ? { punt: params.punt } : {}),
   });
-  return useApiData<RankingsResponse>(
-    `/api/lab/${sport}/rankings?${query.toString()}`
-  );
+  const url = sport
+    ? `/api/lab/${sport}/rankings?${query.toString()}`
+    : null;
+  return useApiData<RankingsResponse>(url);
 }
 
 export function usePlayerDetail(
