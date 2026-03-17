@@ -34,8 +34,10 @@ export default function RankingsPage() {
     };
   }, [config, filter]);
 
+  const rankingsSport =
+    config && effectiveFilter.season && effectiveFilter.model ? sport : null;
   const { data: rankings, loading: rankingsLoading, error: rankingsError } = useRankings(
-    sport,
+    rankingsSport,
     {
       season: effectiveFilter.season,
       model: effectiveFilter.model,
@@ -73,7 +75,9 @@ export default function RankingsPage() {
 
       {rankings && (
         <>
-          <p className="text-meta mb-3">{rankings.season_meta.data_source}</p>
+          {rankings.season_meta.data_source && (
+            <p className="text-meta mb-3">{rankings.season_meta.data_source}</p>
+          )}
           <RankingsTable
             sport={sport}
             players={rankings.players}

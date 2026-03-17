@@ -85,7 +85,7 @@ export function useLabUiConfig(sport: string) {
 }
 
 export function useRankings(
-  sport: string,
+  sport: string | null,
   params: {
     season: string;
     model: string;

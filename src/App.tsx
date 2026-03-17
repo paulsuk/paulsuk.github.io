@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AppShell from "./components/layout/AppShell";
 import HomePage from "./components/home/HomePage";
 import SportLayout from "./components/sport/SportLayout";
@@ -23,6 +23,7 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
           <Route path="lab" element={<LabLayout />}>
+            <Route index element={<Navigate to="rankings/mlb" replace />} />
             <Route path="rankings/:sport" element={<RankingsPage />} />
             <Route path="research" element={<ResearchPage />} />
             <Route path="research/:articleId" element={<ResearchArticlePage />} />
