@@ -298,24 +298,78 @@ export interface CurrentMatchup {
 
 // --- Lab / Rankings ---
 
-export interface LabRun {
-  model: string;
-  sport: string;
-  season: string;
-  run_id: string;
-  timestamp: string;
-  num_players: number;
-  data_desc: string;
-  notes?: string | null;
+export interface RankingsPlayer {
+  rank: number;
+  player_id: number;
+  name: string;
+  team: string | null;
+  positions: string | null;
+  value: number;
+  stats: Record<string, number | null>;
 }
 
-export interface LabPlayer {
-  player_id: string | number;
+export interface SeasonMeta {
+  label: string;
+  start: string | null;
+  end: string | null;
+  data_source: string;
+}
+
+export interface RankingsResponse {
+  players: RankingsPlayer[];
+  season_meta: SeasonMeta;
+}
+
+export interface LabModelOption {
+  id: string;
   name: string;
-  value: number;
-  rank: number;
-  team?: string;
-  [key: string]: unknown;
+  default: boolean;
+}
+
+export interface SeasonOption {
+  id: string;
+  label: string;
+  date_range_enabled: boolean;
+}
+
+export interface LabUiConfig {
+  models: LabModelOption[];
+  seasons: SeasonOption[];
+  scoring_categories: string[];
+}
+
+export interface ValueBreakdownItem {
+  category: string;
+  raw_stat: number | null;
+  score: number;
+  direction: "up" | "down";
+}
+
+export interface SeasonHistoryRow {
+  season: number;
+  stats: Record<string, number | null>;
+}
+
+export interface TransactionRecord {
+  season: number;
+  week: number | null;
+  transaction_type: string;
+  league_name: string | null;
+  team_name: string | null;
+}
+
+export interface PlayerDetail {
+  player_id: number;
+  name: string;
+  team: string | null;
+  positions: string | null;
+  rank: number | null;
+  value: number | null;
+  value_breakdown: ValueBreakdownItem[];
+  stats: Record<string, number | null>;
+  season_history: SeasonHistoryRow[];
+  transactions: TransactionRecord[];
+  data_source: string;
 }
 
 // --- Franchise Detail ---

@@ -1,9 +1,13 @@
 import { useState } from "react";
-import { useLabRuns, useLabPlayers } from "../../api/hooks";
-import type { LabRun } from "../../api/types";
 import RankingsTable from "./RankingsTable";
 import DraftHelper from "./DraftHelper";
 import ReplacementPanel from "./ReplacementPanel";
+
+// TODO(Task 10): this component will be deleted — local stubs until then
+interface LabRun { model: string; sport: string; season: string; run_id: string; timestamp: string; num_players: number; data_desc: string; notes?: string | null; }
+type LabPlayer = { player_id: string | number; name: string; value: number; rank: number; team?: string; [key: string]: unknown; }
+function useLabRuns() { return { data: null as LabRun[] | null, loading: false, error: null }; }
+function useLabPlayers(_m: string | null, _sp: string | null, _se: string | null) { return { data: null as LabPlayer[] | null, loading: false }; }
 
 type Tab = "rankings" | "draft" | "replacement";
 

@@ -1,4 +1,5 @@
-import type { LabPlayer } from "../../api/types";
+// TODO(Task 10): this component will be deleted — local stub until then
+interface LabPlayer { player_id: string | number; name: string; value: number; rank: number; team?: string; [key: string]: unknown; }
 
 // Expected roster spots per position (12-team league defaults)
 const MLB_ROSTER_SPOTS: Record<string, number> = {

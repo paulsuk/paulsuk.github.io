@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
-import type { LabPlayer } from "../../api/types";
+
+// TODO(Task 10): this component will be deleted — local stub until then
+interface LabPlayer { player_id: string | number; name: string; value: number; rank: number; team?: string; [key: string]: unknown; }
 
 type SortKey = "rank" | "value" | "name";
 
