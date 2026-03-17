@@ -11,7 +11,7 @@ import LoadingSpinner from "./components/shared/LoadingSpinner";
 const ArticlePage = lazy(() => import("./components/article/ArticlePage"));
 const RecordsPage = lazy(() => import("./components/records/RecordsPage"));
 const FranchiseDetailPage = lazy(() => import("./components/franchise/FranchiseDetailPage"));
-const LabPage = lazy(() => import("./components/lab/LabPage"));
+const RankingsPage = lazy(() => import("./components/lab/rankings/RankingsPage"));
 const DraftPage = lazy(() => import("./components/draft/DraftPage").then(m => ({ default: m.DraftPage })));
 const ResearchPage = lazy(() => import("./components/lab/ResearchPage"));
 const ResearchArticlePage = lazy(() => import("./components/lab/ResearchArticlePage"));
@@ -23,7 +23,7 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
           <Route path="lab" element={<LabLayout />}>
-            <Route index element={<LabPage />} />
+            <Route path="rankings/:sport" element={<RankingsPage />} />
             <Route path="research" element={<ResearchPage />} />
             <Route path="research/:articleId" element={<ResearchArticlePage />} />
             <Route path="draft" element={<DraftPage />} />

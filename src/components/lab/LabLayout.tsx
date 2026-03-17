@@ -1,7 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
 
 const NAV_ITEMS = [
-  { to: "/lab", label: "Rankings", end: true },
+  { to: "/lab/rankings/mlb", label: "MLB Rankings", end: false },
+  { to: "/lab/rankings/nba", label: "NBA Rankings", end: false },
   { to: "/lab/research", label: "Research", end: false },
   { to: "/lab/draft", label: "Draft", end: false },
 ];
