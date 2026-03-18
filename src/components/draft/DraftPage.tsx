@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { Navigate } from "react-router-dom";
 import { DraftGrid } from "./DraftGrid";
 import { BestAvailable } from "./BestAvailable";
 import { TeamProfile } from "./TeamProfile";
@@ -32,6 +33,7 @@ function generateDraftOrder(orderedTeams: DraftPreloadTeam[], numRounds: number)
 }
 
 export function DraftPage() {
+  const authed = localStorage.getItem("fa_auth_lab") === "true";
   const { session, grid, loading, error, logPick, undoPick, refreshGrid, connectSession, createSession } = useDraftSession();
   const [candidates, setCandidates] = useState<DraftCandidate[]>([]);
   const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
@@ -159,6 +161,9 @@ export function DraftPage() {
     localStorage.removeItem(SESSION_KEY);
     window.location.reload();
   };
+
+  // Auth gate (after all hooks to satisfy Rules of Hooks)
+  if (!authed) return <Navigate to="/lab" replace />;
 
   // ---- Setup screen ----
   if (!session) {

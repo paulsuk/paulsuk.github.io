@@ -29,7 +29,6 @@ export default function App() {
             <Route path="players/:sport/:id" element={<PlayerDetailPage />} />
             <Route path="research" element={<ResearchPage />} />
             <Route path="research/:articleId" element={<ResearchArticlePage />} />
-            <Route path="draft" element={<DraftPage />} />
           </Route>
           <Route path=":slug" element={<SportLayout />}>
             <Route index element={<SportPage />} />
@@ -39,6 +38,7 @@ export default function App() {
           <Route path=":slug/franchise/:franchiseId" element={<FranchiseDetailPage />} />
           <Route path=":slug/article/:articleId" element={<ArticlePage />} />
         </Route>
+        <Route path="lab/draft" element={<DraftPage />} />
       </Routes>
     </Suspense>
   );
