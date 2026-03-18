@@ -36,7 +36,7 @@ export default function RankingsPage() {
 
   const rankingsSport =
     config && effectiveFilter.season && effectiveFilter.model ? sport : null;
-  const { data: rankings, loading: rankingsLoading, error: rankingsError } = useRankings(
+  const { data: rankings, loading: rankingsLoading, error: rankingsError, refresh: refreshRankings } = useRankings(
     rankingsSport,
     {
       season: effectiveFilter.season,
@@ -60,6 +60,8 @@ export default function RankingsPage() {
   if (configLoading) return <LoadingSpinner />;
   if (configError || !config) return <ErrorBanner message={configError ?? "Failed to load config"} />;
 
+  // TODO: player detail page is broken — clicking a player does nothing for now.
+
   return (
     <div>
       <RankingsControls
@@ -70,14 +72,26 @@ export default function RankingsPage() {
         onChange={(patch) => setFilter((f) => ({ ...f, ...patch }))}
       />
 
+      {rankingsSport && (
+        <div className="flex items-center gap-3 mb-2">
+          {rankings?.season_meta.data_source && (
+            <p className="text-meta">{rankings.season_meta.data_source}</p>
+          )}
+          <button
+            onClick={refreshRankings}
+            disabled={rankingsLoading}
+            className="text-xs text-meta hover:text-primary disabled:opacity-40 ml-auto"
+          >
+            ↻ Reload
+          </button>
+        </div>
+      )}
+
       {rankingsLoading && <LoadingSpinner />}
       {rankingsError && <ErrorBanner message={rankingsError} />}
 
       {rankings && (
         <>
-          {rankings.season_meta.data_source && (
-            <p className="text-meta mb-3">{rankings.season_meta.data_source}</p>
-          )}
           <RankingsTable
             sport={sport}
             players={rankings.players}

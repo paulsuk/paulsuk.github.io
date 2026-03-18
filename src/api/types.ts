@@ -306,6 +306,7 @@ export interface RankingsPlayer {
   positions: string | null;
   value: number;
   stats: Record<string, number | null>;
+  category_scores: Record<string, number>;
 }
 
 export interface SeasonMeta {

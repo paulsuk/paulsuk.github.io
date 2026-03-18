@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
-import { fetchApi } from "./client";
+import { useCallback, useEffect, useState } from "react";
+import { API_URL, clearCache, fetchApi } from "./client";
 import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail } from "./types";
 
 interface ApiState<T> {
   data: T | null;
   loading: boolean;
   error: string | null;
+  refresh: () => void;
 }
 
 function useApiData<T>(path: string | null): ApiState<T> {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState(0);
 
   useEffect(() => {
     if (!path) {
@@ -26,9 +28,14 @@ function useApiData<T>(path: string | null): ApiState<T> {
       .then(setData)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
+  }, [path, refreshToken]);
+
+  const refresh = useCallback(() => {
+    if (path) clearCache(`${API_URL}${path}`);
+    setRefreshToken((t) => t + 1);
   }, [path]);
 
-  return { data, loading, error };
+  return { data, loading, error, refresh };
 }
 
 export function useFranchises() {

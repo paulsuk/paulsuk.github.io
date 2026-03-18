@@ -53,6 +53,10 @@ export async function fetchApi<T>(path: string): Promise<T> {
   return data as T;
 }
 
+export function clearCache(url: string) {
+  cache.delete(url);
+}
+
 export async function fetchText(url: string): Promise<string | null> {
   const cached = getCached<string>(url);
   if (cached) return cached;
