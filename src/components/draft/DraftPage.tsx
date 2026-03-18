@@ -7,7 +7,6 @@ import { API_URL } from "../../api/client";
 import type { DraftCandidate, DraftPreload, DraftPreloadTeam } from "../../api/types";
 
 const SESSION_KEY = "draft_session_id";
-const ORDER_KEY = "draft_team_order";
 
 interface TeamProfileResponse {
   recommendations: DraftCandidate[];
@@ -70,20 +69,8 @@ export function DraftPage() {
           return next;
         });
 
-        // Restore saved order or use preloaded order or default team list
-        const savedOrder = localStorage.getItem(ORDER_KEY);
-        if (savedOrder) {
-          try {
-            const saved: string[] = JSON.parse(savedOrder);
-            const teamMap = Object.fromEntries(data.teams.map((t) => [t.team_key, t]));
-            const restored = saved.map((k) => teamMap[k]).filter(Boolean) as DraftPreloadTeam[];
-            // Add any new teams not in saved order
-            const missing = data.teams.filter((t) => !saved.includes(t.team_key));
-            setOrderedTeams([...restored, ...missing]);
-          } catch {
-            setOrderedTeams(initTeamOrder(data));
-          }
-        } else if (data.draft_order.length > 0) {
+        // Use preloaded draft order (round 1 picks) if available, else default
+        if (data.draft_order.length > 0) {
           // Use round-1 picks as the authoritative order
           const round1 = data.draft_order.filter((p) => p.round === 1).sort((a, b) => a.pick_number - b.pick_number);
           const teamMap = Object.fromEntries(data.teams.map((t) => [t.team_key, t]));
@@ -144,15 +131,6 @@ export function DraftPage() {
     loadRecommendations();
   }, [session?.session_id, session?.picks_made, refreshGrid, loadRecommendations]);
 
-  const moveTeam = (idx: number, dir: -1 | 1) => {
-    const next = [...orderedTeams];
-    const swap = idx + dir;
-    if (swap < 0 || swap >= next.length) return;
-    [next[idx], next[swap]] = [next[swap], next[idx]];
-    setOrderedTeams(next);
-    localStorage.setItem(ORDER_KEY, JSON.stringify(next.map((t) => t.team_key)));
-  };
-
   const handleStart = async () => {
     if (!preload || !myTeamKey) return;
     const numRounds = preload.num_rounds || 24;
@@ -205,16 +183,9 @@ export function DraftPage() {
               {preload.keepers.length > 0 && ` · ${preload.keepers.length} keepers`}
             </p>
 
-            {/* Team order */}
+            {/* Team picker */}
             <div>
-              <label className="block text-sm font-semibold mb-2">
-                Draft order
-                {preload.draft_order.length === 0 && (
-                  <span className="ml-2 font-normal text-amber-600 text-xs">
-                    (not yet on Yahoo — set manually)
-                  </span>
-                )}
-              </label>
+              <label className="block text-sm font-semibold mb-2">Select your team</label>
               <div className="space-y-1">
                 {orderedTeams.map((t, idx) => (
                   <div
@@ -234,24 +205,9 @@ export function DraftPage() {
                     {myTeamKey === t.team_key && (
                       <span className="text-xs text-blue-600 font-semibold">me</span>
                     )}
-                    {preload.draft_order.length === 0 && (
-                      <div className="flex flex-col gap-0.5 shrink-0" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          onClick={() => moveTeam(idx, -1)}
-                          disabled={idx === 0}
-                          className="text-xs px-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-30 leading-none"
-                        >↑</button>
-                        <button
-                          onClick={() => moveTeam(idx, 1)}
-                          disabled={idx === orderedTeams.length - 1}
-                          className="text-xs px-1 bg-gray-100 rounded hover:bg-gray-200 disabled:opacity-30 leading-none"
-                        >↓</button>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-1">Click a team to select as yours.</p>
             </div>
 
             <button
