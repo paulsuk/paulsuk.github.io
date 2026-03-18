@@ -4,6 +4,7 @@ interface Props {
   grid: DraftPick[];
   teams: string[];
   playerNames: Record<number, string>;
+  teamNames?: Record<string, string>;
   numRounds: number;
 }
 
@@ -12,7 +13,7 @@ const TEAM_COLORS = [
   "bg-pink-100", "bg-indigo-100", "bg-teal-100", "bg-orange-100", "bg-cyan-100",
 ];
 
-export function DraftGrid({ grid, teams, playerNames, numRounds }: Props) {
+export function DraftGrid({ grid, teams, playerNames, teamNames = {}, numRounds }: Props) {
   const rounds: DraftPick[][] = [];
   for (let r = 1; r <= numRounds; r++) {
     rounds.push(grid.filter((p) => p.round === r));
@@ -26,7 +27,7 @@ export function DraftGrid({ grid, teams, playerNames, numRounds }: Props) {
             <th className="p-1 border text-left w-8">Rd</th>
             {teams.map((teamId) => (
               <th key={teamId} className="p-1 border text-center min-w-[90px]">
-                {teamId.split(".").pop() || teamId}
+                {teamNames[teamId] || teamId.split(".").pop() || teamId}
               </th>
             ))}
           </tr>

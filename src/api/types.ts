@@ -522,3 +522,33 @@ export interface TeamRoster {
   team_id: string;
   roster: number[];
 }
+
+export interface DraftPreloadTeam {
+  team_key: string;
+  name: string;
+  manager_name: string | null;
+}
+
+export interface DraftPreloadKeeper {
+  team_key: string;
+  player_id: number;
+  player_name: string;
+  round_cost: number;
+}
+
+export interface DraftPreloadPick {
+  pick_number: number;
+  round: number;
+  team_key: string;
+  player_key: string | null;
+}
+
+export interface DraftPreload {
+  league_key: string;
+  season: number;
+  teams: DraftPreloadTeam[];
+  draft_order: DraftPreloadPick[];
+  keepers: DraftPreloadKeeper[];
+  num_rounds: number;
+  num_teams: number;
+}
