@@ -515,6 +515,7 @@ export interface DraftCandidate {
   name: string;
   eligible_positions: string;
   hscore: number;
+  gscore?: number;
   [key: string]: unknown;
 }
 
