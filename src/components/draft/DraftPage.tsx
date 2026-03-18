@@ -273,7 +273,7 @@ export function DraftPage() {
         </div>
       </div>
 
-      <div className="h-44 border-t p-2 overflow-auto shrink-0">
+      <div className="h-64 border-t p-2 overflow-auto shrink-0">
         <TeamProfile categories={categoryInfo} />
       </div>
     </div>
