@@ -105,7 +105,7 @@ export function DraftPage() {
     if (!session) return;
     try {
       setRecError(null);
-      const res = await fetch(`${API_URL}/api/draft/sessions/${session.session_id}/recommendations?limit=50`);
+      const res = await fetch(`${API_URL}/api/draft/sessions/${session.session_id}/recommendations?limit=1000`);
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json() as TeamProfileResponse;
       const recs = (data.recommendations ?? []).map((r) => ({ ...r, hscore: r.hscore ?? 0 }));
@@ -273,7 +273,7 @@ export function DraftPage() {
         </div>
       </div>
 
-      <div className="h-64 border-t p-2 overflow-auto shrink-0">
+      <div className="h-88 border-t p-2 overflow-auto shrink-0">
         <TeamProfile categories={categoryInfo} />
       </div>
     </div>
