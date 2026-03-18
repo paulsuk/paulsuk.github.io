@@ -20,14 +20,14 @@ export function DraftGrid({ grid, teams, playerNames, teamNames = {}, numRounds 
   }
 
   return (
-    <div className="overflow-auto max-h-[60vh]">
-      <table className="w-full text-xs border-collapse">
+    <div>
+      <table className="w-full table-fixed text-xs border-collapse">
         <thead className="sticky top-0 bg-white z-10">
           <tr>
-            <th className="p-1 border text-left w-8">Rd</th>
+            <th className="p-1 border text-left w-6">Rd</th>
             {teams.map((teamId) => (
-              <th key={teamId} className="p-1 border text-center min-w-[90px]">
-                {teamNames[teamId] || teamId.split(".").pop() || teamId}
+              <th key={teamId} className="p-1 border text-center overflow-hidden">
+                <span className="block truncate">{teamNames[teamId] || teamId.split(".").pop() || teamId}</span>
               </th>
             ))}
           </tr>
@@ -35,7 +35,7 @@ export function DraftGrid({ grid, teams, playerNames, teamNames = {}, numRounds 
         <tbody>
           {rounds.map((roundPicks, ri) => (
             <tr key={ri}>
-              <td className="p-1 border font-bold">{ri + 1}</td>
+              <td className="p-1 border font-bold text-center">{ri + 1}</td>
               {roundPicks.map((pick) => {
                 const teamIdx = teams.indexOf(pick.team_id);
                 const colorClass = TEAM_COLORS[teamIdx % TEAM_COLORS.length];
@@ -44,11 +44,12 @@ export function DraftGrid({ grid, teams, playerNames, teamNames = {}, numRounds 
                 return (
                   <td
                     key={pick.pick_number}
-                    className={`p-1 border text-center ${colorClass} ${
+                    title={name}
+                    className={`p-1 border ${colorClass} ${
                       pick.is_current ? "ring-2 ring-blue-500 font-bold" : ""
                     } ${pick.is_keeper ? "opacity-60 italic" : ""}`}
                   >
-                    {name || (pick.is_current ? "..." : "")}
+                    <span className="block truncate text-center">{name || (pick.is_current ? "..." : "")}</span>
                   </td>
                 );
               })}

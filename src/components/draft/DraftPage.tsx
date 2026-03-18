@@ -258,7 +258,12 @@ export function DraftPage() {
           />
         </div>
         <div className="w-1/3 p-2 flex flex-col overflow-hidden">
-          {recError && <div className="bg-red-100 text-red-700 p-2 text-xs rounded mb-2">{recError}</div>}
+          {recError && (
+            <div className="bg-red-100 text-red-700 p-2 text-xs rounded mb-2 flex items-center justify-between gap-2">
+              <span className="truncate">{recError}</span>
+              <button onClick={loadRecommendations} className="px-2 py-0.5 bg-red-600 text-white rounded hover:bg-red-700 shrink-0">Retry</button>
+            </div>
+          )}
           <BestAvailable candidates={candidates} onPick={logPick} />
         </div>
       </div>
