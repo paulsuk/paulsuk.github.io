@@ -34,6 +34,7 @@ export function useDraftSession() {
   const createSession = useCallback(async (config: DraftSessionConfig) => {
     setLoading(true);
     setError(null);
+    setGrid([]);
     try {
       const res = await fetch(`${API_URL}${API}/sessions`, {
         method: "POST",

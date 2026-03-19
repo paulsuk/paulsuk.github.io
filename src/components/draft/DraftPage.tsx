@@ -166,6 +166,7 @@ export function DraftPage() {
     const saved = loadSaved();
     setShowRestartDialog(false);
     if (saved) {
+      setCandidates([]);
       await createSession(saved.config);
     }
   };

@@ -513,6 +513,7 @@ export interface DraftPick {
   team_id: string;
   round: number;
   player_id: number | null;
+  player_name?: string | null;
   is_keeper: boolean;
   is_current: boolean;
 }

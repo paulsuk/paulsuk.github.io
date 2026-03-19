@@ -39,7 +39,7 @@ export function DraftGrid({ grid, teams, playerNames, teamNames = {}, numRounds 
               {roundPicks.map((pick) => {
                 const teamIdx = teams.indexOf(pick.team_id);
                 const colorClass = TEAM_COLORS[teamIdx % TEAM_COLORS.length];
-                const name = pick.player_id ? playerNames[pick.player_id] || `#${pick.player_id}` : "";
+                const name = pick.player_id ? (pick.player_name || playerNames[pick.player_id] || `#${pick.player_id}`) : "";
 
                 return (
                   <td
