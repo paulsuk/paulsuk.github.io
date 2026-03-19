@@ -5,11 +5,12 @@ import type { DraftCandidate } from "../../api/types";
 interface Props {
   candidates: DraftCandidate[];
   onPick: (playerId: number) => void;
+  disabled?: boolean;
 }
 
 const POSITIONS = ["All", "C", "1B", "2B", "SS", "3B", "OF", "SP", "RP"];
 
-export function BestAvailable({ candidates, onPick }: Props) {
+export function BestAvailable({ candidates, onPick, disabled }: Props) {
   const [posFilter, setPosFilter] = useState("All");
   const [sortBy, setSortBy] = useState<"hscore" | "gscore">("hscore");
 
@@ -97,7 +98,12 @@ export function BestAvailable({ candidates, onPick }: Props) {
                 <td className="p-1">
                   <button
                     onClick={() => onPick(c.player_id)}
-                    className="text-xs px-2 py-0.5 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    disabled={disabled}
+                    className={`text-xs px-2 py-0.5 rounded ${
+                      disabled
+                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        : "bg-blue-500 text-white hover:bg-blue-600"
+                    }`}
                   >
                     Pick
                   </button>
