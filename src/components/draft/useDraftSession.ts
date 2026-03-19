@@ -1,27 +1,50 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { API_URL } from "../../api/client";
-import type { DraftSession, DraftPick } from "../../api/types";
+import type { DraftSession, DraftPick, DraftSessionConfig, SavedDraftSession } from "../../api/types";
 
 const API = "/api/draft";
+const STORAGE_KEY = "draft_session";
+
+export function loadSaved(): SavedDraftSession | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as SavedDraftSession) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveSaved(payload: SavedDraftSession): void {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+}
+
+export function clearSaved(): void {
+  localStorage.removeItem(STORAGE_KEY);
+}
 
 export function useDraftSession() {
   const [session, setSession] = useState<DraftSession | null>(null);
   const [grid, setGrid] = useState<DraftPick[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Initialize from localStorage so undoPick doesn't corrupt picks after
+  // a successful connectSession (200 path — server was still alive).
+  const picksRef = useRef<number[]>(loadSaved()?.picks ?? []);
 
-  const createSession = useCallback(async (body: unknown) => {
+  const createSession = useCallback(async (config: DraftSessionConfig) => {
     setLoading(true);
     setError(null);
     try {
       const res = await fetch(`${API_URL}${API}/sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify(config),
       });
       if (!res.ok) throw new Error(await res.text());
       const data: DraftSession = await res.json();
       setSession(data);
+      picksRef.current = [];
+      saveSaved({ session_id: data.session_id, config, picks: [] });
       return data;
     } catch (e) {
       setError((e as Error).message);
@@ -36,12 +59,40 @@ export function useDraftSession() {
     setError(null);
     try {
       const res = await fetch(`${API_URL}${API}/sessions/${sessionId}`);
+      if (res.status === 404) {
+        // Session expired — caller is responsible for restore; don't surface as error
+        return null;
+      }
       if (!res.ok) throw new Error(await res.text());
       const data: DraftSession = await res.json();
       setSession(data);
       return data;
     } catch (e) {
       setError((e as Error).message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const restoreSession = useCallback(async (saved: SavedDraftSession) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${API_URL}${API}/sessions/restore`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...saved.config, picks_made: saved.picks }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data: DraftSession = await res.json();
+      setSession(data);
+      picksRef.current = [...saved.picks];
+      saveSaved({ ...saved, session_id: data.session_id });
+      return data;
+    } catch (e) {
+      setError((e as Error).message);
+      clearSaved();
       return null;
     } finally {
       setLoading(false);
@@ -75,6 +126,11 @@ export function useDraftSession() {
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setSession((prev) => prev ? { ...prev, ...data } : null);
+      const saved = loadSaved();
+      if (saved) {
+        picksRef.current = [...picksRef.current, playerId];
+        saveSaved({ ...saved, picks: picksRef.current });
+      }
       await refreshGrid();
     } catch (e) {
       setError((e as Error).message);
@@ -92,11 +148,20 @@ export function useDraftSession() {
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setSession((prev) => prev ? { ...prev, ...data } : null);
+      const saved = loadSaved();
+      if (saved) {
+        picksRef.current = picksRef.current.slice(0, -1);
+        saveSaved({ ...saved, picks: picksRef.current });
+      }
       await refreshGrid();
     } catch (e) {
       setError((e as Error).message);
     }
   }, [session, refreshGrid]);
 
-  return { session, grid, loading, error, createSession, connectSession, logPick, undoPick, refreshGrid };
+  return {
+    session, grid, loading, error,
+    createSession, connectSession, restoreSession,
+    logPick, undoPick, refreshGrid,
+  };
 }

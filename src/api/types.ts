@@ -494,6 +494,20 @@ export interface FranchiseDetailResponse {
 
 // --- Draft Board Types ---
 
+export interface DraftSessionConfig {
+  league_slug: string;
+  season: number;
+  my_team_id: string;
+  draft_order: Array<{ pick_number: number; team_id: string; round: number }>;
+  keepers: Array<{ team_id: string; player_id: number; round_cost: number }>;
+}
+
+export interface SavedDraftSession {
+  session_id: string;
+  config: DraftSessionConfig;
+  picks: number[];
+}
+
 export interface DraftPick {
   pick_number: number;
   team_id: string;
