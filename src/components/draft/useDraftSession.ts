@@ -84,15 +84,21 @@ export function useDraftSession() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...saved.config, picks_made: saved.picks }),
       });
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) {
+        // Server explicitly rejected the restore (4xx/5xx) — clear saved state
+        // since retrying with the same data won't help.
+        setError(await res.text());
+        clearSaved();
+        return null;
+      }
       const data: DraftSession = await res.json();
       setSession(data);
       picksRef.current = [...saved.picks];
       saveSaved({ ...saved, session_id: data.session_id });
       return data;
     } catch (e) {
+      // Network error — keep saved state intact so user can retry on reload
       setError((e as Error).message);
-      clearSaved();
       return null;
     } finally {
       setLoading(false);
