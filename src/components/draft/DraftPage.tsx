@@ -50,6 +50,7 @@ export function DraftPage() {
   // Initialised to true if there's a saved session so setup screen never flashes
   const [restoring, setRestoring] = useState(() => loadSaved() !== null);
   const [showRestartDialog, setShowRestartDialog] = useState(false);
+  const [pickingId, setPickingId] = useState<number | null>(null);
 
   // Load preload on mount
   useEffect(() => {
@@ -168,6 +169,16 @@ export function DraftPage() {
       await createSession(saved.config);
     }
   };
+
+  const handlePick = useCallback(async (playerId: number) => {
+    setPickingId(playerId);
+    setCandidates((prev) => prev.filter((c) => c.player_id !== playerId));
+    await logPick(playerId);
+    setPickingId(null);
+    // Always reload after pick: on failure this restores the optimistically-removed
+    // player; on success the useEffect on session.picks_made also fires (idempotent).
+    await loadRecommendations();
+  }, [logPick, loadRecommendations]);
 
   // Auth gate
   if (!authed) return <Navigate to="/lab" replace />;
@@ -311,7 +322,7 @@ export function DraftPage() {
               <button onClick={loadRecommendations} className="px-2 py-0.5 bg-red-600 text-white rounded hover:bg-red-700 shrink-0">Retry</button>
             </div>
           )}
-          <BestAvailable candidates={candidates} onPick={logPick} />
+          <BestAvailable candidates={candidates} onPick={handlePick} disabled={pickingId !== null} />
         </div>
       </div>
 
