@@ -3,7 +3,7 @@ import { API_URL } from "../../api/client";
 import type { DraftSession, DraftPick, DraftSessionConfig, SavedDraftSession } from "../../api/types";
 
 const API = "/api/draft";
-const STORAGE_KEY = "draft_session";
+const STORAGE_KEY = "draft_session_v2";
 
 export function loadSaved(): SavedDraftSession | null {
   try {
