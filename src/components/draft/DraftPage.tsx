@@ -3,11 +3,9 @@ import { Navigate } from "react-router-dom";
 import { DraftGrid } from "./DraftGrid";
 import { BestAvailable } from "./BestAvailable";
 import { TeamProfile } from "./TeamProfile";
-import { useDraftSession } from "./useDraftSession";
+import { useDraftSession, loadSaved } from "./useDraftSession";
 import { API_URL } from "../../api/client";
-import type { DraftCandidate, DraftPreload, DraftPreloadTeam } from "../../api/types";
-
-const SESSION_KEY = "draft_session_id";
+import type { DraftCandidate, DraftPreload, DraftPreloadTeam, DraftSessionConfig } from "../../api/types";
 
 interface TeamProfileResponse {
   recommendations: DraftCandidate[];
@@ -34,7 +32,7 @@ function generateDraftOrder(orderedTeams: DraftPreloadTeam[], numRounds: number)
 
 export function DraftPage() {
   const authed = localStorage.getItem("fa_auth_lab") === "true";
-  const { session, grid, loading, error, logPick, undoPick, refreshGrid, connectSession, createSession } = useDraftSession();
+  const { session, grid, loading, error, logPick, undoPick, refreshGrid, connectSession, createSession, restoreSession } = useDraftSession();
   const [candidates, setCandidates] = useState<DraftCandidate[]>([]);
   const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
   const [teamNames, setTeamNames] = useState<Record<string, string>>({});
@@ -45,9 +43,13 @@ export function DraftPage() {
   const [preloadLoading, setPreloadLoading] = useState(false);
   const [preloadError, setPreloadError] = useState<string | null>(null);
 
-  // Draft setup state
   const [orderedTeams, setOrderedTeams] = useState<DraftPreloadTeam[]>([]);
   const [myTeamKey, setMyTeamKey] = useState("");
+
+  // restoring=true while we're attempting auto-reconnect/restore on mount
+  // Initialised to true if there's a saved session so setup screen never flashes
+  const [restoring, setRestoring] = useState(() => loadSaved() !== null);
+  const [showRestartDialog, setShowRestartDialog] = useState(false);
 
   // Load preload on mount
   useEffect(() => {
@@ -71,9 +73,7 @@ export function DraftPage() {
           return next;
         });
 
-        // Use preloaded draft order (round 1 picks) if available, else default
         if (data.draft_order.length > 0) {
-          // Use round-1 picks as the authoritative order
           const round1 = data.draft_order.filter((p) => p.round === 1).sort((a, b) => a.pick_number - b.pick_number);
           const teamMap = Object.fromEntries(data.teams.map((t) => [t.team_key, t]));
           const ordered = round1.map((p) => teamMap[p.team_key]).filter(Boolean) as DraftPreloadTeam[];
@@ -90,16 +90,24 @@ export function DraftPage() {
     fetchPreload();
   }, []);
 
-  // Try to reconnect saved session on mount
+  // Auto-restore saved session on mount
   useEffect(() => {
-    const saved = localStorage.getItem(SESSION_KEY);
-    if (saved && !session) connectSession(saved);
+    const saved = loadSaved();
+    if (!saved || session) {
+      setRestoring(false);
+      return;
+    }
+    const tryResume = async () => {
+      const result = await connectSession(saved.session_id);
+      if (result === null) {
+        // Server restarted and lost the session — rebuild it from saved picks
+        await restoreSession(saved);
+      }
+      setRestoring(false);
+    };
+    tryResume();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (session?.session_id) localStorage.setItem(SESSION_KEY, session.session_id);
-  }, [session?.session_id]);
 
   const loadRecommendations = useCallback(async () => {
     if (!session) return;
@@ -136,34 +144,43 @@ export function DraftPage() {
   const handleStart = async () => {
     if (!preload || !myTeamKey) return;
     const numRounds = preload.num_rounds || 24;
-
-    // Prefer preloaded draft order (from DB); fall back to computed from team order
     const order = preload.draft_order.length > 0
       ? preload.draft_order.map((p) => ({ pick_number: p.pick_number, team_id: p.team_key, round: p.round }))
       : generateDraftOrder(orderedTeams, numRounds);
-
-    const keepers = preload.keepers.map((k) => ({
-      team_id: k.team_key,
-      player_id: k.player_id,
-      round_cost: k.round_cost,
-    }));
-
-    await createSession({
+    const config: DraftSessionConfig = {
       league_slug: "baseball",
       season: preload.season,
       my_team_id: myTeamKey,
       draft_order: order,
-      keepers,
-    });
+      keepers: preload.keepers.map((k) => ({
+        team_id: k.team_key,
+        player_id: k.player_id,
+        round_cost: k.round_cost,
+      })),
+    };
+    await createSession(config);
   };
 
-  const handleClearSession = () => {
-    localStorage.removeItem(SESSION_KEY);
-    window.location.reload();
+  const handleNewSession = async () => {
+    const saved = loadSaved();
+    setShowRestartDialog(false);
+    if (saved) {
+      await createSession(saved.config);
+    }
   };
 
-  // Auth gate (after all hooks to satisfy Rules of Hooks)
+  // Auth gate
   if (!authed) return <Navigate to="/lab" replace />;
+
+  // ---- Restoring state ----
+  if (restoring) {
+    return (
+      <div className="p-6 max-w-xl mx-auto">
+        <h1 className="text-2xl font-bold mb-5">Draft Board</h1>
+        <p className="text-gray-500 text-sm">Restoring session...</p>
+      </div>
+    );
+  }
 
   // ---- Setup screen ----
   if (!session) {
@@ -188,7 +205,6 @@ export function DraftPage() {
               {preload.keepers.length > 0 && ` · ${preload.keepers.length} keepers`}
             </p>
 
-            {/* Team picker */}
             <div>
               <label className="block text-sm font-semibold mb-2">Select your team</label>
               <div className="space-y-1">
@@ -234,6 +250,32 @@ export function DraftPage() {
 
   return (
     <div className="h-screen flex flex-col">
+      {/* Restart confirmation dialog */}
+      {showRestartDialog && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 shadow-xl w-80">
+            <h2 className="text-lg font-bold mb-2">Restart Draft</h2>
+            <p className="text-sm text-gray-600 mb-4">
+              Start over from pick 1 with the same teams and keepers?
+            </p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setShowRestartDialog(false)}
+                className="px-4 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
+              >
+                Continue
+              </button>
+              <button
+                onClick={handleNewSession}
+                className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Start New Session
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between px-3 py-1.5 border-b bg-white text-sm shrink-0">
         <div className="flex items-center gap-3">
           <span className="font-bold">Pick {currentPick?.pick_number ?? "—"}</span>
@@ -246,7 +288,7 @@ export function DraftPage() {
         </div>
         <div className="flex gap-2">
           <button onClick={undoPick} className="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 text-xs">Undo</button>
-          <button onClick={handleClearSession} className="px-3 py-1 text-red-600 bg-red-50 rounded hover:bg-red-100 text-xs">New Session</button>
+          <button onClick={() => setShowRestartDialog(true)} className="px-3 py-1 text-red-600 bg-red-50 rounded hover:bg-red-100 text-xs">Restart</button>
         </div>
       </div>
 
