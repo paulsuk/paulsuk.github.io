@@ -60,8 +60,6 @@ export default function RankingsPage() {
   if (configLoading) return <LoadingSpinner />;
   if (configError || !config) return <ErrorBanner message={configError ?? "Failed to load config"} />;
 
-  // TODO: player detail page is broken — clicking a player does nothing for now.
-
   return (
     <div>
       <RankingsControls

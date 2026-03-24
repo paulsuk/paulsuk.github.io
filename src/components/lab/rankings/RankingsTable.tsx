@@ -1,5 +1,6 @@
 // web/src/components/lab/rankings/RankingsTable.tsx
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { RankingsPlayer } from "../../../api/types";
 
 // Columns to display per sport — must match backend stat keys exactly
@@ -49,6 +50,7 @@ interface Props {
 }
 
 export default function RankingsTable({ sport, players, search }: Props) {
+  const navigate = useNavigate();
   const [sortCol, setSortCol] = useState<string>("rank");
   const [sortAsc, setSortAsc] = useState(true);
   const [page, setPage] = useState(1);
@@ -140,7 +142,11 @@ export default function RankingsTable({ sport, players, search }: Props) {
           </thead>
           <tbody className="divide-y divide-gray-50">
             {paginated.map((p, i) => (
-              <tr key={p.player_id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}>
+              <tr
+                key={p.player_id}
+                className={`${i % 2 === 0 ? "bg-white" : "bg-gray-50/50"} cursor-pointer hover:bg-blue-50/40`}
+                onClick={() => navigate(`/lab/players/${sport}/${p.player_id}`)}
+              >
                 <td className="px-3 py-2 text-gray-400 tabular-nums">{p.rank}</td>
                 <td className="px-3 py-2 font-medium text-gray-900">{p.name}</td>
                 <td className="px-3 py-2 text-gray-500">{p.team ?? "—"}</td>
