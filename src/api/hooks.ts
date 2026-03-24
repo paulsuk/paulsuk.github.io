@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { API_URL, clearCache, fetchApi } from "./client";
-import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail } from "./types";
+import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -151,4 +151,10 @@ export function useArticle(slug: string, articleId: string | undefined) {
     : null;
 
   return { data: detail, loading, error };
+}
+
+export function useTeamAnalysis(sport: string | null) {
+  return useApiData<TeamAnalysisResponse>(
+    sport ? `/api/lab/${sport}/team-analysis` : null
+  );
 }

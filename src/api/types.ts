@@ -568,3 +568,32 @@ export interface DraftPreload {
   num_rounds: number;
   num_teams: number;
 }
+
+// Team analysis
+
+export interface TeamRosterPlayer {
+  player_id: number;
+  name: string;
+  positions: string | null;
+  value: number | null;
+  stats: Record<string, number | null>;
+}
+
+export interface TeamAnalysisTeam {
+  team_id: string;
+  team_name: string;
+  manager_name: string | null;
+  team_value: number;
+  expected_wins: number;
+  category_win_probs: Record<string, number>;
+  category_totals: Record<string, number>;
+  category_ranks: Record<string, number>;
+  category_tiers: Record<string, string>;
+  roster: TeamRosterPlayer[];
+}
+
+export interface TeamAnalysisResponse {
+  season: number;
+  sport: string;
+  teams: TeamAnalysisTeam[];
+}
