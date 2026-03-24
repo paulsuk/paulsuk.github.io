@@ -8,8 +8,7 @@ import ErrorBanner from "../../shared/ErrorBanner";
 export default function TeamsPage() {
   const { sport = "mlb" } = useParams<{ sport: string }>();
   const { data, loading, error } = useTeamAnalysis(sport);
-  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
-  void setSelectedTeamId; // Task 10 will wire click handlers
+  const [selectedTeamId] = useState<string | null>(null);
 
   if (loading) return <LoadingSpinner />;
   if (error || !data) return <ErrorBanner message={error ?? "Failed to load team analysis"} />;
