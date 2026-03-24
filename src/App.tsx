@@ -14,6 +14,7 @@ const FranchiseDetailPage = lazy(() => import("./components/franchise/FranchiseD
 const RankingsPage = lazy(() => import("./components/lab/rankings/RankingsPage"));
 const PlayerDetailPage = lazy(() => import("./components/lab/players/PlayerDetailPage"));
 const DraftPage = lazy(() => import("./components/draft/DraftPage").then(m => ({ default: m.DraftPage })));
+const TeamsPage = lazy(() => import("./components/lab/teams/TeamsPage"));
 const ResearchPage = lazy(() => import("./components/lab/ResearchPage"));
 const ResearchArticlePage = lazy(() => import("./components/lab/ResearchArticlePage"));
 
@@ -27,6 +28,7 @@ export default function App() {
             <Route index element={<Navigate to="rankings/mlb" replace />} />
             <Route path="rankings/:sport" element={<RankingsPage />} />
             <Route path="players/:sport/:id" element={<PlayerDetailPage />} />
+            <Route path="teams/:sport" element={<TeamsPage />} />
             <Route path="research" element={<ResearchPage />} />
             <Route path="research/:articleId" element={<ResearchArticlePage />} />
           </Route>
