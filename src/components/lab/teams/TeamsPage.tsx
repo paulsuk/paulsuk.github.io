@@ -5,6 +5,7 @@ import type { TeamAnalysisTeam } from "../../../api/types";
 import LoadingSpinner from "../../shared/LoadingSpinner";
 import ErrorBanner from "../../shared/ErrorBanner";
 import TeamsOverview from "./TeamsOverview";
+import TeamDetail from "./TeamDetail";
 
 export default function TeamsPage() {
   const { sport = "mlb" } = useParams<{ sport: string }>();
@@ -14,10 +15,8 @@ export default function TeamsPage() {
   if (loading) return <LoadingSpinner />;
   if (error || !data) return <ErrorBanner message={error ?? "Failed to load team analysis"} />;
 
-  // selectedTeam consumed in Task 11 (TeamDetail)
   const selectedTeam: TeamAnalysisTeam | null =
     data.teams.find((t) => t.team_id === selectedTeamId) ?? null;
-  void selectedTeam;
 
   return (
     <div>
@@ -27,6 +26,9 @@ export default function TeamsPage() {
         selectedTeamId={selectedTeamId}
         onSelect={(id) => setSelectedTeamId((prev) => prev === id ? null : id)}
       />
+      {selectedTeam && (
+        <TeamDetail team={selectedTeam} onClose={() => setSelectedTeamId(null)} />
+      )}
     </div>
   );
 }
