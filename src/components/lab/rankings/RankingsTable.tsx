@@ -142,13 +142,16 @@ export default function RankingsTable({ sport, players, search }: Props) {
           </thead>
           <tbody className="divide-y divide-gray-50">
             {paginated.map((p, i) => (
-              <tr
-                key={p.player_id}
-                className={`${i % 2 === 0 ? "bg-white" : "bg-gray-50/50"} cursor-pointer hover:bg-blue-50/40`}
-                onClick={() => navigate(`/lab/players/${sport}/${p.player_id}`)}
-              >
+              <tr key={p.player_id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}>
                 <td className="px-3 py-2 text-gray-400 tabular-nums">{p.rank}</td>
-                <td className="px-3 py-2 font-medium text-gray-900">{p.name}</td>
+                <td className="px-3 py-2">
+                  <button
+                    onClick={() => navigate(`/lab/players/${sport}/${p.player_id}`)}
+                    className="font-medium text-gray-900 hover:text-blue-600 hover:underline text-left"
+                  >
+                    {p.name}
+                  </button>
+                </td>
                 <td className="px-3 py-2 text-gray-500">{p.team ?? "—"}</td>
                 <td className="px-3 py-2 text-gray-500 text-xs">{p.positions ?? "—"}</td>
                 <td className="px-3 py-2 stat-value text-blue-700">{p.value.toFixed(2)}</td>
