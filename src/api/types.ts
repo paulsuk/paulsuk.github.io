@@ -598,3 +598,12 @@ export interface TeamAnalysisResponse {
   sport: string;
   teams: TeamAnalysisTeam[];
 }
+
+export interface TeamProfileResponse {
+  recommendations: DraftCandidate[];
+  team_profile: {
+    category_totals: Record<string, number>;
+    category_ranks: Record<string, number>;
+    category_tiers: Record<string, string>;
+  };
+}

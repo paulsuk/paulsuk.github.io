@@ -5,16 +5,8 @@ import { BestAvailable } from "./BestAvailable";
 import { TeamProfile } from "./TeamProfile";
 import { useDraftSession, loadSaved } from "./useDraftSession";
 import { API_URL } from "../../api/client";
-import type { DraftCandidate, DraftPreload, DraftPreloadTeam, DraftSessionConfig } from "../../api/types";
-
-interface TeamProfileResponse {
-  recommendations: DraftCandidate[];
-  team_profile: {
-    category_totals: Record<string, number>;
-    category_ranks: Record<string, number>;
-    category_tiers: Record<string, string>;
-  };
-}
+import type { DraftCandidate, DraftPreload, DraftPreloadTeam, DraftSessionConfig, TeamProfileResponse } from "../../api/types";
+import { useSport } from "../../context/SportContext";
 
 function generateDraftOrder(orderedTeams: DraftPreloadTeam[], numRounds: number) {
   const picks = [];
@@ -31,6 +23,7 @@ function generateDraftOrder(orderedTeams: DraftPreloadTeam[], numRounds: number)
 }
 
 export function DraftPage() {
+  const { slug } = useSport();
   const authed = localStorage.getItem("fa_auth_lab") === "true";
   const { session, grid, loading, error, logPick, undoPick, refreshGrid, connectSession, createSession, restoreSession } = useDraftSession();
   const [candidates, setCandidates] = useState<DraftCandidate[]>([]);
@@ -57,7 +50,7 @@ export function DraftPage() {
     const fetchPreload = async () => {
       setPreloadLoading(true);
       try {
-        const res = await fetch(`${API_URL}/api/draft/preload/baseball`);
+        const res = await fetch(`${API_URL}/api/draft/preload/${slug}`);
         if (!res.ok) throw new Error(await res.text());
         const data: DraftPreload = await res.json();
         setPreload(data);
@@ -149,7 +142,7 @@ export function DraftPage() {
       ? preload.draft_order.map((p) => ({ pick_number: p.pick_number, team_id: p.team_key, round: p.round }))
       : generateDraftOrder(orderedTeams, numRounds);
     const config: DraftSessionConfig = {
-      league_slug: "baseball",
+      league_slug: slug,
       season: preload.season,
       my_team_id: myTeamKey,
       draft_order: order,
