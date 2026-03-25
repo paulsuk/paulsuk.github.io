@@ -16,8 +16,12 @@ function winProbColor(p: number): string {
 export default function TeamsOverview({ teams, selectedTeamId, onSelect }: Props) {
   if (!teams.length) return <p className="text-meta">No team data available.</p>;
 
-  // Infer category order from the first team's category_win_probs
-  const cats = Object.keys(teams[0].category_win_probs);
+  const CAT_ORDER = ["R", "HR", "RBI", "SB", "AVG", "OPS", "W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
+  const allCats = Object.keys(teams[0].category_win_probs);
+  const cats = [
+    ...CAT_ORDER.filter((c) => allCats.includes(c)),
+    ...allCats.filter((c) => !CAT_ORDER.includes(c)),
+  ];
 
   return (
     <div className="overflow-x-auto rounded-lg border border-gray-100">

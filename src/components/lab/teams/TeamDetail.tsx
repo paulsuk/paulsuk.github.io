@@ -12,7 +12,7 @@ const TIER_COLORS: Record<string, string> = {
   punt:        "bg-red-400",
 };
 
-const ROSTER_COLS = ["HR", "R", "RBI", "SB", "AVG", "OPS", "W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
+const ROSTER_COLS = ["R", "HR", "RBI", "SB", "AVG", "OPS", "W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
 
 function fmtStat(v: number | null | undefined): string {
   if (v == null) return "—";
@@ -21,8 +21,14 @@ function fmtStat(v: number | null | undefined): string {
   return v.toFixed(3);
 }
 
+const CAT_ORDER = ["R", "HR", "RBI", "SB", "AVG", "OPS", "W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
+
 export default function TeamDetail({ team, onClose }: Props) {
-  const cats = Object.keys(team.category_win_probs);
+  const allCats = Object.keys(team.category_win_probs);
+  const cats = [
+    ...CAT_ORDER.filter((c) => allCats.includes(c)),
+    ...allCats.filter((c) => !CAT_ORDER.includes(c)),
+  ];
 
   return (
     <div className="mt-4 border border-gray-200 rounded-lg p-4 bg-white">
