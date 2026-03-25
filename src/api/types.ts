@@ -587,6 +587,7 @@ export interface TeamAnalysisTeam {
   expected_wins: number;
   category_win_probs: Record<string, number>;
   category_totals: Record<string, number>;
+  category_weekly: Record<string, number>;
   category_ranks: Record<string, number>;
   category_tiers: Record<string, string>;
   roster: TeamRosterPlayer[];

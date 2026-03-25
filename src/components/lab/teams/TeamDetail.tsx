@@ -48,31 +48,45 @@ export default function TeamDetail({ team, onClose }: Props) {
         </button>
       </div>
 
-      {/* Category bars */}
+      {/* Category breakdown */}
       <div className="mb-5">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
-          Category Win Probability
-        </h3>
-        <div className="space-y-1">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            Category Breakdown
+          </h3>
+          <span className="text-xs text-gray-400">win% · rank · /wk projection</span>
+        </div>
+        <div className="space-y-1.5">
           {cats.map((cat) => {
             const prob = team.category_win_probs[cat] ?? 0;
             const tier = team.category_tiers[cat] ?? "swing";
             const rank = team.category_ranks[cat];
+            const weekly = team.category_weekly?.[cat];
+            const isRate = ["AVG", "ERA", "WHIP", "OPS", "K/9", "FG%", "FT%"].includes(cat);
+            const weeklyFmt = weekly == null ? "—"
+              : weekly >= 10  ? weekly.toFixed(1)
+              : weekly >= 1   ? weekly.toFixed(2)
+              : weekly.toFixed(3);
             return (
               <div key={cat} className="flex items-center gap-2">
                 <span className="text-xs text-gray-500 w-12 text-right shrink-0">{cat}</span>
-                <div className="flex-1 bg-gray-100 rounded h-3 overflow-hidden">
+                <div className="flex-1 bg-gray-100 rounded h-2.5 overflow-hidden">
                   <div
                     className={`h-full rounded ${TIER_COLORS[tier] ?? "bg-gray-400"}`}
                     style={{ width: `${(prob * 100).toFixed(0)}%` }}
                   />
                 </div>
-                <span className="text-xs tabular-nums text-gray-600 w-8">
+                <span className="text-xs tabular-nums text-gray-700 font-medium w-8">
                   {(prob * 100).toFixed(0)}%
                 </span>
-                {rank != null && (
-                  <span className="text-xs text-gray-400 w-10">#{rank}</span>
+                {rank != null ? (
+                  <span className="text-xs font-semibold text-gray-500 w-6">#{rank}</span>
+                ) : (
+                  <span className="w-6" />
                 )}
+                <span className="text-xs tabular-nums text-gray-400 w-16 text-right">
+                  {isRate ? weeklyFmt : `${weeklyFmt}/wk`}
+                </span>
               </div>
             );
           })}
