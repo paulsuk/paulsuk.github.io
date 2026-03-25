@@ -51,7 +51,7 @@ export default function ArticleContent({ content, slug }: ArticleContentProps) {
         );
       }
 
-      return <img src={resolvedSrc} alt={alt ?? ""} {...props} />;
+      return <img src={resolvedSrc} alt={alt ?? ""} onError={(e) => { e.currentTarget.style.display = "none"; }} {...props} />;
     },
     h2: ({ children }) => {
       const hasLogo = hasLogoChild(children);
