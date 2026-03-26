@@ -1,13 +1,13 @@
 import { useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useFranchiseDetail } from "../../api/hooks";
-import { useSport } from "../../context/SportContext";
-import type { FranchiseSeasonRecord, TransactionCount, Trade, SeasonKeepers } from "../../api/types";
+import type { FranchiseSeasonRecord, TransactionCount, Trade, SeasonKeepers, ScoringMode } from "../../api/types";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import RosterTab from "./RosterTab";
 import FranchiseOverview from "./FranchiseOverview";
 import { getMedals, getChampionshipYears } from "../../utils/records-helpers";
+import { defaultScoringMode } from "../../utils/sport-config";
 
 type ViewScope = "franchise" | "manager";
 type DetailTab = "overview" | "roster";
@@ -15,7 +15,7 @@ type DetailTab = "overview" | "roster";
 export default function FranchiseDetailPage() {
   const { slug, franchiseId } = useParams<{ slug: string; franchiseId: string }>();
   const { data, loading, error } = useFranchiseDetail(slug!, franchiseId!);
-  const { scoringMode, setScoringMode } = useSport();
+  const [scoringMode, setScoringMode] = useState<ScoringMode>(() => defaultScoringMode(slug!));
   const [viewScope, setViewScope] = useState<ViewScope>("franchise");
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
   const [rosterSeason, setRosterSeason] = useState<number | null>(null);
