@@ -8,8 +8,6 @@ interface SeasonOverviewProps {
 }
 
 export default function SeasonOverview({ recap, scoringMode }: SeasonOverviewProps) {
-  const leader = recap.standings[0];
-  const topProfile = recap.profiles[0];
 
   return (
     <Card title={`Season Overview — Week ${recap.week}`}>
@@ -50,21 +48,6 @@ export default function SeasonOverview({ recap, scoringMode }: SeasonOverviewPro
           </table>
         </div>
 
-        {/* Quick highlights */}
-        {leader && topProfile && (
-          <div className="flex flex-wrap gap-4 pt-2 text-sm text-gray-600">
-            <span>
-              <span className="font-medium text-gray-900">#{topProfile.rank}</span>{" "}
-              {topProfile.team_name} ({topProfile.manager})
-              {topProfile.streak > 0 && (
-                <span className="ml-1 text-green-600">W{topProfile.streak}</span>
-              )}
-              {topProfile.streak < 0 && (
-                <span className="ml-1 text-red-600">L{Math.abs(topProfile.streak)}</span>
-              )}
-            </span>
-          </div>
-        )}
       </div>
     </Card>
   );
