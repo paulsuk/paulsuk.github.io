@@ -76,13 +76,12 @@ export interface TeamProfile {
   last_3: string[];
   cat_strengths: string[];
   cat_weaknesses: string[];
-  mvp_name: string;
-  mvp_z: number;
   season_mvp_name: string;
-  season_mvp_z: number;
-  opponent_name: string | null;
-  h2h_record: string | null;
-  franchise_id?: string | null;
+  season_mvp_pscore: number;
+  pscore?: number;
+  franchise_id?: string;
+  opponent_name?: string;
+  h2h_record?: string;
 }
 
 export interface RecapResponse {
