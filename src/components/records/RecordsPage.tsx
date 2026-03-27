@@ -18,8 +18,8 @@ type ViewMode = "manager" | "franchise";
 export default function RecordsPage() {
   const { slug, scoringMode, setScoringMode } = useSport();
   const [tab, setTab] = useState<Tab>("teams");
-  const [currentOnly, setCurrentOnly] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>("manager");
+  const [currentOnly, setCurrentOnly] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>("franchise");
 
   const { data: managersData, loading: mLoading, error: mError } = useManagers(slug);
 
@@ -87,11 +87,11 @@ export default function RecordsPage() {
             <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600">
               <input
                 type="checkbox"
-                checked={currentOnly}
-                onChange={(e) => setCurrentOnly(e.target.checked)}
+                checked={!currentOnly}
+                onChange={(e) => setCurrentOnly(!e.target.checked)}
                 className="rounded border-gray-300"
               />
-              Current only
+              Show previous managers
             </label>
           )}
         </div>

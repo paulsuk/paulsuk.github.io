@@ -132,7 +132,7 @@ export default function EntityCard({
               to={`/${slug}/franchise/${franchiseId ?? id}`}
               className="mt-3 inline-block text-sm font-medium text-gray-500 hover:text-gray-900"
             >
-              View Details &rarr;
+              View Franchise Details &rarr;
             </Link>
           )}
         </div>

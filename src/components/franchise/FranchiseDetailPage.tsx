@@ -183,7 +183,7 @@ export default function FranchiseDetailPage() {
           isBaseball={isBaseball}
           selectedSeason={rosterSeason}
           onSeasonChange={setRosterSeason}
-          seasons={filteredRecords.map((sr: FranchiseSeasonRecord) => sr.season)}
+          seasons={overview.seasons}
           slug={slug!}
         />
       )}
