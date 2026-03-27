@@ -37,9 +37,6 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
 
       {/* Matchups */}
       <div>
-        <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Matchups
-        </h4>
         <div className="space-y-1">
           {recap.matchups.map((m) => (
             <div key={`${m.team_1_manager}-${m.team_2_manager}`} className="text-xs">

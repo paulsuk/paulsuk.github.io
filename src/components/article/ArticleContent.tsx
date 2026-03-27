@@ -21,9 +21,12 @@ function isLogoSrc(src: string): boolean {
  *   ## ![alt](assets/logo-...) 1. Team Name\n
  */
 function mergeLogosIntoHeadings(md: string): string {
+  // Numbered heading (e.g. "## 1. Team Name") → "## 1. [logo] Team Name"
+  // Unnumbered heading → "## [logo] Team Name"
   return md.replace(
-    /(^#{1,6}\s+)(.+)\n\n(!\[[^\]]*\]\(assets\/logo-[^)]+\))\n/gm,
-    "$1$3 $2\n"
+    /(^#{1,6}\s+)(\d+\.\s+)?(.+)\n\n?(!\[[^\]]*\]\(assets\/logo-[^)]+\))\n/gm,
+    (_, hashes, num, title, logo) =>
+      num ? `${hashes}${num}${logo} ${title}\n` : `${hashes}${logo} ${title}\n`
   );
 }
 
@@ -55,9 +58,24 @@ export default function ArticleContent({ content, slug }: ArticleContentProps) {
     },
     h2: ({ children }) => {
       const hasLogo = hasLogoChild(children);
+      if (!hasLogo) return <h2>{children}</h2>;
+
+      // If heading starts with "N. ", strip the prefix and store rank as data-rank.
+      // The badge is rendered via CSS ::before — no span needed.
+      const arr = Array.isArray(children) ? children : [children];
+      const first = arr[0];
+      // numMatch[0] = full "1. " prefix, numMatch[1] = digit "1"
+      const numMatch = typeof first === "string" ? first.match(/^(\d+)\.\s*/) : null;
+
+      if (!numMatch) {
+        return <h2 className="article-team-heading">{children}</h2>;
+      }
+
+      const afterNum = (first as string).slice(numMatch[0].length);
+      const remaining = [...(afterNum ? [afterNum] : []), ...arr.slice(1)];
       return (
-        <h2 className={hasLogo ? "article-team-heading" : undefined}>
-          {children}
+        <h2 className="article-team-heading" data-rank={numMatch[1]}>
+          {remaining}
         </h2>
       );
     },

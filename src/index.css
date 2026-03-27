@@ -96,15 +96,42 @@
 }
 
 .article-content h2 .team-logo {
-  @apply h-9 w-9;
+  @apply flex-shrink-0;
+  height: 4.25rem !important;  /* ~68px */
+  width: 4.25rem !important;
 }
 
 /* Article content — team headings (h2 with logo, power rankings) */
 .article-content .article-team-heading {
-  @apply flex items-center gap-2.5 border-b-2 border-gray-800 pb-2 text-lg font-extrabold tracking-tight text-gray-900;
+  @apply flex items-center gap-3 border-b-2 border-gray-800 pb-3 text-xl font-extrabold tracking-tight text-gray-900;
   margin-top: 2.5rem !important;
   padding-top: 2rem !important;
   border-top: 1px solid #e5e7eb;
+}
+
+/* Rank badge — rendered as ::before on the h2, populated from data-rank */
+.article-content .article-team-heading[data-rank]::before {
+  content: attr(data-rank);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background-color: #111827;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1rem;
+  line-height: 1;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-right: 0.25rem;
+}
+
+/* Metadata / P-Score line immediately after a team heading */
+.article-content .article-team-heading + p {
+  @apply text-xs font-semibold tracking-wide text-gray-500;
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.75rem !important;
 }
 
 .article-content .article-team-heading:first-child {

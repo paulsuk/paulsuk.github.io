@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useFranchiseDetail } from "../../api/hooks";
-import type { FranchiseSeasonRecord, TransactionCount, Trade, SeasonKeepers, ScoringMode } from "../../api/types";
+import type { TransactionCount, Trade, SeasonKeepers, ScoringMode } from "../../api/types";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import RosterTab from "./RosterTab";
