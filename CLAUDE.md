@@ -69,3 +69,11 @@ npx tsc --noEmit
 ```
 
 Zero TypeScript errors before committing. No exceptions.
+
+## CLAUDE.md Update Rule
+
+When making code changes, update this file if:
+- The hook interface contract changes (new return shape, new field conventions)
+- A new component pattern is established (new shared component location, new routing pattern)
+- The type placement rule is extended or a new type file is introduced
+- A new `<img>` handling pattern replaces `onError`
