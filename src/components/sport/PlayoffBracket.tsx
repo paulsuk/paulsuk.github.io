@@ -1,5 +1,4 @@
-import type { PlayoffMatchup } from "../../api/types";
-import type { PlayoffRound } from "../../api/types";
+import type { PlayoffMatchup, PlayoffRound } from "../../api/types";
 import Card from "../shared/Card";
 
 // ── Layout constants ────────────────────────────────────────────────────────
@@ -10,6 +9,8 @@ const GAP_INNER = 16;           // between matchups in same half
 const GAP_OUTER = 48;           // between bracket halves
 const CONN_W = 24;              // SVG connector column width
 const COL_W = 176;              // matchup box width
+const HEADER_H = 24;            // ColHeader height (text-xs 16px + mb-2 8px)
+const LABEL_H = 14;             // small label above finals boxes
 
 interface PlayoffBracketProps {
   rounds: PlayoffRound[];
@@ -40,7 +41,6 @@ function topSeed(m: PlayoffMatchup): number {
 // ── 8-team bracket layout (basketball) ──────────────────────────────────────
 
 function eightTeamLayout() {
-  // Quarter tops
   const qTops = [
     0,
     MATCH_H + GAP_INNER,
@@ -49,16 +49,15 @@ function eightTeamLayout() {
   ];
   const qCenters = qTops.map(t => center(t, MATCH_H));
 
-  // Semi tops: centered between quarter pair centers
   const sTops = [
     Math.round(midpoint(qCenters[0], qCenters[1]) - MATCH_H / 2),
     Math.round(midpoint(qCenters[2], qCenters[3]) - MATCH_H / 2),
   ];
   const sCenters = sTops.map(t => center(t, MATCH_H));
 
-  // Finals top: centered between semi centers
-  const fTop = Math.round(midpoint(sCenters[0], sCenters[1]) - MATCH_H / 2);
-  const f3Top = fTop + MATCH_H + GAP_OUTER;
+  // Add LABEL_H offset so there's room for the "Championship" label above the box
+  const fTop = Math.round(midpoint(sCenters[0], sCenters[1]) - MATCH_H / 2) + LABEL_H;
+  const f3Top = fTop + MATCH_H + GAP_OUTER + LABEL_H;
 
   const qHeight = qTops[3] + MATCH_H;
   const sHeight = sTops[1] + MATCH_H;
@@ -79,10 +78,8 @@ function eightTeamLayout() {
 // ── 6-team bracket layout (baseball) ─────────────────────────────────────────
 
 function sixTeamLayout() {
-  // Top half: bye slot then QM1
   const byeTop1 = 0;
   const qTop1 = BYE_H + GAP_INNER;
-  // Bottom half: bye slot then QM2
   const byeTop2 = qTop1 + MATCH_H + GAP_OUTER;
   const qTop2 = byeTop2 + BYE_H + GAP_INNER;
 
@@ -97,8 +94,8 @@ function sixTeamLayout() {
   ];
   const sCenters = sTops.map(t => center(t, MATCH_H));
 
-  const fTop = Math.round(midpoint(sCenters[0], sCenters[1]) - MATCH_H / 2);
-  const f3Top = fTop + MATCH_H + GAP_OUTER;
+  const fTop = Math.round(midpoint(sCenters[0], sCenters[1]) - MATCH_H / 2) + LABEL_H;
+  const f3Top = fTop + MATCH_H + GAP_OUTER + LABEL_H;
 
   const qHeight = qTop2 + MATCH_H;
   const sHeight = sTops[1] + MATCH_H;
@@ -138,9 +135,9 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
     ? [...finalsRound.matchups].sort((a, b) => topSeed(a) - topSeed(b))
     : [];
   const championship = finalsMatchups[0] ?? null;
-  const thirdPlace = finalsMatchups[1] ?? null;
+  // 3rd place is in consolation, not matchups
+  const thirdPlace = finalsRound?.consolation[0] ?? null;
 
-  // ── Labels ──────────────────────────────────────────────────────────────────
   const qLabel = quartersRound.round_label + ` — Wk ${quartersRound.week}`;
   const sLabel = semisRound ? semisRound.round_label + ` — Wk ${semisRound.week}` : "Semifinals";
   const fLabel = finalsRound ? finalsRound.round_label + ` — Wk ${finalsRound.week}` : "Finals";
@@ -149,12 +146,10 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
     const layout = sixTeamLayout();
     const { byeTop1, qTop1, byeTop2, qTop2, sTops, fTop, f3Top, totalHeight, qsLines, sfLines } = layout;
 
-    // Identify which QMs map to top/bottom half by seed
-    // Top half contains the lowest seed (seed 1 bye is top)
-    const qm1 = qMatchups[0]; // lower top seed → top half (3v6)
-    const qm2 = qMatchups[1] ?? null; // upper seeds → bottom half (4v5)
+    const qm1 = qMatchups[0] ?? null;
+    const qm2 = qMatchups[1] ?? null;
 
-    // Byes: seeds that appear in semis but not quarters
+    // Byes: seeds in semis that don't appear in quarters
     const quarterSeeds = new Set(qMatchups.flatMap(m => [m.team_1_seed, m.team_2_seed]));
     const semiSeeds = new Set(sMatchups.flatMap(m => [m.team_1_seed, m.team_2_seed]));
     const byeSeeds = [...semiSeeds].filter(s => !quarterSeeds.has(s)).sort((a, b) => (a ?? 99) - (b ?? 99));
@@ -167,37 +162,36 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
     return (
       <Card title="Playoff Bracket">
         <div className="overflow-x-auto pb-2">
-          <div className="flex items-start gap-0" style={{ minWidth: (COL_W + CONN_W) * 3 + COL_W }}>
-            {/* Quarters column */}
-            <div className="flex flex-col gap-0">
+          <div className="flex items-start" style={{ minWidth: (COL_W + CONN_W) * 3 + COL_W }}>
+            <div className="flex flex-col">
               <ColHeader label={qLabel} />
               <div className="relative" style={{ width: COL_W, height: totalHeight }}>
                 <ByeSlot top={byeTop1} seed={byeSeed1} />
-                {qm1 && <MatchupBox matchup={qm1} top={qTop1} />}
+                {qm1 ? <MatchupBox matchup={qm1} top={qTop1} /> : <TbdBox top={qTop1} />}
                 <ByeSlot top={byeTop2} seed={byeSeed2} />
-                {qm2 && <MatchupBox matchup={qm2} top={qTop2} />}
+                {qm2 ? <MatchupBox matchup={qm2} top={qTop2} /> : <TbdBox top={qTop2} />}
               </div>
             </div>
 
-            <ConnectorSvg height={totalHeight} lines={qsLines} />
+            <ConnectorWrapper height={totalHeight} lines={qsLines} />
 
-            {/* Semis column */}
-            <div className="flex flex-col gap-0">
+            <div className="flex flex-col">
               <ColHeader label={sLabel} />
               <div className="relative" style={{ width: COL_W, height: totalHeight }}>
-                {sm1 && <MatchupBox matchup={sm1} top={sTops[0]} />}
-                {sm2 && <MatchupBox matchup={sm2} top={sTops[1]} />}
+                {sm1 ? <MatchupBox matchup={sm1} top={sTops[0]} /> : <TbdBox top={sTops[0]} />}
+                {sm2 ? <MatchupBox matchup={sm2} top={sTops[1]} /> : <TbdBox top={sTops[1]} />}
               </div>
             </div>
 
-            <ConnectorSvg height={totalHeight} lines={sfLines} />
+            <ConnectorWrapper height={totalHeight} lines={sfLines} />
 
-            {/* Finals column */}
-            <div className="flex flex-col gap-0">
+            <div className="flex flex-col">
               <ColHeader label={fLabel} />
               <div className="relative" style={{ width: COL_W, height: totalHeight }}>
-                {championship && <MatchupBox matchup={championship} top={fTop} label="Championship" />}
-                {thirdPlace && <MatchupBox matchup={thirdPlace} top={f3Top} label="3rd Place" />}
+                <FinalsLabel top={fTop} text="Championship" />
+                {championship ? <MatchupBox matchup={championship} top={fTop} /> : <TbdBox top={fTop} />}
+                <FinalsLabel top={f3Top} text="3rd Place" />
+                {thirdPlace ? <MatchupBox matchup={thirdPlace} top={f3Top} /> : <TbdBox top={f3Top} />}
               </div>
             </div>
           </div>
@@ -216,9 +210,8 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
   return (
     <Card title="Playoff Bracket">
       <div className="overflow-x-auto pb-2">
-        <div className="flex items-start gap-0" style={{ minWidth: (COL_W + CONN_W) * 3 + COL_W }}>
-          {/* Quarters column */}
-          <div className="flex flex-col gap-0">
+        <div className="flex items-start" style={{ minWidth: (COL_W + CONN_W) * 3 + COL_W }}>
+          <div className="flex flex-col">
             <ColHeader label={qLabel} />
             <div className="relative" style={{ width: COL_W, height: totalHeight }}>
               {qMatchups.map((m, i) => (
@@ -227,25 +220,25 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
             </div>
           </div>
 
-          <ConnectorSvg height={totalHeight} lines={qsLines} />
+          <ConnectorWrapper height={totalHeight} lines={qsLines} />
 
-          {/* Semis column */}
-          <div className="flex flex-col gap-0">
+          <div className="flex flex-col">
             <ColHeader label={sLabel} />
             <div className="relative" style={{ width: COL_W, height: totalHeight }}>
-              {sm1 && <MatchupBox matchup={sm1} top={sTops[0]} />}
-              {sm2 && <MatchupBox matchup={sm2} top={sTops[1]} />}
+              {sm1 ? <MatchupBox matchup={sm1} top={sTops[0]} /> : <TbdBox top={sTops[0]} />}
+              {sm2 ? <MatchupBox matchup={sm2} top={sTops[1]} /> : <TbdBox top={sTops[1]} />}
             </div>
           </div>
 
-          <ConnectorSvg height={totalHeight} lines={sfLines} />
+          <ConnectorWrapper height={totalHeight} lines={sfLines} />
 
-          {/* Finals column */}
-          <div className="flex flex-col gap-0">
+          <div className="flex flex-col">
             <ColHeader label={fLabel} />
             <div className="relative" style={{ width: COL_W, height: totalHeight }}>
-              {championship && <MatchupBox matchup={championship} top={fTop} label="Championship" />}
-              {thirdPlace && <MatchupBox matchup={thirdPlace} top={f3Top} label="3rd Place" />}
+              <FinalsLabel top={fTop} text="Championship" />
+              {championship ? <MatchupBox matchup={championship} top={fTop} /> : <TbdBox top={fTop} />}
+              <FinalsLabel top={f3Top} text="3rd Place" />
+              {thirdPlace ? <MatchupBox matchup={thirdPlace} top={f3Top} /> : <TbdBox top={f3Top} />}
             </div>
           </div>
         </div>
@@ -259,10 +252,21 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
 function ColHeader({ label }: { label: string }) {
   return (
     <div
-      className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2 text-center"
-      style={{ width: COL_W }}
+      className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2 text-center whitespace-nowrap overflow-hidden"
+      style={{ width: COL_W, height: HEADER_H - 8 /* text height only; mb-2 provides the 8px gap */ }}
     >
       {label}
+    </div>
+  );
+}
+
+function FinalsLabel({ top, text }: { top: number; text: string }) {
+  return (
+    <div
+      className="absolute text-[10px] text-gray-400 px-1"
+      style={{ top: top - LABEL_H }}
+    >
+      {text}
     </div>
   );
 }
@@ -279,15 +283,18 @@ function ByeSlot({ top, seed }: { top: number; seed: number | null }) {
   );
 }
 
-function MatchupBox({
-  matchup: m,
-  top,
-  label,
-}: {
-  matchup: PlayoffMatchup;
-  top: number;
-  label?: string;
-}) {
+function TbdBox({ top }: { top: number }) {
+  return (
+    <div
+      className="absolute rounded border border-dashed border-gray-200 bg-white flex items-center justify-center"
+      style={{ top, width: COL_W, height: MATCH_H }}
+    >
+      <span className="text-xs text-gray-300 italic">TBD</span>
+    </div>
+  );
+}
+
+function MatchupBox({ matchup: m, top }: { matchup: PlayoffMatchup; top: number }) {
   const isComplete = m.winner !== null && !m.is_tied;
   const inProgress = !isComplete && (m.cats_won_1 > 0 || m.cats_won_2 > 0);
   const t1Won = m.winner === m.team_1_name;
@@ -302,9 +309,6 @@ function MatchupBox({
       className={`absolute rounded border ${borderClass} bg-white overflow-hidden`}
       style={{ top, width: COL_W, height: MATCH_H }}
     >
-      {label && (
-        <div className="text-[10px] text-gray-400 px-2 pt-0.5">{label}</div>
-      )}
       <TeamRow
         name={m.team_1_name}
         seed={m.team_1_seed}
@@ -324,8 +328,8 @@ function MatchupBox({
       />
       {isComplete && (
         <div
-          className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l"
-          style={{ backgroundColor: t1Won ? "rgb(34 197 94)" : "rgb(34 197 94)", top: t1Won ? 0 : ROW_H + 1, height: ROW_H }}
+          className="absolute left-0 w-0.5 rounded-l bg-green-500"
+          style={{ top: t1Won ? 0 : ROW_H + 1, height: ROW_H }}
         />
       )}
     </div>
@@ -371,28 +375,23 @@ function TeamRow({
   );
 }
 
-// ── SVG connector ─────────────────────────────────────────────────────────────
+// ── SVG connector (wrapped with header spacer so y-coords match box tops) ────
 
-function ConnectorSvg({ height, lines }: { height: number; lines: ConnectorLine[] }) {
+function ConnectorWrapper({ height, lines }: { height: number; lines: ConnectorLine[] }) {
   const mid = CONN_W / 2;
   return (
-    <svg
-      width={CONN_W}
-      height={height}
-      style={{ flexShrink: 0, overflow: "visible" }}
-    >
-      {lines.map((l, i) => (
-        <g key={i} stroke="#d1d5db" strokeWidth={1} fill="none">
-          {/* Stub from top source */}
-          <line x1={0} y1={l.from_y} x2={mid} y2={l.from_y} />
-          {/* Stub from bottom source */}
-          <line x1={0} y1={l.to_y} x2={mid} y2={l.to_y} />
-          {/* Vertical spine */}
-          <line x1={mid} y1={l.from_y} x2={mid} y2={l.to_y} />
-          {/* Output stub to next column */}
-          <line x1={mid} y1={l.output_y} x2={CONN_W} y2={l.output_y} />
-        </g>
-      ))}
-    </svg>
+    <div style={{ display: "flex", flexDirection: "column", flexShrink: 0 }}>
+      <div style={{ height: HEADER_H }} />
+      <svg width={CONN_W} height={height} style={{ overflow: "visible" }}>
+        {lines.map((l, i) => (
+          <g key={i} stroke="#d1d5db" strokeWidth={1} fill="none">
+            <line x1={0} y1={l.from_y} x2={mid} y2={l.from_y} />
+            <line x1={0} y1={l.to_y} x2={mid} y2={l.to_y} />
+            <line x1={mid} y1={l.from_y} x2={mid} y2={l.to_y} />
+            <line x1={mid} y1={l.output_y} x2={CONN_W} y2={l.output_y} />
+          </g>
+        ))}
+      </svg>
+    </div>
   );
 }

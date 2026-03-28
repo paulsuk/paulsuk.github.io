@@ -70,25 +70,27 @@ export default function SportPage() {
         />
       </div>
 
-      {recapLoading && <LoadingSpinner />}
-      {recapError && <ErrorBanner message={recapError} />}
-
-      {recap && (
+      {recapLoading ? (
+        <LoadingSpinner />
+      ) : (
         <>
-          <SeasonOverview recap={recap} scoringMode={scoringMode} />
-          <RankingsSection profiles={recap.profiles} season={selectedSeason ?? recap.season} />
+          {recapError && <ErrorBanner message={recapError} />}
+          {recap && (
+            <>
+              <SeasonOverview recap={recap} scoringMode={scoringMode} />
+              <RankingsSection profiles={recap.profiles} season={selectedSeason ?? recap.season} />
+            </>
+          )}
+          {isFinished && playoffData && playoffData.rounds.length > 0 && (
+            <PlayoffBracket
+              rounds={playoffData.rounds}
+              totalRounds={playoffData.rounds.length}
+              slug={slug!}
+            />
+          )}
+          <ArticleFeed articles={articles} slug={slug!} />
         </>
       )}
-
-      {isFinished && playoffData && playoffData.rounds.length > 0 && (
-        <PlayoffBracket
-          rounds={playoffData.rounds}
-          totalRounds={playoffData.rounds.length}
-          slug={slug!}
-        />
-      )}
-
-      <ArticleFeed articles={articles} slug={slug!} />
     </div>
   );
 }
