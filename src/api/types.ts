@@ -575,8 +575,10 @@ export interface TeamRosterPlayer {
   player_id: number;
   name: string;
   positions: string | null;
+  player_type: "batter" | "pitcher";
   value: number | null;
   stats: Record<string, number | null>;
+  category_scores: Record<string, number>;
 }
 
 export interface TeamAnalysisTeam {
