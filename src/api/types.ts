@@ -249,6 +249,7 @@ export interface PlayoffMatchup {
 
 export interface PlayoffRound {
   week: number;
+  round_label: string;
   matchups: PlayoffMatchup[];
   consolation: PlayoffMatchup[];
 }

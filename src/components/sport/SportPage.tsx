@@ -84,6 +84,7 @@ export default function SportPage() {
         <PlayoffBracket
           rounds={playoffData.rounds}
           totalRounds={playoffData.rounds.length}
+          slug={slug!}
         />
       )}
 
