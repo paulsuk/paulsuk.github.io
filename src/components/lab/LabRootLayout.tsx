@@ -1,24 +1,21 @@
 import { NavLink, Outlet } from "react-router-dom";
 
-const NAV_ITEMS = [
-  { to: "/lab/rankings/mlb", label: "MLB Rankings", end: false },
-  { to: "/lab/rankings/nba", label: "NBA Rankings", end: false },
-  { to: "/lab/teams/mlb", label: "Teams", end: false },
-  { to: "/lab/research", label: "Research", end: false },
-  { to: "/lab/draft", label: "Draft", end: false },
+const TOP_TABS = [
+  { to: "/lab/mlb", label: "MLB" },
+  { to: "/lab/nba", label: "NBA" },
+  { to: "/lab/research", label: "Research" },
 ];
 
-export default function LabLayout() {
+export default function LabRootLayout() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <div className="mb-6">
+      <div className="mb-4">
         <h1 className="mb-1 text-xl font-bold text-gray-900">Analytics Lab</h1>
         <nav className="flex gap-1 border-b border-gray-200">
-          {NAV_ITEMS.map((item) => (
+          {TOP_TABS.map((tab) => (
             <NavLink
-              key={item.label}
-              to={item.to}
-              end={item.end}
+              key={tab.to}
+              to={tab.to}
               className={({ isActive }) =>
                 `px-4 py-2 text-sm font-medium transition-colors ${
                   isActive
@@ -27,7 +24,7 @@ export default function LabLayout() {
                 }`
               }
             >
-              {item.label}
+              {tab.label}
             </NavLink>
           ))}
         </nav>
