@@ -622,3 +622,17 @@ export interface InlineTeamPanelProps {
   sport: string;
   totalTeams: number;
 }
+
+export interface RosterTableProps {
+  players: TeamRosterPlayer[];
+  statCols: string[];
+}
+
+export interface CategoryAnalysisProps {
+  team: TeamAnalysisTeam;
+}
+
+export interface MatchupToolProps {
+  myTeam: TeamAnalysisTeam;
+  allTeams: TeamAnalysisTeam[];
+}
