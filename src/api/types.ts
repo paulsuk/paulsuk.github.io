@@ -636,3 +636,10 @@ export interface MatchupToolProps {
   myTeam: TeamAnalysisTeam;
   allTeams: TeamAnalysisTeam[];
 }
+
+export interface MatchupTableProps {
+  myTeam: TeamAnalysisTeam;
+  opponent: TeamAnalysisTeam;
+  allCats: string[];
+  total: number;
+}

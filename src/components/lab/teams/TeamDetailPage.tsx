@@ -7,6 +7,7 @@ import type {
   RosterTableProps,
   CategoryAnalysisProps,
 } from "../../../api/types";
+import { fmtWeekly } from "../../../utils/lab-helpers";
 import MatchupTool from "./MatchupTool";
 
 // ── Stat formatting ──────────────────────────────────────────────────────────
@@ -124,13 +125,6 @@ function RosterTable({ players, statCols }: RosterTableProps) {
 const BATTING_CAT_ORDER = ["R", "HR", "RBI", "SB", "AVG", "OPS"];
 const PITCHING_CAT_ORDER = ["W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
 const RATE_CATS = new Set(["AVG", "ERA", "WHIP", "OPS", "K/9", "FG%", "FT%"]);
-
-function fmtWeekly(v: number | undefined): string {
-  if (v == null) return "—";
-  if (v >= 10) return v.toFixed(1);
-  if (v >= 1) return v.toFixed(2);
-  return v.toFixed(3);
-}
 
 function CategoryAnalysis({ team }: CategoryAnalysisProps) {
   const allCats = Object.keys(team.category_win_probs);
