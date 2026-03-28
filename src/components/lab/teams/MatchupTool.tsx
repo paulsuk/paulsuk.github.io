@@ -8,6 +8,7 @@ const CAT_ORDER = [
   "R", "HR", "RBI", "SB", "AVG", "OPS",
   "W", "QS", "ERA", "WHIP", "K/9", "SV+H",
 ];
+const RATE_CATS = new Set(["AVG", "ERA", "WHIP", "OPS", "K/9", "FG%", "FT%"]);
 
 function getEdge(
   myRank: number | undefined,
@@ -40,9 +41,10 @@ function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
     const myWeekly = myTeam.category_weekly?.[cat];
     const oppWeekly = opponent.category_weekly?.[cat];
     const edge = getEdge(myRank, oppRank);
+    const isRate = RATE_CATS.has(cat);
 
     const fmt = (weekly: number | undefined, rank: number | undefined) =>
-      `${fmtWeekly(weekly)}${rank != null ? ` · #${rank}` : ""}`;
+      `${fmtWeekly(weekly)}${!isRate ? "" : ""}${rank != null ? ` · #${rank}` : ""}`;
 
     return (
       <tr key={cat} className="border-t border-gray-100">
