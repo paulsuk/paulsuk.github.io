@@ -39,7 +39,7 @@ function topSeed(m: PlayoffMatchup): number {
 
 // ── 8-team bracket layout (basketball) ──────────────────────────────────────
 
-function eightTeamLayout(quarterMatchups: PlayoffMatchup[], semiMatchups: PlayoffMatchup[]) {
+function eightTeamLayout() {
   // Quarter tops
   const qTops = [
     0,
@@ -78,7 +78,7 @@ function eightTeamLayout(quarterMatchups: PlayoffMatchup[], semiMatchups: Playof
 
 // ── 6-team bracket layout (baseball) ─────────────────────────────────────────
 
-function sixTeamLayout(quarterMatchups: PlayoffMatchup[]) {
+function sixTeamLayout() {
   // Top half: bye slot then QM1
   const byeTop1 = 0;
   const qTop1 = BYE_H + GAP_INNER;
@@ -146,7 +146,7 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
   const fLabel = finalsRound ? finalsRound.round_label + ` — Wk ${finalsRound.week}` : "Finals";
 
   if (isBaseball) {
-    const layout = sixTeamLayout(qMatchups);
+    const layout = sixTeamLayout();
     const { byeTop1, qTop1, byeTop2, qTop2, sTops, fTop, f3Top, totalHeight, qsLines, sfLines } = layout;
 
     // Identify which QMs map to top/bottom half by seed
@@ -207,7 +207,7 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
   }
 
   // 8-team basketball
-  const layout = eightTeamLayout(qMatchups, sMatchups);
+  const layout = eightTeamLayout();
   const { qTops, sTops, fTop, f3Top, totalHeight, qsLines, sfLines } = layout;
 
   const sm1 = sMatchups[0] ?? null;
