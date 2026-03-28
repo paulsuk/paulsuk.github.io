@@ -101,8 +101,7 @@ function RosterTable({ players, statCols }: RosterTableProps) {
                               score >= 0 ? "text-green-700" : "text-red-600"
                             }`}
                           >
-                            {cat} {score >= 0 ? "+" : ""}
-                            {score.toFixed(2)}
+                            {cat} {score >= 0 ? `+${score.toFixed(2)}` : score.toFixed(2)}
                           </span>
                         ))
                       ) : (
