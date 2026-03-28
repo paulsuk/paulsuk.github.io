@@ -609,3 +609,16 @@ export interface TeamProfileResponse {
     category_tiers: Record<string, string>;
   };
 }
+
+export interface TeamsOverviewProps {
+  teams: TeamAnalysisTeam[];
+  sport: string;
+  selectedTeamId: string | null;
+  onSelect: (teamId: string) => void;
+}
+
+export interface InlineTeamPanelProps {
+  team: TeamAnalysisTeam;
+  sport: string;
+  totalTeams: number;
+}

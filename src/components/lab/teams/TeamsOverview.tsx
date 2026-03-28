@@ -1,13 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import type { TeamAnalysisTeam } from "../../../api/types";
-
-interface Props {
-  teams: TeamAnalysisTeam[];
-  sport: string;
-  selectedTeamId: string | null;
-  onSelect: (teamId: string) => void;
-}
+import type { InlineTeamPanelProps, TeamsOverviewProps } from "../../../api/types";
 
 function winProbColor(p: number): string {
   if (p >= 0.65) return "bg-green-100 text-green-800";
@@ -27,11 +20,7 @@ function InlineTeamPanel({
   team,
   sport,
   totalTeams,
-}: {
-  team: TeamAnalysisTeam;
-  sport: string;
-  totalTeams: number;
-}) {
+}: InlineTeamPanelProps) {
   const rankEntries = Object.entries(team.category_ranks).sort(
     ([, a], [, b]) => a - b
   );
@@ -120,7 +109,7 @@ export default function TeamsOverview({
   sport,
   selectedTeamId,
   onSelect,
-}: Props) {
+}: TeamsOverviewProps) {
   if (!teams.length) return <p className="text-meta">No team data available.</p>;
 
   const allCats = Object.keys(teams[0].category_win_probs);
