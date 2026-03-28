@@ -135,8 +135,20 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
     ? [...finalsRound.matchups].sort((a, b) => topSeed(a) - topSeed(b))
     : [];
   const championship = finalsMatchups[0] ?? null;
-  // 3rd place is in consolation, not matchups
-  const thirdPlace = finalsRound?.consolation[0] ?? null;
+
+  // 3rd place: find the consolation matchup whose teams are the losers of the two semis.
+  // consolation may contain multiple games (5th-8th place etc.) so match by team names.
+  const semiLosers = sMatchups
+    .filter(m => m.winner !== null && !m.is_tied)
+    .map(m => (m.winner === m.team_1_name ? m.team_2_name : m.team_1_name));
+  const thirdPlace =
+    semiLosers.length === 2
+      ? (finalsRound?.consolation.find(
+          m =>
+            semiLosers.includes(m.team_1_name) &&
+            semiLosers.includes(m.team_2_name)
+        ) ?? null)
+      : null;
 
   const qLabel = quartersRound.round_label + ` — Wk ${quartersRound.week}`;
   const sLabel = semisRound ? semisRound.round_label + ` — Wk ${semisRound.week}` : "Semifinals";
@@ -189,9 +201,9 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
               <ColHeader label={fLabel} />
               <div className="relative" style={{ width: COL_W, height: totalHeight }}>
                 <FinalsLabel top={fTop} text="Championship" />
-                {championship ? <MatchupBox matchup={championship} top={fTop} /> : <TbdBox top={fTop} />}
+                {championship ? <MatchupBox matchup={championship} top={fTop} placement="championship" /> : <TbdBox top={fTop} />}
                 <FinalsLabel top={f3Top} text="3rd Place" />
-                {thirdPlace ? <MatchupBox matchup={thirdPlace} top={f3Top} /> : <TbdBox top={f3Top} />}
+                {thirdPlace ? <MatchupBox matchup={thirdPlace} top={f3Top} placement="third" /> : <TbdBox top={f3Top} />}
               </div>
             </div>
           </div>
@@ -236,9 +248,9 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
             <ColHeader label={fLabel} />
             <div className="relative" style={{ width: COL_W, height: totalHeight }}>
               <FinalsLabel top={fTop} text="Championship" />
-              {championship ? <MatchupBox matchup={championship} top={fTop} /> : <TbdBox top={fTop} />}
+              {championship ? <MatchupBox matchup={championship} top={fTop} placement="championship" /> : <TbdBox top={fTop} />}
               <FinalsLabel top={f3Top} text="3rd Place" />
-              {thirdPlace ? <MatchupBox matchup={thirdPlace} top={f3Top} /> : <TbdBox top={f3Top} />}
+              {thirdPlace ? <MatchupBox matchup={thirdPlace} top={f3Top} placement="third" /> : <TbdBox top={f3Top} />}
             </div>
           </div>
         </div>
@@ -294,7 +306,15 @@ function TbdBox({ top }: { top: number }) {
   );
 }
 
-function MatchupBox({ matchup: m, top }: { matchup: PlayoffMatchup; top: number }) {
+function MatchupBox({
+  matchup: m,
+  top,
+  placement,
+}: {
+  matchup: PlayoffMatchup;
+  top: number;
+  placement?: "championship" | "third";
+}) {
   const isComplete = m.winner !== null && !m.is_tied;
   const inProgress = !isComplete && (m.cats_won_1 > 0 || m.cats_won_2 > 0);
   const t1Won = m.winner === m.team_1_name;
@@ -303,6 +323,17 @@ function MatchupBox({ matchup: m, top }: { matchup: PlayoffMatchup; top: number 
   let borderClass = "border-dashed border-gray-200";
   if (isComplete) borderClass = "border-gray-200";
   if (inProgress) borderClass = "border-amber-400";
+
+  const t1Medal =
+    placement === "championship" && t1Won ? "🥇" :
+    placement === "championship" && t2Won && isComplete ? "🥈" :
+    placement === "third" && t1Won ? "🥉" :
+    undefined;
+  const t2Medal =
+    placement === "championship" && t2Won ? "🥇" :
+    placement === "championship" && t1Won && isComplete ? "🥈" :
+    placement === "third" && t2Won ? "🥉" :
+    undefined;
 
   return (
     <div
@@ -316,6 +347,7 @@ function MatchupBox({ matchup: m, top }: { matchup: PlayoffMatchup; top: number 
         isWinner={t1Won}
         isLoser={t2Won && isComplete}
         showScore={isComplete || inProgress}
+        medal={t1Medal}
       />
       <div className="border-t border-gray-100" />
       <TeamRow
@@ -325,6 +357,7 @@ function MatchupBox({ matchup: m, top }: { matchup: PlayoffMatchup; top: number 
         isWinner={t2Won}
         isLoser={t1Won && isComplete}
         showScore={isComplete || inProgress}
+        medal={t2Medal}
       />
       {isComplete && (
         <div
@@ -343,6 +376,7 @@ function TeamRow({
   isWinner,
   isLoser,
   showScore,
+  medal,
 }: {
   name: string;
   seed: number | null;
@@ -350,6 +384,7 @@ function TeamRow({
   isWinner: boolean;
   isLoser: boolean;
   showScore: boolean;
+  medal?: string;
 }) {
   return (
     <div
@@ -357,6 +392,7 @@ function TeamRow({
       style={{ height: ROW_H }}
     >
       <div className="flex items-center gap-1 min-w-0 overflow-hidden">
+        {medal && <span className="text-xs flex-shrink-0">{medal}</span>}
         {seed != null && (
           <span className="text-[10px] text-gray-400 w-4 text-right flex-shrink-0">{seed}</span>
         )}
