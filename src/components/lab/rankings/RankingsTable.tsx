@@ -146,7 +146,7 @@ export default function RankingsTable({ sport, players, search }: Props) {
                 <td className="px-3 py-2 text-gray-400 tabular-nums">{p.rank}</td>
                 <td className="px-3 py-2">
                   <button
-                    onClick={() => navigate(`/lab/players/${sport}/${p.player_id}`)}
+                    onClick={() => navigate(`/lab/${sport}/players/${p.player_id}`)}
                     className="font-medium text-gray-900 hover:text-blue-600 hover:underline text-left"
                   >
                     {p.name}
