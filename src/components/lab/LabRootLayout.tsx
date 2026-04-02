@@ -1,34 +1,48 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { NavLink, Outlet, useOutletContext } from "react-router-dom";
+import type { AppShellContext } from "../layout/AppShell";
 
-const TOP_TABS = [
-  { to: "/lab/mlb", label: "MLB" },
-  { to: "/lab/nba", label: "NBA" },
+const SPORT_TABS = [
+  { to: "/lab/mlb", label: "MLB-LAB" },
+  { to: "/lab/nba", label: "NBA-LAB" },
   { to: "/lab/research", label: "Research" },
 ];
 
-export default function LabRootLayout() {
+function LabSportTabs() {
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6">
-      <div className="mb-4">
-        <h1 className="mb-1 text-xl font-bold text-gray-900">Analytics Lab</h1>
-        <nav className="flex gap-1 border-b border-gray-200">
-          {TOP_TABS.map((tab) => (
-            <NavLink
-              key={tab.to}
-              to={tab.to}
-              className={({ isActive }) =>
-                `px-4 py-2 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "border-b-2 border-gray-900 text-gray-900"
-                    : "text-gray-500 hover:text-gray-700"
-                }`
-              }
-            >
-              {tab.label}
-            </NavLink>
-          ))}
-        </nav>
-      </div>
+    <div className="flex items-center gap-1">
+      {SPORT_TABS.map((tab) => (
+        <NavLink
+          key={tab.to}
+          to={tab.to}
+          className={({ isActive }) =>
+            isActive
+              ? "bg-blue-50 text-blue-800 rounded px-2.5 py-0.5 font-bold font-mono text-sm"
+              : "text-slate-500 font-mono text-sm hover:text-slate-800"
+          }
+        >
+          {tab.label}
+        </NavLink>
+      ))}
+    </div>
+  );
+}
+
+export default function LabRootLayout() {
+  const { setHeaderSlot, clearHeaderSlot, setMainClass } =
+    useOutletContext<AppShellContext>();
+
+  useEffect(() => {
+    setHeaderSlot(<LabSportTabs />);
+    setMainClass("");
+    return () => {
+      clearHeaderSlot();
+      setMainClass("mx-auto max-w-4xl px-4 py-6");
+    };
+  }, [setHeaderSlot, clearHeaderSlot, setMainClass]);
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-6">
       <Outlet />
     </div>
   );
