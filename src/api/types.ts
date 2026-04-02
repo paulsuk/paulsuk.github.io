@@ -645,3 +645,9 @@ export interface MatchupTableProps {
   allCats: string[];
   total: number;
 }
+
+export interface ValueRangeBarProps {
+  value: number;
+  low: number;
+  high: number;
+}

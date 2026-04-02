@@ -6,6 +6,7 @@ import ErrorBanner from "../../shared/ErrorBanner";
 import type {
   RosterTableProps,
   CategoryAnalysisProps,
+  ValueRangeBarProps,
 } from "../../../api/types";
 import { fmtWeekly, BATTING_CAT_ORDER, PITCHING_CAT_ORDER, RATE_CATS } from "../../../utils/lab-helpers";
 import MatchupTool from "./MatchupTool";
@@ -17,6 +18,32 @@ function fmtStat(v: number | null | undefined): string {
   if (v >= 10) return v.toFixed(0);
   if (v >= 1) return v.toFixed(2);
   return v.toFixed(3);
+}
+
+// ── P-Score confidence interval range bar ────────────────────────────────────
+
+function ValueRangeBar({ value, low, high }: ValueRangeBarProps) {
+  const width = high - low;
+  const isWide = width > 4;
+  const pct = Math.min(1, Math.max(0, (value - low) / (width || 1))) * 100;
+  const trackColor = isWide ? "bg-red-200" : "bg-blue-200";
+  const dotColor = isWide ? "bg-red-500" : "bg-blue-600";
+
+  return (
+    <div className="mt-1">
+      <div className="relative h-1 rounded-full bg-gray-200" style={{ width: 80 }}>
+        <div className={`absolute inset-0 rounded-full ${trackColor}`} />
+        <div
+          className={`absolute top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full ${dotColor}`}
+          style={{ left: `calc(${pct}% - 5px)` }}
+        />
+      </div>
+      <div className="flex justify-between text-gray-400 mt-0.5" style={{ width: 80, fontSize: 9 }}>
+        <span>{low.toFixed(1)}</span>
+        <span>{high.toFixed(1)}</span>
+      </div>
+    </div>
+  );
 }
 
 // ── Rank badge colors ────────────────────────────────────────────────────────
@@ -94,20 +121,32 @@ function RosterTable({ players, statCols }: RosterTableProps) {
                       colSpan={3 + statCols.length}
                       className="px-4 py-2 bg-gray-50 text-xs text-gray-600 border-b border-gray-100"
                     >
-                      {scoreEntries.length > 0 ? (
-                        scoreEntries.map(([cat, score]) => (
-                          <span
-                            key={cat}
-                            className={`mr-3 ${
-                              score >= 0 ? "text-green-700" : "text-red-600"
-                            }`}
-                          >
-                            {cat} {score >= 0 ? `+${score.toFixed(2)}` : score.toFixed(2)}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-gray-400">No score data</span>
-                      )}
+                      <div className="flex items-start gap-6 flex-wrap">
+                        {player.value_low != null && player.value_high != null && player.value != null && (
+                          <div>
+                            <div className="text-gray-400 mb-1">90% range</div>
+                            <ValueRangeBar
+                              value={player.value}
+                              low={player.value_low}
+                              high={player.value_high}
+                            />
+                          </div>
+                        )}
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                          {scoreEntries.length > 0 ? (
+                            scoreEntries.map(([cat, score]) => (
+                              <span
+                                key={cat}
+                                className={score >= 0 ? "text-green-700" : "text-red-600"}
+                              >
+                                {cat} {score >= 0 ? `+${score.toFixed(2)}` : score.toFixed(2)}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-gray-400">No score data</span>
+                          )}
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 )}
