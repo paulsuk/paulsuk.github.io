@@ -72,19 +72,37 @@ function PasswordGate({ children }: { children: React.ReactNode }) {
   );
 }
 
+const DEFAULT_MAIN_CLASS = "mx-auto max-w-4xl px-4 py-6";
+
+export type AppShellContext = {
+  setHeaderSlot: (slot: React.ReactNode) => void;
+  clearHeaderSlot: () => void;
+  setMainClass: (cls: string) => void;
+};
+
 export default function AppShell() {
+  const [headerSlot, setHeaderSlot] = useState<React.ReactNode>(null);
+  const [mainClass, setMainClass] = useState(DEFAULT_MAIN_CLASS);
+
+  const ctx: AppShellContext = {
+    setHeaderSlot,
+    clearHeaderSlot: () => setHeaderSlot(null),
+    setMainClass,
+  };
+
   return (
     <PasswordGate>
       <div className="min-h-screen bg-gray-50 text-gray-900">
         <header className="border-b border-gray-200 bg-white">
-          <div className="mx-auto max-w-4xl px-4 py-3">
+          <div className="mx-auto max-w-4xl px-4 py-3 flex items-center gap-4">
             <Link to="/" className="text-lg font-semibold text-gray-900 no-underline hover:text-gray-600">
               Paul Suk
             </Link>
+            {headerSlot}
           </div>
         </header>
-        <main className="mx-auto max-w-4xl px-4 py-6">
-          <Outlet />
+        <main className={mainClass}>
+          <Outlet context={ctx} />
         </main>
       </div>
     </PasswordGate>
