@@ -59,7 +59,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
             H
           </button>
           <button
-            aria-label="Sort by G-score"
+            aria-label="Sort by P-Score"
             onClick={() => setSortBy("gscore")}
             className={`px-2 py-0.5 text-xs rounded ${
               sortBy === "gscore" ? "bg-indigo-600 text-white" : "bg-gray-100"

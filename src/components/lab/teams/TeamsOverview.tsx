@@ -36,7 +36,7 @@ function InlineTeamPanel({
         <div className="text-gray-500 text-xs">{team.manager_name ?? "—"}</div>
         <div className="mt-1 text-xs">
           <span className="text-blue-700 font-semibold">
-            G-Val {team.team_value.toFixed(1)}
+            P-Score {team.team_value.toFixed(1)}
           </span>
           {" · "}
           <span className="text-gray-600">
@@ -83,7 +83,7 @@ function InlineTeamPanel({
           <div className="text-xs text-gray-600 mb-1">
             <div className="font-medium text-gray-800">{topPlayer.name}</div>
             <div className="text-blue-700">
-              G-Val {topPlayer.value != null ? topPlayer.value.toFixed(2) : "—"}
+              P-Score {topPlayer.value != null ? topPlayer.value.toFixed(2) : "—"}
             </div>
           </div>
         )}
@@ -127,7 +127,7 @@ export default function TeamsOverview({
             <th className="table-header px-3 py-2 text-left">#</th>
             <th className="table-header px-3 py-2 text-left">Team</th>
             <th className="table-header px-3 py-2 text-left">Manager</th>
-            <th className="table-header px-3 py-2 text-right">G-Val</th>
+            <th className="table-header px-3 py-2 text-right">P-Score</th>
             <th className="table-header px-3 py-2 text-right">Exp W%</th>
             {cats.map((c) => (
               <th key={c} className="table-header px-2 py-2 text-center">

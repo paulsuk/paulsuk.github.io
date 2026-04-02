@@ -120,7 +120,7 @@ export default function RankingsTable({ sport, players, search }: Props) {
               <Th label="Name" col="name" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               <th className="table-header px-3 py-2">Team</th>
               <th className="table-header px-3 py-2">Pos</th>
-              <Th label="Value" col="value" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
+              <Th label="P-Score" col="value" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               {/* Raw stats */}
               {statCols.map((c) => (
                 <Th key={c} label={c} col={c} sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />

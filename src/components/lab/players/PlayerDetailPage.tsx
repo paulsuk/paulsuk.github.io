@@ -19,7 +19,7 @@ export default function PlayerDetailPage() {
   const navigate = useNavigate();
 
   const [season, setSeason] = useState(searchParams.get("season") || "projections");
-  const [model, setModel] = useState(searchParams.get("model") || "gscore");
+  const [model, setModel] = useState(searchParams.get("model") || "pscore");
   const start = searchParams.get("start") ?? undefined;
   const end = searchParams.get("end") ?? undefined;
 

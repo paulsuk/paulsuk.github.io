@@ -45,7 +45,7 @@ function RosterTable({ players, statCols }: RosterTableProps) {
             <th className="table-header px-3 py-2 text-left">Name</th>
             <th className="table-header px-3 py-2 text-left">Pos</th>
             <th className="table-header px-3 py-2 text-right text-blue-600">
-              G-Val
+              P-Score
             </th>
             {statCols.map((c) => (
               <th key={c} className="table-header px-2 py-2 text-right">
@@ -242,7 +242,7 @@ export default function TeamDetailPage() {
         <p className="text-sm text-gray-600 mt-1">
           {data.season} season ·{" "}
           <span className="font-semibold text-blue-700">
-            G-Val {team.team_value.toFixed(1)}
+            P-Score {team.team_value.toFixed(1)}
           </span>{" "}
           ·{" "}
           <span className="font-semibold">
