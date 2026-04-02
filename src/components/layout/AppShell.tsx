@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 
 const SITE_AUTH: Record<string, { password: string; prompt: string }> = {
@@ -84,11 +84,11 @@ export default function AppShell() {
   const [headerSlot, setHeaderSlot] = useState<React.ReactNode>(null);
   const [mainClass, setMainClass] = useState(DEFAULT_MAIN_CLASS);
 
-  const ctx: AppShellContext = {
-    setHeaderSlot,
-    clearHeaderSlot: () => setHeaderSlot(null),
-    setMainClass,
-  };
+  const clearHeaderSlot = useCallback(() => setHeaderSlot(null), []);
+  const ctx = useMemo<AppShellContext>(
+    () => ({ setHeaderSlot, clearHeaderSlot, setMainClass }),
+    [clearHeaderSlot]
+  );
 
   return (
     <PasswordGate>
