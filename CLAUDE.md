@@ -77,3 +77,10 @@ When making code changes, update this file if:
 - A new component pattern is established (new shared component location, new routing pattern)
 - The type placement rule is extended or a new type file is introduced
 - A new `<img>` handling pattern replaces `onError`
+
+## Doc placement (digest)
+
+Durable docs → this repo's `docs\` (committed, update-in-place, linked from
+CLAUDE.md). Specs/plans/state → the umbrella `work\` (local-only, never
+committed): specs in `..\work\specs\`, current state in `..\work\STATE.md`.
+Full policy: `..\..\POLICIES.md`.
