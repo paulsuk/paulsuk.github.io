@@ -24,7 +24,7 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
               <div key={s.team_key} className="flex items-center justify-between text-xs">
                 <span>
                   <span className="font-medium text-gray-600">{s.rank}.</span>{" "}
-                  <span className="text-gray-800">{s.manager}</span>
+                  <span className="text-gray-800">{s.team_name}</span>
                 </span>
                 <span className="tabular-nums text-gray-500">
                   {w}-{l}-{t}
@@ -38,16 +38,16 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
       {/* Matchups */}
       <div>
         <div className="space-y-1">
-          {recap.matchups.map((m) => (
-            <div key={`${m.team_1_manager}-${m.team_2_manager}`} className="text-xs">
+          {recap.matchups.map((m, i) => (
+            <div key={`${m.team_1_name}-${m.team_2_name}-${i}`} className="text-xs">
               <span className={m.cats_won_1 > m.cats_won_2 ? "font-medium" : "text-gray-500"}>
-                {m.team_1_manager}
+                {m.team_1_name}
               </span>
               <span className="mx-1 text-gray-400">
                 {m.cats_won_1}-{m.cats_won_2}
               </span>
               <span className={m.cats_won_2 > m.cats_won_1 ? "font-medium" : "text-gray-500"}>
-                {m.team_2_manager}
+                {m.team_2_name}
               </span>
             </div>
           ))}
