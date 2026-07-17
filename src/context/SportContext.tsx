@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ScoringMode } from "../api/types";
-import { defaultScoringMode } from "../utils/sport-config";
+import { defaultScoringMode } from "../utils/league-config";
 
 interface SportContextValue {
   slug: string;

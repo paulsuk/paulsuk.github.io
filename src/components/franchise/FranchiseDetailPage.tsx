@@ -7,7 +7,7 @@ import ErrorBanner from "../shared/ErrorBanner";
 import RosterTab from "./RosterTab";
 import FranchiseOverview from "./FranchiseOverview";
 import { getMedals, getChampionshipYears } from "../../utils/records-helpers";
-import { defaultScoringMode } from "../../utils/sport-config";
+import { defaultScoringMode } from "../../utils/league-config";
 
 type ViewScope = "franchise" | "manager";
 type DetailTab = "overview" | "roster";

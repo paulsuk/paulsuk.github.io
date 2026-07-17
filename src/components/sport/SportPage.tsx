@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap, useArticles, usePlayoffs } from "../../api/hooks";
 import { formatSeason } from "../../utils/records-helpers";
-import { defaultScoringMode } from "../../utils/sport-config";
+import { defaultScoringMode } from "../../utils/league-config";
 import SeasonPicker from "./SeasonPicker";
 import SeasonOverview from "./SeasonOverview";
 import RankingsSection from "./RankingsSection";
