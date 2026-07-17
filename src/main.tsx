@@ -1,7 +1,5 @@
-// @ts-expect-error - fontsource packages don't have TypeScript declarations
-import "@fontsource-variable/fraunces";
-// @ts-expect-error - fontsource packages don't have TypeScript declarations
-import "@fontsource-variable/inter";
+import "@fontsource-variable/fraunces/index.css";
+import "@fontsource-variable/inter/index.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
