@@ -10,6 +10,6 @@ const apiProxy = { '/api': 'http://localhost:8000' }
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: '/',
-  server: { proxy: apiProxy },
-  preview: { proxy: apiProxy },
+  server: { proxy: apiProxy, allowedHosts: ['.ts.net'] },
+  preview: { proxy: apiProxy, allowedHosts: ['.ts.net'] },
 })
