@@ -1,93 +1,64 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* Item cards */
-.item-card {
-  @apply rounded-lg border border-gray-100 bg-gray-50 p-3;
+@theme {
+  --color-paper: #faf7f0;
+  --color-raised: #ffffff;
+  --color-ink: #1c1917;
+  --color-ink-soft: #57534e;
+  --color-ink-faint: #79716b;
+  --color-rule: #e7e1d4;
+  --color-accent: #9e2b25;
+  --color-accent-deep: #7e211c;
+  --color-win: #0d8065;
+  --color-loss: #a03123;
+  --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
 }
 
-.item-card-interactive {
-  @apply rounded-lg border border-gray-100 bg-gray-50 p-3 transition-colors hover:bg-gray-100;
+body {
+  @apply bg-paper font-sans text-ink antialiased;
 }
 
-/* Badges */
-.badge-win {
-  @apply rounded bg-green-100 px-1.5 py-0.5 text-xs font-medium text-green-700;
+/* ── Editorial primitives ─────────────────────────────── */
+.eyebrow {
+  @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-soft;
+}
+.section-rule {
+  /* thick + hairline double rule under section headings */
+  @apply border-t-2 border-ink pt-0.5;
+  box-shadow: 0 3px 0 -2px var(--color-rule);
+}
+.agate {
+  @apply text-xs tabular-nums text-ink-soft;
+}
+.card-editorial {
+  @apply rounded-sm border border-rule bg-raised p-5;
 }
 
-.badge-loss {
-  @apply rounded bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700;
-}
-
-.badge-championship {
-  @apply rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700;
-}
-
-.badge-tag {
-  @apply rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-purple-700;
-}
-
-/* Tables */
-.table-header {
-  @apply border-b border-gray-100 text-left text-xs uppercase tracking-wide text-gray-500;
-}
-
-/* Text utilities */
-.text-label {
-  @apply text-xs text-gray-500;
-}
-
-.text-meta {
-  @apply text-xs text-gray-400;
-}
-
-.section-label {
-  @apply mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500;
-}
-
-/* Stats / numbers */
-.stat-value {
-  @apply text-sm font-semibold tabular-nums;
-}
-
-.stat-hero {
-  @apply text-lg font-bold tabular-nums text-gray-800;
-}
-
-/* Panels */
-.detail-panel {
-  @apply ml-4 mt-1 rounded-lg border border-gray-100 bg-white p-3 text-xs;
-}
-
-.divider {
-  @apply mt-3 border-t border-gray-100 pt-2;
-}
-
-/* Controls */
-.tab-bar {
-  @apply mb-6 flex gap-1 rounded-lg bg-gray-100 p-1;
-}
-
-.tab-btn {
-  @apply flex-1 rounded-md px-3 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-700;
-}
-
-.tab-btn-active {
-  @apply bg-white text-gray-900 shadow-sm;
-}
-
-.toggle-group {
-  @apply flex rounded-md border border-gray-200 text-xs;
-}
-
-.toggle-btn {
-  @apply px-3 py-1.5 font-medium transition-colors;
-}
-
-/* Matchup score pill */
-.score-pill {
-  @apply rounded bg-white px-2 py-0.5 font-mono text-xs tabular-nums shadow-sm;
-}
+/* ── Re-skinned legacy semantic classes (names unchanged on purpose:
+      every consumer restyles for free) ─────────────────── */
+.item-card { @apply rounded-sm border border-rule bg-paper p-3; }
+.item-card-interactive { @apply rounded-sm border border-rule bg-paper p-3 transition-colors hover:bg-raised; }
+.badge-win { @apply rounded-sm bg-win/10 px-1.5 py-0.5 text-xs font-semibold text-win; }
+.badge-loss { @apply rounded-sm bg-loss/10 px-1.5 py-0.5 text-xs font-semibold text-loss; }
+.badge-championship { @apply rounded-sm bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800; }
+.badge-tag { @apply rounded-sm bg-accent/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-accent; }
+.table-header { @apply border-b border-ink text-left text-[11px] uppercase tracking-[0.1em] text-ink-soft; }
+.text-label { @apply text-xs text-ink-soft; }
+.text-meta { @apply text-xs text-ink-faint; }
+.section-label { @apply mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-soft; }
+.stat-value { @apply text-sm font-semibold tabular-nums; }
+.stat-hero { @apply font-display text-2xl font-bold tabular-nums text-ink; }
+.detail-panel { @apply ml-4 mt-1 rounded-sm border border-rule bg-raised p-3 text-xs; }
+.divider { @apply mt-3 border-t border-rule pt-2; }
+.tab-bar { @apply mb-6 flex gap-5 border-b-2 border-ink; }
+.tab-btn { @apply -mb-0.5 border-b-2 border-transparent px-0.5 pb-2 text-sm font-medium text-ink-soft transition-colors hover:text-ink; }
+.tab-btn-active { @apply border-accent font-semibold text-ink; }
+.toggle-group { @apply flex rounded-sm border border-rule bg-raised text-xs; }
+.toggle-btn { @apply px-3 py-1.5 font-medium transition-colors; }
+.toggle-btn-active { @apply bg-ink text-paper; }
+.score-pill { @apply rounded-sm border border-rule bg-raised px-2 py-0.5 font-mono text-xs tabular-nums; }
 
 /* Article content — team logos */
 .article-content .team-logo {
@@ -103,10 +74,10 @@
 
 /* Article content — team headings (h2 with logo, power rankings) */
 .article-content .article-team-heading {
-  @apply flex items-center gap-3 border-b-2 border-gray-800 pb-3 text-xl font-extrabold tracking-tight text-gray-900;
+  @apply flex items-center gap-3 border-b-2 border-ink pb-3 font-display text-xl font-extrabold tracking-tight text-ink;
   margin-top: 2.5rem !important;
   padding-top: 2rem !important;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-rule);
 }
 
 /* Rank badge — rendered as ::before on the h2, populated from data-rank */
@@ -117,7 +88,7 @@
   justify-content: center;
   flex-shrink: 0;
   border-radius: 9999px;
-  background-color: #111827;
+  background-color: var(--color-ink);
   color: #ffffff;
   font-weight: 900;
   font-size: 1rem;
@@ -129,7 +100,7 @@
 
 /* Metadata / P-Score line immediately after a team heading */
 .article-content .article-team-heading + p {
-  @apply text-xs font-semibold tracking-wide text-gray-500;
+  @apply text-xs font-semibold tracking-wide text-ink-soft;
   margin-top: 0.25rem !important;
   margin-bottom: 0.75rem !important;
 }
@@ -142,7 +113,7 @@
 
 /* Article content — matchup headings (h3 with logos, recaps) */
 .article-content .article-matchup-heading {
-  @apply flex flex-wrap items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-bold text-gray-800;
+  @apply flex flex-wrap items-center gap-1.5 rounded-sm border border-rule bg-paper px-3 py-2 font-display text-sm font-bold text-gray-800;
   margin-top: 2rem !important;
 }
 
