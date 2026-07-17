@@ -1,10 +1,9 @@
 import { NavLink, Outlet } from "react-router-dom";
 import PasswordGate from "../layout/PasswordGate";
 
-// TODO(task-10): flip to /lab/baseball|basketball
 const LAB_TABS = [
-  { to: "/lab/mlb", label: "BASEBALL-LAB" },
-  { to: "/lab/nba", label: "BASKETBALL-LAB" },
+  { to: "/lab/baseball", label: "BASEBALL-LAB" },
+  { to: "/lab/basketball", label: "BASKETBALL-LAB" },
   { to: "/lab/research", label: "RESEARCH" },
 ];
 

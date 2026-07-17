@@ -1,16 +1,16 @@
 // web/src/components/lab/rankings/RankingsPage.tsx
 import { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
 import { useLabUiConfig, useRankings } from "../../../api/hooks";
 import type { RankingsFilter } from "../../../api/types";
+import { useLabSport } from "../../../utils/use-lab-sport";
 import RankingsControls from "./RankingsControls";
 import RankingsTable from "./RankingsTable";
 import LoadingSpinner from "../../shared/LoadingSpinner";
 import ErrorBanner from "../../shared/ErrorBanner";
 
 export default function RankingsPage() {
-  const { sport = "mlb" } = useParams<{ sport: string }>();
-  const { data: config, loading: configLoading, error: configError } = useLabUiConfig(sport);
+  const { slug, sportCode } = useLabSport();
+  const { data: config, loading: configLoading, error: configError } = useLabUiConfig(sportCode);
 
   const [filter, setFilter] = useState<RankingsFilter>({
     season: "",
@@ -35,7 +35,7 @@ export default function RankingsPage() {
   }, [config, filter]);
 
   const rankingsSport =
-    config && effectiveFilter.season && effectiveFilter.model ? sport : null;
+    config && effectiveFilter.season && effectiveFilter.model ? sportCode : null;
   const { data: rankings, loading: rankingsLoading, error: rankingsError, refresh: refreshRankings } = useRankings(
     rankingsSport,
     {
@@ -63,7 +63,7 @@ export default function RankingsPage() {
   return (
     <div>
       <RankingsControls
-        sport={sport}
+        sport={sportCode}
         config={config}
         filter={effectiveFilter}
         teams={teams}
@@ -91,7 +91,8 @@ export default function RankingsPage() {
       {rankings && (
         <>
           <RankingsTable
-            sport={sport}
+            sportCode={sportCode}
+            slug={slug}
             players={rankings.players}
             season={effectiveFilter.season}
             model={effectiveFilter.model}

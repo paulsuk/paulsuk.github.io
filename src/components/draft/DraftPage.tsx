@@ -6,7 +6,7 @@ import { TeamProfile } from "./TeamProfile";
 import { useDraftSession, loadSaved } from "./useDraftSession";
 import { API_URL } from "../../api/client";
 import type { DraftCandidate, DraftPreload, DraftPreloadTeam, DraftSessionConfig, TeamProfileResponse } from "../../api/types";
-import { useSport } from "../../context/SportContext";
+import { useLabSport } from "../../utils/use-lab-sport";
 
 function generateDraftOrder(orderedTeams: DraftPreloadTeam[], numRounds: number) {
   const picks = [];
@@ -23,7 +23,7 @@ function generateDraftOrder(orderedTeams: DraftPreloadTeam[], numRounds: number)
 }
 
 export function DraftPage() {
-  const { slug } = useSport();
+  const { slug } = useLabSport();
   const authed = localStorage.getItem("fa_auth_lab") === "true";
   const { session, grid, loading, error, logPick, undoPick, refreshGrid, connectSession, createSession, restoreSession } = useDraftSession();
   const [candidates, setCandidates] = useState<DraftCandidate[]>([]);

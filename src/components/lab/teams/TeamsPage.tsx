@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
 import { useTeamAnalysis } from "../../../api/hooks";
+import { useLabSport } from "../../../utils/use-lab-sport";
 import LoadingSpinner from "../../shared/LoadingSpinner";
 import ErrorBanner from "../../shared/ErrorBanner";
 import TeamsOverview from "./TeamsOverview";
 
 export default function TeamsPage() {
-  const { sport = "mlb" } = useParams<{ sport: string }>();
-  const { data, loading, error } = useTeamAnalysis(sport);
+  const { slug, sportCode } = useLabSport();
+  const { data, loading, error } = useTeamAnalysis(sportCode);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
 
   if (loading) return <LoadingSpinner />;
@@ -20,7 +20,7 @@ export default function TeamsPage() {
       </p>
       <TeamsOverview
         teams={data.teams}
-        sport={sport}
+        slug={slug}
         selectedTeamId={selectedTeamId}
         onSelect={(id) => setSelectedTeamId((prev) => (prev === id ? null : id))}
       />

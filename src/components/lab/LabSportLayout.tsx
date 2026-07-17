@@ -1,12 +1,13 @@
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
+import { useLabSport } from "../../utils/use-lab-sport";
 
 export default function LabSportLayout() {
-  const { sport = "mlb" } = useParams<{ sport: string }>();
+  const { slug, sportCode } = useLabSport();
 
   const toolTabs = [
-    { to: `/lab/${sport}/rankings`, label: "Rankings" },
-    { to: `/lab/${sport}/teams`, label: "Teams" },
-    ...(sport === "mlb" ? [{ to: `/lab/${sport}/draft`, label: "Draft" }] : []),
+    { to: `/lab/${slug}/rankings`, label: "Rankings" },
+    { to: `/lab/${slug}/teams`, label: "Teams" },
+    ...(sportCode === "mlb" ? [{ to: `/lab/${slug}/draft`, label: "Draft" }] : []),
   ];
 
   return (

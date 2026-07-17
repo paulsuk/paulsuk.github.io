@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTeamAnalysis } from "../../../api/hooks";
+import { useLabSport } from "../../../utils/use-lab-sport";
 import LoadingSpinner from "../../shared/LoadingSpinner";
 import ErrorBanner from "../../shared/ErrorBanner";
 import type {
@@ -245,11 +246,9 @@ const BATTER_STAT_COLS = ["R", "HR", "RBI", "SB", "AVG", "OPS"];
 const PITCHER_STAT_COLS = ["W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
 
 export default function TeamDetailPage() {
-  const { sport = "mlb", teamId } = useParams<{
-    sport: string;
-    teamId: string;
-  }>();
-  const { data, loading, error } = useTeamAnalysis(sport);
+  const { slug, sportCode } = useLabSport();
+  const { teamId } = useParams<{ teamId: string }>();
+  const { data, loading, error } = useTeamAnalysis(sportCode);
 
   if (loading) return <LoadingSpinner />;
   if (error || !data)
@@ -266,7 +265,7 @@ export default function TeamDetailPage() {
     <div>
       {/* Back link */}
       <Link
-        to={`/lab/${sport}/teams`}
+        to={`/lab/${slug}/teams`}
         className="text-sm text-blue-600 hover:underline mb-4 inline-block"
       >
         ← Back to teams

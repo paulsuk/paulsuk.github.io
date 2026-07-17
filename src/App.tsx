@@ -9,6 +9,7 @@ import LoadingSpinner from "./components/shared/LoadingSpinner";
 import {
   LegacyArticleRedirect,
   LegacyFranchiseRedirect,
+  LegacyLabRedirect,
   LegacyRecordsRedirect,
 } from "./components/league/legacy-redirects";
 
@@ -37,10 +38,10 @@ export default function App() {
           <Route index element={<HomePage />} />
 
           <Route path="lab" element={<LabRootLayout />}>
-            {/* Lab keeps the :sport (mlb/nba) param until Task 10 renames it to :slug —
-                renaming here would break /lab/nba mid-plan (pages still read `sport`). */}
-            <Route index element={<Navigate to="mlb" replace />} />
-            <Route path=":sport" element={<LabSportLayout />}>
+            <Route index element={<Navigate to="baseball" replace />} />
+            <Route path="mlb/*" element={<LegacyLabRedirect />} />
+            <Route path="nba/*" element={<LegacyLabRedirect />} />
+            <Route path=":slug" element={<LabSportLayout />}>
               <Route index element={<Navigate to="rankings" replace />} />
               <Route path="rankings" element={<RankingsPage />} />
               <Route path="players/:id" element={<PlayerDetailPage />} />

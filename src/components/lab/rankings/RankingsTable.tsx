@@ -40,7 +40,8 @@ function Th({ label, col, sortCol, sortAsc, onSort, className = "" }: ThProps) {
 }
 
 interface Props {
-  sport: string;
+  sportCode: string;
+  slug: string;
   players: RankingsPlayer[];
   season: string;
   model: string;
@@ -49,13 +50,13 @@ interface Props {
   search: string;
 }
 
-export default function RankingsTable({ sport, players, search }: Props) {
+export default function RankingsTable({ sportCode, slug, players, search }: Props) {
   const navigate = useNavigate();
   const [sortCol, setSortCol] = useState<string>("rank");
   const [sortAsc, setSortAsc] = useState(true);
   const [page, setPage] = useState(1);
 
-  const statCols = sport === "nba" ? NBA_DISPLAY_COLS : MLB_DISPLAY_COLS;
+  const statCols = sportCode === "nba" ? NBA_DISPLAY_COLS : MLB_DISPLAY_COLS;
 
   const filtered = useMemo(() => {
     if (!search) return players;
@@ -146,7 +147,7 @@ export default function RankingsTable({ sport, players, search }: Props) {
                 <td className="px-3 py-2 text-gray-400 tabular-nums">{p.rank}</td>
                 <td className="px-3 py-2">
                   <button
-                    onClick={() => navigate(`/lab/${sport}/players/${p.player_id}`)}
+                    onClick={() => navigate(`/lab/${slug}/players/${p.player_id}`)}
                     className="font-medium text-gray-900 hover:text-blue-600 hover:underline text-left"
                   >
                     {p.name}

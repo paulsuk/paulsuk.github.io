@@ -18,7 +18,7 @@ function rankBadgeClass(rank: number, total: number): string {
 
 function InlineTeamPanel({
   team,
-  sport,
+  slug,
   totalTeams,
 }: InlineTeamPanelProps) {
   const rankEntries = Object.entries(team.category_ranks).sort(
@@ -88,7 +88,7 @@ function InlineTeamPanel({
           </div>
         )}
         <Link
-          to={`/lab/${sport}/teams/${encodeURIComponent(team.team_id)}`}
+          to={`/lab/${slug}/teams/${encodeURIComponent(team.team_id)}`}
           className="text-xs text-blue-600 hover:underline"
           onClick={(e) => e.stopPropagation()}
         >
@@ -106,7 +106,7 @@ const CAT_ORDER = [
 
 export default function TeamsOverview({
   teams,
-  sport,
+  slug,
   selectedTeamId,
   onSelect,
 }: TeamsOverviewProps) {
@@ -184,7 +184,7 @@ export default function TeamsOverview({
                     >
                       <InlineTeamPanel
                         team={team}
-                        sport={sport}
+                        slug={slug}
                         totalTeams={teams.length}
                       />
                     </td>

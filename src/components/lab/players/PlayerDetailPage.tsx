@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { usePlayerDetail, useLabUiConfig, useRankings } from "../../../api/hooks";
+import { useLabSport } from "../../../utils/use-lab-sport";
 import PlayerHeader from "./PlayerHeader";
 import PlayerSelectors from "./PlayerSelectors";
 import ValueBreakdown from "./ValueBreakdown";
@@ -14,7 +15,8 @@ import LoadingSpinner from "../../shared/LoadingSpinner";
 import ErrorBanner from "../../shared/ErrorBanner";
 
 export default function PlayerDetailPage() {
-  const { sport = "mlb", id } = useParams<{ sport: string; id: string }>();
+  const { slug, sportCode } = useLabSport();
+  const { id } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -30,11 +32,8 @@ export default function PlayerDetailPage() {
   const [showDropdown, setShowDropdown] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Guard against invalid sport values (e.g. user-edited URL)
-  const validSport = sport === "mlb" || sport === "nba" ? sport : null;
-
   // Load all players for the current season/model (used for name search)
-  const { data: allRankings } = useRankings(validSport, {
+  const { data: allRankings } = useRankings(sportCode, {
     season,
     model,
     start: start || undefined,
@@ -60,9 +59,9 @@ export default function PlayerDetailPage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const { data: config, loading: configLoading } = useLabUiConfig(sport);
+  const { data: config, loading: configLoading } = useLabUiConfig(sportCode);
   const { data: player, loading, error } = usePlayerDetail(
-    sport, playerId, season, model, start, end
+    sportCode, playerId, season, model, start, end
   );
 
   if (configLoading || loading) return <LoadingSpinner />;
@@ -75,7 +74,7 @@ export default function PlayerDetailPage() {
     const params = new URLSearchParams({ season, model });
     if (start) params.set("start", start);
     if (end) params.set("end", end);
-    navigate(`/lab/players/${sport}/${newPlayerId}?${params.toString()}`);
+    navigate(`/lab/${slug}/players/${newPlayerId}?${params.toString()}`);
     setSearchText("");
     setShowDropdown(false);
   }
@@ -142,7 +141,7 @@ export default function PlayerDetailPage() {
       )}
 
       {/* Sport-specific stats */}
-      {sport === "mlb" ? (
+      {sportCode === "mlb" ? (
         <>
           <MLBStatsPanel stats={player.stats} isPitcher={isPitcher} />
           <StatcastPanel stats={player.stats} isPitcher={isPitcher} />

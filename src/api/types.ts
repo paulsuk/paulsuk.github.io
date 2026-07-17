@@ -621,14 +621,14 @@ export interface TeamProfileResponse {
 
 export interface TeamsOverviewProps {
   teams: TeamAnalysisTeam[];
-  sport: string;
+  slug: string;
   selectedTeamId: string | null;
   onSelect: (teamId: string) => void;
 }
 
 export interface InlineTeamPanelProps {
   team: TeamAnalysisTeam;
-  sport: string;
+  slug: string;
   totalTeams: number;
 }
 
