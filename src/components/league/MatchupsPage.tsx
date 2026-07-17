@@ -29,7 +29,7 @@ export default function MatchupsPage() {
 
   // 2) the page renders the selected week (falls back to current)
   const week = weekParam ? Number(weekParam) : currentWeek ?? undefined;
-  const { data: recap, loading, error } = useRecap(slug!, week, selectedSeason ?? undefined);
+  const { data: recap, loading, error } = useRecap(slug!, week, selectedSeason ?? undefined, true);
 
   const selectedSeasonInfo = seasons?.find((s) => s.season === selectedSeason);
   const isFinished = selectedSeasonInfo?.is_finished ?? false;

@@ -16,11 +16,18 @@ export interface Season {
   is_finished: boolean;
 }
 
+export interface CategoryStandout {
+  team: 1 | 2;
+  player: string;
+  value: number;
+}
+
 export interface MatchupCategory {
   display_name: string;
   team_1_value: number | null;
   team_2_value: number | null;
   winner: 1 | 2 | null;
+  standouts?: CategoryStandout[] | null;
 }
 
 export interface MatchupSummary {

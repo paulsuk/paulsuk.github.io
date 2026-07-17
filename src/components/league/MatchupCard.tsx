@@ -37,6 +37,24 @@ export default function MatchupCard({ matchup: m }: { matchup: MatchupSummary })
           </span>
         ))}
       </div>
+      {(() => {
+        const standouts = m.categories.flatMap((c) =>
+          (c.standouts ?? []).map((s) => ({ ...s, cat: c.display_name }))
+        );
+        if (standouts.length === 0) return null;
+        return (
+          <div className="mt-2 border-t border-rule pt-2">
+            <p className="eyebrow mb-1">Went off</p>
+            {standouts.map((s, i) => (
+              <p key={`${s.player}-${s.cat}-${i}`} className="agate">
+                <span className="font-semibold text-ink">{s.player}</span>
+                {" — "}{s.cat}, z +{s.value.toFixed(1)}
+                <span className="text-ink-faint"> ({s.team === 1 ? m.team_1_name : m.team_2_name})</span>
+              </p>
+            ))}
+          </div>
+        );
+      })()}
     </div>
   );
 }

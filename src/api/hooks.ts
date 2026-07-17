@@ -46,10 +46,11 @@ export function useSeasons(slug: string) {
   return useApiData<Season[]>(`/api/${slug}/seasons`);
 }
 
-export function useRecap(slug: string, week?: number, season?: number) {
+export function useRecap(slug: string, week?: number, season?: number, includeLeaders = false) {
   const params = new URLSearchParams();
   if (week) params.set("week", String(week));
   if (season) params.set("season", String(season));
+  if (includeLeaders) params.set("include_leaders", "true");
   const qs = params.toString();
   const path = `/api/${slug}/recap${qs ? `?${qs}` : ""}`;
   return useApiData<RecapResponse>(path);
