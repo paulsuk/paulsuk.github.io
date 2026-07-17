@@ -14,7 +14,7 @@ export default function ArticlesPage() {
   if (error) return <ErrorBanner message={error} />;
 
   if (articles.length === 0) {
-    return <p className="text-sm text-gray-400">No articles yet.</p>;
+    return <p className="text-sm italic text-ink-faint">No articles yet.</p>;
   }
 
   // Group by season, sort seasons newest first, articles within each season newest first
@@ -29,7 +29,7 @@ export default function ArticlesPage() {
     <div className="space-y-8">
       {years.map((year) => (
         <div key={year}>
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+          <h3 className="eyebrow section-rule mb-3 pt-1">
             {formatSeason(year, slug!)} Season
           </h3>
           <div className="space-y-1.5">

@@ -34,7 +34,7 @@ export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, fra
   }, [viewMode, managers, h2h, franchiseStats, franchiseH2h]);
 
   if (entries.length === 0) {
-    return <p className="text-sm text-gray-400">No head-to-head data available.</p>;
+    return <p className="text-sm text-ink-faint">No head-to-head data available.</p>;
   }
 
   return (
@@ -42,9 +42,9 @@ export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, fra
       <table className="text-xs">
         <thead>
           <tr>
-            <th className="sticky left-0 bg-white p-1 text-left font-medium text-gray-600" />
+            <th className="sticky left-0 bg-raised p-1 text-left font-medium text-ink-soft" />
             {entries.map((e) => (
-              <th key={e.id} className="p-1 text-center font-medium text-gray-600">
+              <th key={e.id} className="p-1 text-center font-medium text-ink-soft">
                 <div className="w-14 truncate" title={e.name}>
                   {shortName(e.name)}
                 </div>
@@ -55,14 +55,14 @@ export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, fra
         <tbody>
           {entries.map((row) => (
             <tr key={row.id}>
-              <td className="sticky left-0 bg-white p-1 pr-2 font-medium text-gray-700 whitespace-nowrap">
+              <td className="sticky left-0 bg-raised p-1 pr-2 font-medium text-ink-soft whitespace-nowrap">
                 {shortName(row.name)}
               </td>
               {entries.map((col) => {
                 if (row.id === col.id) {
                   return (
                     <td key={col.id} className="p-1 text-center">
-                      <div className="h-8 w-14 rounded bg-gray-100" />
+                      <div className="h-8 w-14 rounded bg-paper" />
                     </td>
                   );
                 }
@@ -70,7 +70,7 @@ export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, fra
                 const record = matrix[row.id]?.[col.id];
                 if (!record) {
                   return (
-                    <td key={col.id} className="p-1 text-center text-gray-300">—</td>
+                    <td key={col.id} className="p-1 text-center text-ink-faint">—</td>
                   );
                 }
 
@@ -115,7 +115,7 @@ function shortName(name: string): string {
 function cellColor(winPct: number): string {
   if (winPct >= 0.7) return "bg-green-200 text-green-900";
   if (winPct >= 0.55) return "bg-green-100 text-green-800";
-  if (winPct >= 0.45) return "bg-gray-100 text-gray-700";
+  if (winPct >= 0.45) return "bg-paper text-ink-soft";
   if (winPct >= 0.3) return "bg-red-100 text-red-800";
   return "bg-red-200 text-red-900";
 }

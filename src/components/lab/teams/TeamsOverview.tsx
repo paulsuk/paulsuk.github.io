@@ -32,14 +32,14 @@ function InlineTeamPanel({
     <div className="flex gap-6 text-sm py-1">
       {/* Left: team summary */}
       <div className="min-w-[160px]">
-        <div className="font-semibold text-gray-900">{team.team_name}</div>
-        <div className="text-gray-500 text-xs">{team.manager_name ?? "—"}</div>
+        <div className="font-semibold text-ink">{team.team_name}</div>
+        <div className="text-ink-soft text-xs">{team.manager_name ?? "—"}</div>
         <div className="mt-1 text-xs">
           <span className="text-blue-700 font-semibold">
             P-Score {team.team_value.toFixed(1)}
           </span>
           {" · "}
-          <span className="text-gray-600">
+          <span className="text-ink-soft">
             {(team.expected_wins * 100).toFixed(1)}% W%
           </span>
         </div>
@@ -47,7 +47,7 @@ function InlineTeamPanel({
 
       {/* Middle: strengths / weaknesses */}
       <div className="flex-1 min-w-0">
-        <div className="text-xs text-gray-400 mb-1">Strengths</div>
+        <div className="text-xs text-ink-faint mb-1">Strengths</div>
         <div className="flex flex-wrap gap-1 mb-2">
           {strengths.map(([cat, rank]) => (
             <span
@@ -61,7 +61,7 @@ function InlineTeamPanel({
             </span>
           ))}
         </div>
-        <div className="text-xs text-gray-400 mb-1">Weaknesses</div>
+        <div className="text-xs text-ink-faint mb-1">Weaknesses</div>
         <div className="flex flex-wrap gap-1">
           {weaknesses.map(([cat, rank]) => (
             <span
@@ -80,8 +80,8 @@ function InlineTeamPanel({
       {/* Right: top player + detail link */}
       <div className="min-w-[140px] text-right shrink-0">
         {topPlayer && (
-          <div className="text-xs text-gray-600 mb-1">
-            <div className="font-medium text-gray-800">{topPlayer.name}</div>
+          <div className="text-xs text-ink-soft mb-1">
+            <div className="font-medium text-ink">{topPlayer.name}</div>
             <div className="text-blue-700">
               P-Score {topPlayer.value != null ? topPlayer.value.toFixed(2) : "—"}
             </div>
@@ -120,9 +120,9 @@ export default function TeamsOverview({
   const totalCols = 5 + cats.length;
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-100">
+    <div className="overflow-x-auto rounded-lg border border-rule">
       <table className="w-full text-sm whitespace-nowrap">
-        <thead className="bg-gray-50">
+        <thead className="bg-paper">
           <tr>
             <th className="table-header px-3 py-2 text-left">#</th>
             <th className="table-header px-3 py-2 text-left">Team</th>
@@ -136,24 +136,24 @@ export default function TeamsOverview({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-50">
+        <tbody className="divide-y divide-rule/60">
           {teams.map((team, i) => {
             const isSelected = team.team_id === selectedTeamId;
             return (
               <React.Fragment key={team.team_id}>
                 <tr
                   onClick={() => onSelect(team.team_id)}
-                  className={`cursor-pointer hover:bg-gray-50 ${
+                  className={`cursor-pointer hover:bg-paper ${
                     isSelected ? "bg-blue-50" : ""
                   }`}
                 >
-                  <td className="px-3 py-2 text-gray-400 tabular-nums">
+                  <td className="px-3 py-2 text-ink-faint tabular-nums">
                     {i + 1}
                   </td>
-                  <td className="px-3 py-2 font-medium text-gray-900">
+                  <td className="px-3 py-2 font-medium text-ink">
                     {team.team_name}
                   </td>
-                  <td className="px-3 py-2 text-gray-500">
+                  <td className="px-3 py-2 text-ink-soft">
                     {team.manager_name ?? "—"}
                   </td>
                   <td className="px-3 py-2 text-right tabular-nums stat-value text-blue-700">

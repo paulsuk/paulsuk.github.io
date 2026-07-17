@@ -27,8 +27,8 @@ export default function FranchiseTransactions({ counts, trades, slug }: Franchis
           </thead>
           <tbody>
             {counts.map((c) => (
-              <tr key={c.season} className="border-b border-gray-50">
-                <td className="py-1.5 pr-4 font-medium text-gray-400">{formatSeason(c.season, slug)}</td>
+              <tr key={c.season} className="border-b border-rule">
+                <td className="py-1.5 pr-4 font-medium text-ink-faint">{formatSeason(c.season, slug)}</td>
                 <td className="py-1.5 pr-4 tabular-nums">{c.adds}</td>
                 <td className="py-1.5 pr-4 tabular-nums">{c.drops}</td>
                 <td className="py-1.5 tabular-nums font-medium">{c.adds + c.drops}</td>
@@ -45,7 +45,7 @@ export default function FranchiseTransactions({ counts, trades, slug }: Franchis
             className="flex w-full items-center justify-between text-left"
           >
             <div className="section-label">Trade History</div>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-ink-faint">
               {trades.length} trade{trades.length !== 1 ? "s" : ""} {tradesExpanded ? "▲" : "▼"}
             </span>
           </button>

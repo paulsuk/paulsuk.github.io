@@ -40,7 +40,7 @@ export default function RosterTab({
         <select
           value={activeSeason}
           onChange={(e) => onSeasonChange(Number(e.target.value))}
-          className="text-sm border border-gray-200 rounded px-2 py-1 bg-white"
+          className="text-sm border border-rule rounded px-2 py-1 bg-raised"
         >
           {seasons.map((s) => (
             <option key={s} value={s}>{formatSeason(s, slug)}</option>
@@ -49,7 +49,7 @@ export default function RosterTab({
       </div>
 
       {!hasData ? (
-        <p className="text-sm text-gray-400">No roster data for {formatSeason(activeSeason, slug)}.</p>
+        <p className="text-sm italic text-ink-faint">No roster data for {formatSeason(activeSeason, slug)}.</p>
       ) : (
         <div className="space-y-3">
           <RosterSection
@@ -95,18 +95,18 @@ function RosterSection({
             <div
               key={name}
               className={`flex items-center justify-between text-xs ${
-                isBench ? "text-gray-400" : "text-gray-700"
+                isBench ? "text-ink-faint" : "text-ink-soft"
               }`}
             >
               <div className="flex items-center gap-2">
                 <span className={isBench ? "" : "font-medium"}>{name}</span>
-                {pos && <span className="text-gray-400">{pos}</span>}
+                {pos && <span className="text-ink-faint">{pos}</span>}
               </div>
               <div className="flex items-center gap-3">
                 {showCost && cost != null && (
-                  <span className="text-gray-400 tabular-nums">Cost: {cost}</span>
+                  <span className="text-ink-faint tabular-nums">Cost: {cost}</span>
                 )}
-                <span className={isBench ? "text-gray-300" : "text-gray-400"}>{selPos}</span>
+                <span className="text-ink-faint">{selPos}</span>
               </div>
             </div>
           );

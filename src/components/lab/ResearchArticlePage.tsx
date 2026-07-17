@@ -15,7 +15,7 @@ export default function ResearchArticlePage() {
       <div>
         <Link
           to="/lab/research"
-          className="mb-4 inline-block text-sm text-gray-500 no-underline hover:text-gray-700"
+          className="mb-4 inline-block text-sm text-ink-soft no-underline hover:text-ink"
         >
           &larr; Back to Research
         </Link>
@@ -28,13 +28,13 @@ export default function ResearchArticlePage() {
     <div>
       <Link
         to="/lab/research"
-        className="mb-4 inline-block text-sm text-gray-500 no-underline hover:text-gray-700"
+        className="mb-4 inline-block text-sm text-ink-soft no-underline hover:text-ink"
       >
         &larr; Back to Research
       </Link>
 
       <h1 className="mb-1 text-2xl font-bold">{article.title}</h1>
-      <p className="mb-6 text-sm text-gray-500">
+      <p className="mb-6 text-sm text-ink-soft">
         {article.date}
         {article.author && <> &middot; {article.author}</>}
       </p>
@@ -68,7 +68,7 @@ export default function ResearchArticlePage() {
           <ArticleContent content={article.content} slug="lab" />
 
           {/* Bottom prev/next */}
-          <div className="mt-8 flex items-center justify-between border-t border-gray-200 pt-4 text-sm">
+          <div className="mt-8 flex items-center justify-between border-t border-rule pt-4 text-sm">
             {article.prev_id ? (
               <Link
                 to={`/lab/research/${article.prev_id}`}
@@ -96,21 +96,21 @@ export default function ResearchArticlePage() {
         {article.season_articles.length > 0 && (
           <div className="w-full shrink-0 lg:w-64">
             <div className="sticky top-6">
-              <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <div className="rounded-lg border border-rule bg-raised p-4 shadow-sm">
+                <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-soft">
                   Research Articles
                 </h4>
                 <div className="space-y-1">
                   {article.season_articles.map((sa) => (
                     <div key={sa.id} className="text-xs">
                       {sa.id === article.id ? (
-                        <span className="font-medium text-gray-800">
+                        <span className="font-medium text-ink">
                           &#9654; {sa.title}
                         </span>
                       ) : (
                         <Link
                           to={`/lab/research/${sa.id}`}
-                          className="text-gray-600 no-underline hover:text-blue-600"
+                          className="text-ink-soft no-underline hover:text-blue-600"
                         >
                           &bull; {sa.title}
                         </Link>

@@ -14,15 +14,15 @@ export default function ArticleCard({ article, slug, basePath }: ArticleCardProp
   return (
     <Link
       to={to}
-      className="block item-card-interactive no-underline hover:border-gray-200"
+      className="block item-card-interactive no-underline hover:border-ink"
     >
-      <div className="text-sm font-medium text-gray-800">{article.title}</div>
-      <div className="mt-0.5 text-xs text-gray-500">
+      <div className="text-sm font-medium text-ink">{article.title}</div>
+      <div className="mt-0.5 text-xs text-ink-soft">
         {article.date}
         {article.author && <> &middot; {article.author}</>}
       </div>
       {article.summary && (
-        <div className="mt-1 text-xs text-gray-500 line-clamp-2">
+        <div className="mt-1 text-xs text-ink-soft line-clamp-2">
           {article.summary}
         </div>
       )}

@@ -41,7 +41,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
               key={pos}
               onClick={() => setPosFilter(pos)}
               className={`px-2 py-0.5 text-xs rounded ${
-                posFilter === pos ? "bg-blue-600 text-white" : "bg-gray-100"
+                posFilter === pos ? "bg-blue-600 text-white" : "bg-paper"
               }`}
             >
               {pos}
@@ -53,7 +53,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
             aria-label="Sort by H-score"
             onClick={() => setSortBy("hscore")}
             className={`px-2 py-0.5 text-xs rounded ${
-              sortBy === "hscore" ? "bg-indigo-600 text-white" : "bg-gray-100"
+              sortBy === "hscore" ? "bg-indigo-600 text-white" : "bg-paper"
             }`}
           >
             H
@@ -62,7 +62,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
             aria-label="Sort by P-Score"
             onClick={() => setSortBy("gscore")}
             className={`px-2 py-0.5 text-xs rounded ${
-              sortBy === "gscore" ? "bg-indigo-600 text-white" : "bg-gray-100"
+              sortBy === "gscore" ? "bg-indigo-600 text-white" : "bg-paper"
             }`}
           >
             G
@@ -72,8 +72,8 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
 
       <div className="flex-1 overflow-y-auto">
         <table className="w-full text-sm">
-          <thead className="sticky top-0 bg-white">
-            <tr className="text-left text-xs text-gray-500">
+          <thead className="sticky top-0 bg-raised">
+            <tr className="text-left text-xs text-ink-soft">
               <th className="p-1">#</th>
               <th className="p-1">Player</th>
               <th className="p-1">Pos</th>
@@ -86,13 +86,13 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
             {/* slice(0, 100) is a render cap; sorted always contains the full filtered population */}
             {sorted.slice(0, 100).map((c, i) => (
               <tr key={c.player_id} className="hover:bg-blue-50 border-b">
-                <td className="p-1 text-gray-400">{i + 1}</td>
+                <td className="p-1 text-ink-faint">{i + 1}</td>
                 <td className="p-1 font-medium">{c.name}</td>
-                <td className="p-1 text-xs text-gray-500">{c.eligible_positions}</td>
-                <td className={`p-1 text-right font-mono text-xs ${sortBy === "hscore" ? "font-bold" : "text-gray-500"}`}>
+                <td className="p-1 text-xs text-ink-soft">{c.eligible_positions}</td>
+                <td className={`p-1 text-right font-mono text-xs ${sortBy === "hscore" ? "font-bold" : "text-ink-soft"}`}>
                   {c.hscore.toFixed(2)}
                 </td>
-                <td className={`p-1 text-right font-mono text-xs ${sortBy === "gscore" ? "font-bold" : "text-gray-500"}`}>
+                <td className={`p-1 text-right font-mono text-xs ${sortBy === "gscore" ? "font-bold" : "text-ink-soft"}`}>
                   {c.gscore != null ? c.gscore.toFixed(2) : "—"}
                 </td>
                 <td className="p-1">
@@ -101,7 +101,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
                     disabled={disabled}
                     className={`text-xs px-2 py-0.5 rounded ${
                       disabled
-                        ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        ? "bg-rule text-ink-faint cursor-not-allowed"
                         : "bg-blue-500 text-white hover:bg-blue-600"
                     }`}
                   >

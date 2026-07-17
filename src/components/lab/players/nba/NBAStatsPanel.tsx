@@ -6,11 +6,11 @@ export default function NBAStatsPanel({ stats }: { stats: Record<string, number 
 
   return (
     <div className="mb-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">Per Game Stats</h3>
+      <h3 className="text-sm font-semibold text-ink-soft mb-2">Per Game Stats</h3>
       <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
         {cols.map((c) => (
-          <div key={c} className="bg-gray-50 rounded p-2 text-center">
-            <div className="text-xs text-gray-400 mb-0.5">{c}</div>
+          <div key={c} className="bg-paper rounded p-2 text-center">
+            <div className="text-xs text-ink-faint mb-0.5">{c}</div>
             <div className="text-sm font-medium tabular-nums">
               {stats[c] != null ? (stats[c] as number).toFixed(1) : "—"}
             </div>

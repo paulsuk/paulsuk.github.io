@@ -22,7 +22,7 @@ export function DraftGrid({ grid, teams, playerNames, teamNames = {}, numRounds 
   return (
     <div>
       <table className="w-full table-fixed text-xs border-collapse">
-        <thead className="sticky top-0 bg-white z-10">
+        <thead className="sticky top-0 bg-raised z-10">
           <tr>
             <th className="p-1 border text-left w-6">Rd</th>
             {teams.map((teamId) => (

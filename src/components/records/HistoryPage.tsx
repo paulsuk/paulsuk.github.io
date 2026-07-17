@@ -42,9 +42,7 @@ export default function HistoryPage() {
               <button
                 onClick={() => setScoringMode("category")}
                 className={`toggle-btn ${
-                  scoringMode === "category"
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-500 hover:text-gray-700"
+                  scoringMode === "category" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"
                 } rounded-l-md`}
               >
                 Categories
@@ -52,9 +50,7 @@ export default function HistoryPage() {
               <button
                 onClick={() => setScoringMode("matchup")}
                 className={`toggle-btn ${
-                  scoringMode === "matchup"
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-500 hover:text-gray-700"
+                  scoringMode === "matchup" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"
                 } rounded-r-md`}
               >
                 Matchups
@@ -65,9 +61,7 @@ export default function HistoryPage() {
             <button
               onClick={() => setViewMode("manager")}
               className={`toggle-btn ${
-                viewMode === "manager"
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-500 hover:text-gray-700"
+                viewMode === "manager" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"
               } rounded-l-md`}
             >
               By Manager
@@ -75,24 +69,26 @@ export default function HistoryPage() {
             <button
               onClick={() => setViewMode("franchise")}
               className={`toggle-btn ${
-                viewMode === "franchise"
-                  ? "bg-gray-900 text-white"
-                  : "text-gray-500 hover:text-gray-700"
+                viewMode === "franchise" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"
               } rounded-r-md`}
             >
               By Franchise
             </button>
           </div>
-          {hasFormer && viewMode === "manager" && (
-            <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-600">
-              <input
-                type="checkbox"
-                checked={!currentOnly}
-                onChange={(e) => setCurrentOnly(!e.target.checked)}
-                className="rounded border-gray-300"
-              />
-              Show previous managers
-            </label>
+          {viewMode === "manager" && (
+            hasFormer ? (
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-ink-soft">
+                <input
+                  type="checkbox"
+                  checked={!currentOnly}
+                  onChange={(e) => setCurrentOnly(!e.target.checked)}
+                  className="rounded border-rule"
+                />
+                Show previous managers
+              </label>
+            ) : (
+              <p className="text-sm italic text-ink-faint">Everyone's still here. No alumni yet.</p>
+            )
           )}
         </div>
       </div>
@@ -102,11 +98,7 @@ export default function HistoryPage() {
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`tab-btn ${
-              tab === t.key
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+            className={`tab-btn ${tab === t.key ? "tab-btn-active" : ""}`}
           >
             {t.label}
           </button>

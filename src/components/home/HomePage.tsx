@@ -1,40 +1,33 @@
 import { Link } from "react-router-dom";
-
-const sports = [
-  {
-    slug: "baseball",
-    label: "Baseball",
-    icon: "\u26be",
-    color: "bg-blue-50 hover:bg-blue-100 border-blue-200",
-  },
-  {
-    slug: "basketball",
-    label: "Basketball",
-    icon: "\ud83c\udfc0",
-    color: "bg-orange-50 hover:bg-orange-100 border-orange-200",
-  },
-];
+import { LEAGUES } from "../../utils/league-config";
+import { useDocumentTitle } from "../../utils/use-document-title";
 
 export default function HomePage() {
+  useDocumentTitle();
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+  });
+
   return (
-    <main className="mx-auto max-w-5xl px-4">
-      <div className="flex flex-col items-center pt-16">
-        <h1 className="mb-2 text-3xl font-bold">Paul Suk</h1>
-        <p className="mb-12 text-gray-500">Fantasy Sports Analytics</p>
-
-        <div className="flex gap-6">
-          {sports.map((s) => (
-            <Link
-              key={s.slug}
-              to={`/${s.slug}`}
-              className={`flex flex-col items-center gap-3 rounded-xl border p-8 no-underline transition-colors ${s.color}`}
-            >
-              <span className="text-5xl">{s.icon}</span>
-              <span className="text-lg font-medium text-gray-700">{s.label}</span>
-            </Link>
-          ))}
-        </div>
-
+    <main className="mx-auto max-w-5xl px-4 py-10">
+      <p className="eyebrow mb-8">{today}</p>
+      <div className="grid gap-6 sm:grid-cols-2">
+        {LEAGUES.map((l) => (
+          <Link key={l.slug} to={`/${l.slug}`}
+            className="card-editorial group block no-underline transition-colors hover:border-ink">
+            <p className="eyebrow">{l.label}</p>
+            <p className="mt-2 font-display text-2xl font-black leading-snug text-ink group-hover:text-accent">
+              {l.tagline}
+            </p>
+            <p className="mt-4 text-sm font-medium text-ink-soft">Read the coverage →</p>
+          </Link>
+        ))}
+      </div>
+      <div className="mt-10 border-t border-rule pt-4 text-xs text-ink-faint">
+        <span>Also on this site: </span>
+        <a href="/super-chinese-checkers/" className="text-ink-soft hover:text-accent">Super Chinese Checkers</a>
+        <span> · </span>
+        <Link to="/lab" className="text-ink-soft no-underline hover:text-accent">The Lab</Link>
       </div>
     </main>
   );

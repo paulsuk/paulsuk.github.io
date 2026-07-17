@@ -18,17 +18,17 @@ export default function SeasonRow({ season: sr, showManager, scoringMode = "matc
 
   return (
     <div className="flex items-center justify-between py-0.5 gap-2">
-      <span className="text-gray-500 min-w-0 truncate">
-        <span className="text-gray-400">{slug ? formatSeason(sr.season, slug) : sr.season}</span> — {sr.team_name}
+      <span className="text-ink-soft min-w-0 truncate">
+        <span className="text-ink-faint">{slug ? formatSeason(sr.season, slug) : sr.season}</span> — {sr.team_name}
         {showManager && manager && (
-          <span className="text-gray-400"> ({manager})</span>
+          <span className="text-ink-faint"> ({manager})</span>
         )}
       </span>
-      <span className="font-medium tabular-nums text-gray-700 flex items-center gap-1.5 flex-shrink-0">
+      <span className="font-medium tabular-nums text-ink-soft flex items-center gap-1.5 flex-shrink-0">
         {w}-{l}-{t}
-        <span className="text-gray-400 font-normal text-xs">({pct})</span>
+        <span className="text-ink-faint font-normal text-xs">({pct})</span>
         {sr.playoff_seed != null && sr.playoff_seed > 0 && (
-          <span className="text-gray-400 text-xs">
+          <span className="text-ink-faint text-xs">
             seed {sr.playoff_seed}
           </span>
         )}

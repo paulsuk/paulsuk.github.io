@@ -5,8 +5,8 @@ import { API_URL } from "../../api/client";
 import { formatSeason, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
 import SeasonPicker from "./SeasonPicker";
-import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
+import Skeleton from "../shared/Skeleton";
 
 // Copied verbatim from RankingsSection.tsx:29-32 — a shared util extraction is
 // deliberately not made this task (see task-6 controller resolutions).
@@ -30,7 +30,13 @@ export default function StandingsPage() {
     slug!, undefined, selectedSeason ?? undefined
   );
 
-  if (seasonsLoading) return <LoadingSpinner />;
+  if (seasonsLoading) {
+    return (
+      <div className="space-y-2">
+        {Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} className="h-6 w-full" />)}
+      </div>
+    );
+  }
   if (seasonsError) return <ErrorBanner message={seasonsError} />;
   if (!seasons || seasons.length === 0) {
     return <ErrorBanner message="No synced seasons found for this league." />;
@@ -51,7 +57,11 @@ export default function StandingsPage() {
           onChange={(s) => setSearchParams({ season: String(s) })} slug={slug!} />
       </div>
 
-      {recapLoading && <LoadingSpinner />}
+      {recapLoading && (
+        <div className="space-y-2">
+          {Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} className="h-6 w-full" />)}
+        </div>
+      )}
       {recapError && <ErrorBanner message={recapError} />}
       {recap && (
         <div className="card-editorial overflow-x-auto">

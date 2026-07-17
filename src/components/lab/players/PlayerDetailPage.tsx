@@ -85,7 +85,7 @@ export default function PlayerDetailPage() {
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={() => navigate(-1)}
-          className="text-sm text-gray-400 hover:text-gray-600"
+          className="text-sm text-ink-faint hover:text-ink-soft"
         >
           ← Back to Rankings
         </button>
@@ -101,18 +101,18 @@ export default function PlayerDetailPage() {
               setShowDropdown(true);
             }}
             onFocus={() => setShowDropdown(true)}
-            className="rounded border border-gray-200 px-3 py-1.5 text-sm w-52 shadow-sm"
+            className="rounded border border-rule px-3 py-1.5 text-sm w-52 shadow-sm"
           />
           {showDropdown && searchResults.length > 0 && (
-            <div className="absolute right-0 top-full mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            <div className="absolute right-0 top-full mt-1 w-64 bg-raised border border-rule rounded-lg shadow-lg z-50">
               {searchResults.map((p) => (
                 <button
                   key={p.player_id}
                   className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 flex items-center justify-between"
                   onClick={() => navigateToPlayer(p.player_id)}
                 >
-                  <span className="font-medium text-gray-800">{p.name}</span>
-                  <span className="text-xs text-gray-400">{p.positions ?? ""} · #{p.rank}</span>
+                  <span className="font-medium text-ink">{p.name}</span>
+                  <span className="text-xs text-ink-faint">{p.positions ?? ""} · #{p.rank}</span>
                 </button>
               ))}
             </div>
@@ -156,8 +156,8 @@ export default function PlayerDetailPage() {
       <ValueBreakdown items={player.value_breakdown} />
 
       {/* Rolling windows stub */}
-      <div className="mb-6 rounded border border-dashed border-gray-200 p-4 text-center">
-        <p className="text-xs text-gray-400">Rolling stat windows — coming soon</p>
+      <div className="mb-6 rounded border border-dashed border-rule p-4 text-center">
+        <p className="text-xs text-ink-faint">Rolling stat windows — coming soon</p>
       </div>
 
       <SeasonHistory rows={player.season_history} />

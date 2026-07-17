@@ -23,11 +23,11 @@ export default function SeasonRoster({ players }: SeasonRosterProps) {
         <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
           {starters.map((p) => (
             <div key={p.full_name} className="flex justify-between">
-              <span className="text-gray-700">
+              <span className="text-ink-soft">
                 {p.full_name}
                 {p.is_keeper && <KeeperBadge round={p.keeper_round} />}
               </span>
-              <span className="text-gray-400">{p.selected_position}</span>
+              <span className="text-ink-faint">{p.selected_position}</span>
             </div>
           ))}
         </div>
@@ -38,11 +38,11 @@ export default function SeasonRoster({ players }: SeasonRosterProps) {
           <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
             {bench.map((p) => (
               <div key={p.full_name} className="flex justify-between">
-                <span className="text-gray-400">
+                <span className="text-ink-faint">
                   {p.full_name}
                   {p.is_keeper && <KeeperBadge round={p.keeper_round} />}
                 </span>
-                <span className="text-gray-300">{p.selected_position}</span>
+                <span className="text-ink-faint">{p.selected_position}</span>
               </div>
             ))}
           </div>

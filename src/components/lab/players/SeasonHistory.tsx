@@ -6,10 +6,10 @@ export default function SeasonHistory({ rows }: { rows: SeasonHistoryRow[] }) {
 
   return (
     <div className="mb-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">Season History</h3>
-      <div className="overflow-x-auto rounded border border-gray-100">
+      <h3 className="text-sm font-semibold text-ink-soft mb-2">Season History</h3>
+      <div className="overflow-x-auto rounded border border-rule">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50">
+          <thead className="bg-paper">
             <tr>
               <th className="table-header px-3 py-2 text-left">Season</th>
               {cols.map((c) => (
@@ -17,12 +17,12 @@ export default function SeasonHistory({ rows }: { rows: SeasonHistoryRow[] }) {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-rule/60">
             {rows.map((row) => (
               <tr key={row.season}>
-                <td className="px-3 py-2 font-medium text-gray-700">{row.season}</td>
+                <td className="px-3 py-2 font-medium text-ink-soft">{row.season}</td>
                 {cols.map((c) => (
-                  <td key={c} className="px-3 py-2 tabular-nums text-gray-600 text-right">
+                  <td key={c} className="px-3 py-2 tabular-nums text-ink-soft text-right">
                     {row.stats[c] != null
                       ? (row.stats[c] as number).toFixed(3).replace(/\.?0+$/, "")
                       : "—"}

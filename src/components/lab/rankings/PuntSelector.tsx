@@ -26,7 +26,7 @@ export default function PuntSelector({ categories, punted, onChange }: Props) {
           className={`px-2 py-0.5 text-xs rounded border transition-colors ${
             punted.includes(cat)
               ? "bg-red-100 border-red-300 text-red-700 line-through"
-              : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+              : "bg-paper border-rule text-ink-soft hover:bg-paper"
           }`}
         >
           {cat}
@@ -35,7 +35,7 @@ export default function PuntSelector({ categories, punted, onChange }: Props) {
       {punted.length > 0 && (
         <button
           onClick={() => onChange([])}
-          className="text-xs text-gray-400 hover:text-gray-600 ml-1"
+          className="text-xs text-ink-faint hover:text-ink-soft ml-1"
         >
           clear
         </button>

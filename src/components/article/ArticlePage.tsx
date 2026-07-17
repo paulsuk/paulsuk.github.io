@@ -51,8 +51,8 @@ export default function ArticlePage() {
         ]}
       />
 
-      <h1 className="mb-1 text-2xl font-bold">{article.title}</h1>
-      <p className="mb-6 text-sm text-gray-500">
+      <h1 className="mb-1 font-display text-3xl font-black tracking-tight">{article.title}</h1>
+      <p className="mb-6 text-meta">
         {article.date}
         {article.author && <> &middot; {article.author}</>}
         {article.week && <> &middot; {article.season} Season, Week {article.week}</>}
@@ -72,35 +72,35 @@ export default function ArticlePage() {
             slug={slug!}
             prevId={article.prev_id}
             nextId={article.next_id}
-            className="mt-8 border-t border-gray-200 pt-4"
+            className="mt-8 border-t border-rule pt-4"
           />
         </div>
 
         {/* Stats sidebar */}
         <div className="w-full shrink-0 lg:w-64">
           <div className="sticky top-6 space-y-4">
-            <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+            <div className="card-editorial">
               {recapLoading && <LoadingSpinner />}
               {recap && <StatsSidebar recap={recap} slug={slug!} />}
             </div>
 
             {/* Season article list */}
             {article.season_articles.length > 0 && (
-              <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <div className="card-editorial">
+                <h4 className="eyebrow section-rule mb-2 pt-1">
                   Articles
                 </h4>
                 <div className="space-y-1">
                   {article.season_articles.map((sa) => (
                     <div key={sa.id} className="text-xs">
                       {sa.id === article.id ? (
-                        <span className="font-medium text-gray-800">
+                        <span className="font-medium text-ink">
                           &#9654; {sa.title}
                         </span>
                       ) : (
                         <Link
                           to={`/${slug}/articles/${sa.id}`}
-                          className="text-gray-600 no-underline hover:text-blue-600"
+                          className="text-ink-soft no-underline hover:text-accent"
                         >
                           &bull; {sa.title}
                         </Link>

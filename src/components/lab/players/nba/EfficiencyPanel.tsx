@@ -27,18 +27,18 @@ export default function EfficiencyPanel({ stats }: { stats: Record<string, numbe
 
   return (
     <div className="mb-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">Efficiency</h3>
+      <h3 className="text-sm font-semibold text-ink-soft mb-2">Efficiency</h3>
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
         {cols.map(([label, val]) => (
-          <div key={label} className="bg-gray-50 rounded p-2 text-center">
-            <div className="text-xs text-gray-400 mb-0.5">{label}</div>
+          <div key={label} className="bg-paper rounded p-2 text-center">
+            <div className="text-xs text-ink-faint mb-0.5">{label}</div>
             <div className="text-sm font-medium tabular-nums">
               {val.toFixed(3).replace(/\.?0+$/, "")}
             </div>
           </div>
         ))}
       </div>
-      <div className="mt-3 rounded border border-dashed border-gray-200 p-3 text-center text-xs text-gray-400">
+      <div className="mt-3 rounded border border-dashed border-rule p-3 text-center text-xs text-ink-faint">
         Advanced metrics (RAPM / EPM) — coming soon
       </div>
     </div>

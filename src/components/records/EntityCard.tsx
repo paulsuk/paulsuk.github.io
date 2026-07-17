@@ -111,8 +111,8 @@ export default function EntityCard({
               <div className="section-label">Ownership History</div>
               {ownership.map((o) => (
                 <div key={o.guid} className="flex justify-between py-0.5">
-                  <span className="text-gray-600">{o.manager}</span>
-                  <span className="text-gray-400">{formatSeason(o.from, slug)}{o.to ? `\u2013${formatSeason(o.to, slug)}` : "+"}</span>
+                  <span className="text-ink-soft">{o.manager}</span>
+                  <span className="text-ink-faint">{formatSeason(o.from, slug)}{o.to ? `\u2013${formatSeason(o.to, slug)}` : "+"}</span>
                 </div>
               ))}
             </div>
@@ -130,7 +130,7 @@ export default function EntityCard({
           {slug && (ownership || franchiseId) && (
             <Link
               to={`/${slug}/history/franchise/${franchiseId ?? id}`}
-              className="mt-3 inline-block text-sm font-medium text-gray-500 hover:text-gray-900"
+              className="mt-3 inline-block text-sm font-medium text-ink-soft hover:text-accent"
             >
               View Franchise Details &rarr;
             </Link>

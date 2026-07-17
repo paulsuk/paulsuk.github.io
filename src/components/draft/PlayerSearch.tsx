@@ -31,7 +31,7 @@ export function PlayerSearch({ players, onSelect, placeholder = "Search players.
         className="w-full p-2 border rounded text-sm"
       />
       {filtered.length > 0 && (
-        <ul className="absolute z-20 w-full bg-white border rounded shadow-lg max-h-60 overflow-y-auto">
+        <ul className="absolute z-20 w-full bg-raised border rounded shadow-lg max-h-60 overflow-y-auto">
           {filtered.map((p) => (
             <li
               key={p.player_id}
@@ -39,7 +39,7 @@ export function PlayerSearch({ players, onSelect, placeholder = "Search players.
               onClick={() => { onSelect(p.player_id); setQuery(""); }}
             >
               <span>{p.name}</span>
-              <span className="text-gray-500">{String(p.eligible_positions || "")}</span>
+              <span className="text-ink-soft">{String(p.eligible_positions || "")}</span>
             </li>
           ))}
         </ul>

@@ -10,7 +10,7 @@ export default function ResearchPage() {
   if (error) return <ErrorBanner message={error} />;
 
   if (articles.length === 0) {
-    return <p className="text-sm text-gray-400">No research articles yet.</p>;
+    return <p className="text-sm text-ink-faint">No research articles yet.</p>;
   }
 
   const sorted = [...articles].sort((a, b) => b.date.localeCompare(a.date));

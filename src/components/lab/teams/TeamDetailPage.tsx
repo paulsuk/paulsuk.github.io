@@ -32,14 +32,14 @@ function ValueRangeBar({ value, low, high }: ValueRangeBarProps) {
 
   return (
     <div className="mt-1">
-      <div className="relative h-1 rounded-full bg-gray-200" style={{ width: 80 }}>
+      <div className="relative h-1 rounded-full bg-rule" style={{ width: 80 }}>
         <div className={`absolute inset-0 rounded-full ${trackColor}`} />
         <div
           className={`absolute top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full ${dotColor}`}
           style={{ left: `calc(${pct}% - 5px)` }}
         />
       </div>
-      <div className="flex justify-between text-gray-400 mt-0.5" style={{ width: 80, fontSize: 9 }}>
+      <div className="flex justify-between text-ink-faint mt-0.5" style={{ width: 80, fontSize: 9 }}>
         <span>{low.toFixed(1)}</span>
         <span>{high.toFixed(1)}</span>
       </div>
@@ -66,9 +66,9 @@ function RosterTable({ players, statCols }: RosterTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-100">
+    <div className="overflow-x-auto rounded-lg border border-rule">
       <table className="w-full text-sm whitespace-nowrap">
-        <thead className="bg-gray-50">
+        <thead className="bg-paper">
           <tr>
             <th className="table-header px-3 py-2 text-left">Name</th>
             <th className="table-header px-3 py-2 text-left">Pos</th>
@@ -82,7 +82,7 @@ function RosterTable({ players, statCols }: RosterTableProps) {
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-50">
+        <tbody className="divide-y divide-rule/60">
           {players.map((player) => {
             const isExpanded = expandedId === player.player_id;
             const scoreEntries = Object.entries(player.category_scores).sort(
@@ -96,12 +96,12 @@ function RosterTable({ players, statCols }: RosterTableProps) {
                       prev === player.player_id ? null : player.player_id
                     )
                   }
-                  className="cursor-pointer hover:bg-gray-50"
+                  className="cursor-pointer hover:bg-paper"
                 >
-                  <td className="px-3 py-2 font-medium text-gray-800">
+                  <td className="px-3 py-2 font-medium text-ink">
                     {player.name}
                   </td>
-                  <td className="px-3 py-2 text-gray-500">
+                  <td className="px-3 py-2 text-ink-soft">
                     {player.positions ?? "—"}
                   </td>
                   <td className="px-3 py-2 text-right tabular-nums text-blue-700 font-semibold">
@@ -110,7 +110,7 @@ function RosterTable({ players, statCols }: RosterTableProps) {
                   {statCols.map((c) => (
                     <td
                       key={c}
-                      className="px-2 py-2 text-right tabular-nums text-gray-600"
+                      className="px-2 py-2 text-right tabular-nums text-ink-soft"
                     >
                       {fmtStat(player.stats[c])}
                     </td>
@@ -120,12 +120,12 @@ function RosterTable({ players, statCols }: RosterTableProps) {
                   <tr key={`${player.player_id}-expand`}>
                     <td
                       colSpan={3 + statCols.length}
-                      className="px-4 py-2 bg-gray-50 text-xs text-gray-600 border-b border-gray-100"
+                      className="px-4 py-2 bg-paper text-xs text-ink-soft border-b border-rule"
                     >
                       <div className="flex items-start gap-6 flex-wrap">
                         {player.value_low != null && player.value_high != null && player.value != null && (
                           <div>
-                            <div className="text-gray-400 mb-1">90% range</div>
+                            <div className="text-ink-faint mb-1">90% range</div>
                             <ValueRangeBar
                               value={player.value}
                               low={player.value_low}
@@ -144,7 +144,7 @@ function RosterTable({ players, statCols }: RosterTableProps) {
                               </span>
                             ))
                           ) : (
-                            <span className="text-gray-400">No score data</span>
+                            <span className="text-ink-faint">No score data</span>
                           )}
                         </div>
                       </div>
@@ -175,9 +175,9 @@ function CategoryAnalysis({ team }: CategoryAnalysisProps) {
     const isRate = RATE_CATS.has(cat);
 
     return (
-      <tr key={cat} className="border-t border-gray-100">
-        <td className="py-1.5 px-3 text-gray-700">{cat}</td>
-        <td className="py-1.5 px-3 text-right tabular-nums text-gray-600">
+      <tr key={cat} className="border-t border-rule">
+        <td className="py-1.5 px-3 text-ink-soft">{cat}</td>
+        <td className="py-1.5 px-3 text-right tabular-nums text-ink-soft">
           {isRate ? fmtWeekly(weekly) : `${fmtWeekly(weekly)}/wk`}
         </td>
         <td className="py-1.5 px-3 text-right">
@@ -198,7 +198,7 @@ function CategoryAnalysis({ team }: CategoryAnalysisProps) {
               ? "text-green-700"
               : prob <= 0.35
               ? "text-red-600"
-              : "text-gray-500"
+              : "text-ink-soft"
           }`}
         >
           {(prob * 100).toFixed(0)}%
@@ -208,7 +208,7 @@ function CategoryAnalysis({ team }: CategoryAnalysisProps) {
   };
 
   const header = (
-    <tr className="text-gray-400 text-xs">
+    <tr className="text-ink-faint text-xs">
       <td className="px-3 py-1">Cat</td>
       <td className="px-3 py-1 text-right">Proj/wk</td>
       <td className="px-3 py-1 text-right">Rank</td>
@@ -218,8 +218,8 @@ function CategoryAnalysis({ team }: CategoryAnalysisProps) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div className="rounded-lg border border-gray-100 overflow-hidden">
-        <div className="bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+      <div className="rounded-lg border border-rule overflow-hidden">
+        <div className="bg-paper px-3 py-1.5 text-xs font-semibold text-ink-soft uppercase tracking-wider">
           Batting
         </div>
         <table className="w-full text-sm">
@@ -227,8 +227,8 @@ function CategoryAnalysis({ team }: CategoryAnalysisProps) {
           <tbody>{battingCats.map(renderRow)}</tbody>
         </table>
       </div>
-      <div className="rounded-lg border border-gray-100 overflow-hidden">
-        <div className="bg-gray-50 px-3 py-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+      <div className="rounded-lg border border-rule overflow-hidden">
+        <div className="bg-paper px-3 py-1.5 text-xs font-semibold text-ink-soft uppercase tracking-wider">
           Pitching
         </div>
         <table className="w-full text-sm">
@@ -273,11 +273,11 @@ export default function TeamDetailPage() {
 
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-gray-900">{team.team_name}</h2>
+        <h2 className="text-xl font-bold text-ink">{team.team_name}</h2>
         {team.manager_name && (
-          <p className="text-sm text-gray-500">{team.manager_name}</p>
+          <p className="text-sm text-ink-soft">{team.manager_name}</p>
         )}
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="text-sm text-ink-soft mt-1">
           {data.season} season ·{" "}
           <span className="font-semibold text-blue-700">
             P-Score {team.team_value.toFixed(1)}
@@ -291,7 +291,7 @@ export default function TeamDetailPage() {
 
       {/* Batters */}
       <section className="mb-8">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+        <h3 className="text-xs font-semibold text-ink-soft uppercase tracking-wide mb-2">
           Batters ({batters.length})
         </h3>
         <RosterTable players={batters} statCols={BATTER_STAT_COLS} />
@@ -299,7 +299,7 @@ export default function TeamDetailPage() {
 
       {/* Pitchers */}
       <section className="mb-8">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+        <h3 className="text-xs font-semibold text-ink-soft uppercase tracking-wide mb-2">
           Pitchers ({pitchers.length})
         </h3>
         <RosterTable players={pitchers} statCols={PITCHER_STAT_COLS} />
@@ -307,7 +307,7 @@ export default function TeamDetailPage() {
 
       {/* Category analysis */}
       <section className="mb-8">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+        <h3 className="text-xs font-semibold text-ink-soft uppercase tracking-wide mb-3">
           Category Analysis
         </h3>
         <CategoryAnalysis team={team} />

@@ -182,7 +182,7 @@ export function DraftPage() {
     return (
       <div className="p-6 max-w-xl mx-auto">
         <h1 className="text-2xl font-bold mb-5">Draft Board</h1>
-        <p className="text-gray-500 text-sm">Restoring session...</p>
+        <p className="text-ink-soft text-sm">Restoring session...</p>
       </div>
     );
   }
@@ -194,7 +194,7 @@ export function DraftPage() {
         <h1 className="text-2xl font-bold mb-5">Draft Board</h1>
 
         {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">{error}</div>}
-        {preloadLoading && <p className="text-gray-500 text-sm">Loading league data...</p>}
+        {preloadLoading && <p className="text-ink-soft text-sm">Loading league data...</p>}
         {preloadError && (
           <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
             <p className="font-medium">Could not load league data</p>
@@ -205,7 +205,7 @@ export function DraftPage() {
 
         {preload && (
           <div className="space-y-6">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-ink-soft">
               {preload.season} · {preload.num_teams} teams · {preload.num_rounds} rounds
               {preload.keepers.length > 0 && ` · ${preload.keepers.length} keepers`}
             </p>
@@ -220,13 +220,13 @@ export function DraftPage() {
                     className={`flex items-center gap-2 p-2 rounded border cursor-pointer transition-colors ${
                       myTeamKey === t.team_key
                         ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-400"
+                        : "border-rule hover:border-ink-faint"
                     }`}
                   >
-                    <span className="text-gray-400 text-sm w-5 text-right shrink-0">{idx + 1}</span>
+                    <span className="text-ink-faint text-sm w-5 text-right shrink-0">{idx + 1}</span>
                     <span className="flex-1 text-sm font-medium">{t.name}</span>
                     {t.manager_name && (
-                      <span className="text-xs text-gray-500">{t.manager_name}</span>
+                      <span className="text-xs text-ink-soft">{t.manager_name}</span>
                     )}
                     {myTeamKey === t.team_key && (
                       <span className="text-xs text-blue-600 font-semibold">me</span>
@@ -258,15 +258,15 @@ export function DraftPage() {
       {/* Restart confirmation dialog */}
       {showRestartDialog && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 shadow-xl w-80">
+          <div className="bg-raised rounded-lg p-6 shadow-xl w-80">
             <h2 className="text-lg font-bold mb-2">Restart Draft</h2>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-ink-soft mb-4">
               Start over from pick 1 with the same teams and keepers?
             </p>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setShowRestartDialog(false)}
-                className="px-4 py-2 text-sm bg-gray-100 rounded hover:bg-gray-200"
+                className="px-4 py-2 text-sm bg-rule/60 rounded hover:bg-rule"
               >
                 Continue
               </button>
@@ -281,18 +281,18 @@ export function DraftPage() {
         </div>
       )}
 
-      <div className="flex items-center justify-between px-3 py-1.5 border-b bg-white text-sm shrink-0">
+      <div className="flex items-center justify-between px-3 py-1.5 border-b bg-raised text-sm shrink-0">
         <div className="flex items-center gap-3">
           <span className="font-bold">Pick {currentPick?.pick_number ?? "—"}</span>
           {currentPick && (
-            <span className={session.is_my_pick ? "text-green-700 font-semibold" : "text-gray-600"}>
+            <span className={session.is_my_pick ? "text-green-700 font-semibold" : "text-ink-soft"}>
               {session.is_my_pick ? "YOUR PICK" : `${currentTeamName} picking`}
             </span>
           )}
-          {!currentPick && <span className="text-gray-400">Draft complete</span>}
+          {!currentPick && <span className="text-ink-faint">Draft complete</span>}
         </div>
         <div className="flex gap-2">
-          <button onClick={undoPick} className="px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 text-xs">Undo</button>
+          <button onClick={undoPick} className="px-3 py-1 bg-rule/60 rounded hover:bg-rule text-xs">Undo</button>
           <button onClick={() => setShowRestartDialog(true)} className="px-3 py-1 text-red-600 bg-red-50 rounded hover:bg-red-100 text-xs">Restart</button>
         </div>
       </div>

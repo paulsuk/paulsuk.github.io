@@ -16,7 +16,7 @@ export default function PlayerSelectors({
       <select
         value={season}
         onChange={(e) => onSeasonChange(e.target.value)}
-        className="rounded border border-gray-200 bg-white px-2 py-1.5 text-sm shadow-sm"
+        className="rounded border border-rule bg-raised px-2 py-1.5 text-sm shadow-sm"
       >
         {config.seasons.map((s) => (
           <option key={s.id} value={s.id}>{s.label}</option>
@@ -25,7 +25,7 @@ export default function PlayerSelectors({
       <select
         value={model}
         onChange={(e) => onModelChange(e.target.value)}
-        className="rounded border border-gray-200 bg-white px-2 py-1.5 text-sm shadow-sm"
+        className="rounded border border-rule bg-raised px-2 py-1.5 text-sm shadow-sm"
       >
         {config.models.map((m) => (
           <option key={m.id} value={m.id}>{m.name}</option>

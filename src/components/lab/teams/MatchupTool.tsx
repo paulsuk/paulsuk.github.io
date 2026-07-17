@@ -7,18 +7,18 @@ function getEdge(
   oppRank: number | undefined
 ): { label: string; colorClass: string } {
   if (myRank == null || oppRank == null) {
-    return { label: "—", colorClass: "text-gray-400" };
+    return { label: "—", colorClass: "text-ink-faint" };
   }
   if (myRank <= oppRank - 2) return { label: "▲ Win", colorClass: "text-green-700" };
   if (oppRank <= myRank - 2) return { label: "▼ Lose", colorClass: "text-red-600" };
-  return { label: "— Toss-up", colorClass: "text-gray-500" };
+  return { label: "— Toss-up", colorClass: "text-ink-soft" };
 }
 
 function rankColorClass(rank: number | undefined, total: number): string {
-  if (rank == null) return "text-gray-600";
+  if (rank == null) return "text-ink-soft";
   if (rank <= 3) return "text-green-700";
   if (rank >= total - 2) return "text-red-600";
-  return "text-gray-700";
+  return "text-ink-soft";
 }
 
 function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
@@ -38,8 +38,8 @@ function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
       `${fmtWeekly(weekly)}${rank != null ? ` · #${rank}` : ""}`;
 
     return (
-      <tr key={cat} className="border-t border-gray-100">
-        <td className="px-3 py-2 font-medium text-gray-700">{cat}</td>
+      <tr key={cat} className="border-t border-rule">
+        <td className="px-3 py-2 font-medium text-ink-soft">{cat}</td>
         <td
           className={`px-3 py-2 text-right tabular-nums ${rankColorClass(
             myRank,
@@ -67,7 +67,7 @@ function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
     <tr>
       <td
         colSpan={4}
-        className="px-3 py-1 text-xs text-gray-400 uppercase tracking-wider bg-gray-50"
+        className="px-3 py-1 text-xs text-ink-faint uppercase tracking-wider bg-paper"
       >
         {label}
       </td>
@@ -75,9 +75,9 @@ function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
   );
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-100">
+    <div className="overflow-x-auto rounded-lg border border-rule">
       <table className="w-full text-sm">
-        <thead className="bg-gray-50">
+        <thead className="bg-paper">
           <tr>
             <th className="table-header px-3 py-2 text-left">Cat</th>
             <th className="table-header px-3 py-2 text-right">
@@ -115,13 +115,13 @@ export default function MatchupTool({ myTeam, allTeams }: MatchupToolProps) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-4">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+        <h3 className="text-xs font-semibold text-ink-soft uppercase tracking-wide">
           Matchup vs:
         </h3>
         <select
           value={opponentId}
           onChange={(e) => setOpponentId(e.target.value)}
-          className="border border-gray-200 rounded px-2 py-1 text-sm text-gray-700 bg-white"
+          className="border border-rule rounded px-2 py-1 text-sm text-ink-soft bg-raised"
         >
           <option value="">Pick a team...</option>
           {opponents.map((t) => (

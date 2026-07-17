@@ -33,7 +33,7 @@ export default function RankingsControls({
         <select
           value={filter.season}
           onChange={(e) => onChange({ season: e.target.value, start: "", end: "" })}
-          className="rounded border border-gray-200 bg-white px-2 py-1.5 text-sm shadow-sm"
+          className="rounded border border-rule bg-raised px-2 py-1.5 text-sm shadow-sm"
         >
           {config.seasons.map((s) => (
             <option key={s.id} value={s.id}>{s.label}</option>
@@ -45,21 +45,21 @@ export default function RankingsControls({
           value={filter.start}
           disabled={!dateEnabled}
           onChange={(e) => onChange({ start: e.target.value })}
-          className="rounded border border-gray-200 px-2 py-1.5 text-sm disabled:opacity-40"
+          className="rounded border border-rule px-2 py-1.5 text-sm disabled:opacity-40"
         />
-        <span className="text-gray-400 text-sm">–</span>
+        <span className="text-ink-faint text-sm">–</span>
         <input
           type="date"
           value={filter.end}
           disabled={!dateEnabled}
           onChange={(e) => onChange({ end: e.target.value })}
-          className="rounded border border-gray-200 px-2 py-1.5 text-sm disabled:opacity-40"
+          className="rounded border border-rule px-2 py-1.5 text-sm disabled:opacity-40"
         />
 
         <select
           value={filter.model}
           onChange={(e) => onChange({ model: e.target.value })}
-          className="rounded border border-gray-200 bg-white px-2 py-1.5 text-sm shadow-sm"
+          className="rounded border border-rule bg-raised px-2 py-1.5 text-sm shadow-sm"
         >
           {config.models.map((m) => (
             <option key={m.id} value={m.id}>{m.name}</option>
@@ -83,7 +83,7 @@ export default function RankingsControls({
               className={`px-2 py-0.5 text-xs rounded ${
                 filter.position === pos
                   ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-paper text-ink-soft hover:bg-rule"
               }`}
             >
               {pos}
@@ -94,7 +94,7 @@ export default function RankingsControls({
         <select
           value={filter.team}
           onChange={(e) => onChange({ team: e.target.value })}
-          className="rounded border border-gray-200 bg-white px-2 py-1.5 text-sm shadow-sm"
+          className="rounded border border-rule bg-raised px-2 py-1.5 text-sm shadow-sm"
         >
           <option value="">All teams</option>
           {teams.map((t) => (
@@ -102,7 +102,7 @@ export default function RankingsControls({
           ))}
         </select>
 
-        <label className="flex items-center gap-1.5 text-sm text-gray-600 cursor-pointer">
+        <label className="flex items-center gap-1.5 text-sm text-ink-soft cursor-pointer">
           <input
             type="checkbox"
             checked={filter.availableOnly}
@@ -117,7 +117,7 @@ export default function RankingsControls({
           placeholder="Search player..."
           value={filter.search}
           onChange={(e) => onChange({ search: e.target.value })}
-          className="rounded border border-gray-200 px-3 py-1.5 text-sm w-44 shadow-sm"
+          className="rounded border border-rule px-3 py-1.5 text-sm w-44 shadow-sm"
         />
       </div>
     </div>

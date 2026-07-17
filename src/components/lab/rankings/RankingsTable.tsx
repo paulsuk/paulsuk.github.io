@@ -22,7 +22,7 @@ function Th({ label, col, sortCol, sortAsc, onSort, className = "" }: ThProps) {
   const active = sortCol === col;
   return (
     <th
-      className={`table-header cursor-pointer px-3 py-2 hover:text-gray-700 whitespace-nowrap ${className}`}
+      className={`table-header cursor-pointer px-3 py-2 hover:text-ink whitespace-nowrap ${className}`}
       onClick={() => onSort(col)}
       tabIndex={0}
       role="columnheader"
@@ -31,7 +31,7 @@ function Th({ label, col, sortCol, sortAsc, onSort, className = "" }: ThProps) {
     >
       {label}
       {active && (
-        <span className="ml-1 text-gray-400" aria-hidden="true">
+        <span className="ml-1 text-ink-faint" aria-hidden="true">
           {sortAsc ? "↑" : "↓"}
         </span>
       )}
@@ -104,7 +104,7 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
   if (!players.length || !sorted.length) {
     const msg = !players.length ? "No players found." : `No players match "${search}".`;
     return (
-      <div className="rounded-lg border border-dashed border-gray-200 p-8 text-center">
+      <div className="rounded-lg border border-dashed border-rule p-8 text-center">
         <p className="text-label">{msg}</p>
       </div>
     );
@@ -113,9 +113,9 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
   return (
     <div>
       <p className="text-meta mb-2">{sorted.length} players</p>
-      <div className="overflow-x-auto rounded-lg border border-gray-100">
+      <div className="overflow-x-auto rounded-lg border border-rule">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50">
+          <thead className="bg-paper">
             <tr>
               <Th label="#" col="rank" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               <Th label="Name" col="name" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
@@ -141,23 +141,23 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-rule/60">
             {paginated.map((p, i) => (
-              <tr key={p.player_id} className={i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}>
-                <td className="px-3 py-2 text-gray-400 tabular-nums">{p.rank}</td>
+              <tr key={p.player_id} className={i % 2 === 0 ? "bg-raised" : "bg-paper/50"}>
+                <td className="px-3 py-2 text-ink-faint tabular-nums">{p.rank}</td>
                 <td className="px-3 py-2">
                   <button
                     onClick={() => navigate(`/lab/${slug}/players/${p.player_id}`)}
-                    className="font-medium text-gray-900 hover:text-blue-600 hover:underline text-left"
+                    className="font-medium text-ink hover:text-blue-600 hover:underline text-left"
                   >
                     {p.name}
                   </button>
                 </td>
-                <td className="px-3 py-2 text-gray-500">{p.team ?? "—"}</td>
-                <td className="px-3 py-2 text-gray-500 text-xs">{p.positions ?? "—"}</td>
+                <td className="px-3 py-2 text-ink-soft">{p.team ?? "—"}</td>
+                <td className="px-3 py-2 text-ink-soft text-xs">{p.positions ?? "—"}</td>
                 <td className="px-3 py-2 stat-value text-blue-700">{p.value.toFixed(2)}</td>
                 {statCols.map((c) => (
-                  <td key={c} className="px-3 py-2 tabular-nums text-gray-600">
+                  <td key={c} className="px-3 py-2 tabular-nums text-ink-soft">
                     {fmtStat(p.stats[c] as number | null)}
                   </td>
                 ))}

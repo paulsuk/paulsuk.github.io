@@ -264,7 +264,7 @@ export default function PlayoffBracket({ rounds, slug }: PlayoffBracketProps) {
 function ColHeader({ label }: { label: string }) {
   return (
     <div
-      className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2 text-center whitespace-nowrap overflow-hidden"
+      className="text-xs font-semibold uppercase tracking-wide text-ink-faint mb-2 text-center whitespace-nowrap overflow-hidden"
       style={{ width: COL_W, height: HEADER_H - 8 /* text height only; mb-2 provides the 8px gap */ }}
     >
       {label}
@@ -275,7 +275,7 @@ function ColHeader({ label }: { label: string }) {
 function FinalsLabel({ top, text }: { top: number; text: string }) {
   return (
     <div
-      className="absolute text-[10px] text-gray-400 px-1"
+      className="absolute text-[10px] text-ink-faint px-1"
       style={{ top: top - LABEL_H }}
     >
       {text}
@@ -286,10 +286,10 @@ function FinalsLabel({ top, text }: { top: number; text: string }) {
 function ByeSlot({ top, seed }: { top: number; seed: number | null }) {
   return (
     <div
-      className="absolute flex items-center px-3 border border-dashed border-gray-200 rounded text-xs italic text-gray-400"
+      className="absolute flex items-center px-3 border border-dashed border-rule rounded text-xs italic text-ink-faint"
       style={{ top, width: COL_W, height: BYE_H }}
     >
-      {seed != null && <span className="text-gray-300 mr-2 w-4 text-right">{seed}</span>}
+      {seed != null && <span className="text-ink-faint mr-2 w-4 text-right">{seed}</span>}
       bye
     </div>
   );
@@ -298,10 +298,10 @@ function ByeSlot({ top, seed }: { top: number; seed: number | null }) {
 function TbdBox({ top }: { top: number }) {
   return (
     <div
-      className="absolute rounded border border-dashed border-gray-200 bg-white flex items-center justify-center"
+      className="absolute rounded border border-dashed border-rule bg-raised flex items-center justify-center"
       style={{ top, width: COL_W, height: MATCH_H }}
     >
-      <span className="text-xs text-gray-300 italic">TBD</span>
+      <span className="text-xs text-ink-faint italic">TBD</span>
     </div>
   );
 }
@@ -320,8 +320,8 @@ function MatchupBox({
   const t1Won = m.winner === m.team_1_name;
   const t2Won = m.winner === m.team_2_name;
 
-  let borderClass = "border-dashed border-gray-200";
-  if (isComplete) borderClass = "border-gray-200";
+  let borderClass = "border-dashed border-rule";
+  if (isComplete) borderClass = "border-rule";
   if (inProgress) borderClass = "border-amber-400";
 
   const t1Medal =
@@ -337,7 +337,7 @@ function MatchupBox({
 
   return (
     <div
-      className={`absolute rounded border ${borderClass} bg-white overflow-hidden`}
+      className={`absolute rounded border ${borderClass} bg-raised overflow-hidden`}
       style={{ top, width: COL_W, height: MATCH_H }}
     >
       <TeamRow
@@ -349,7 +349,7 @@ function MatchupBox({
         showScore={isComplete || inProgress}
         medal={t1Medal}
       />
-      <div className="border-t border-gray-100" />
+      <div className="border-t border-rule" />
       <TeamRow
         name={m.team_2_name}
         seed={m.team_2_seed}
@@ -394,16 +394,16 @@ function TeamRow({
       <div className="flex items-center gap-1 min-w-0 overflow-hidden">
         {medal && <span className="text-xs flex-shrink-0">{medal}</span>}
         {seed != null && (
-          <span className="text-[10px] text-gray-400 w-4 text-right flex-shrink-0">{seed}</span>
+          <span className="text-[10px] text-ink-faint w-4 text-right flex-shrink-0">{seed}</span>
         )}
         <span
-          className={`text-xs truncate ${isWinner ? "text-gray-900" : isLoser ? "text-gray-400" : "text-gray-600"}`}
+          className={`text-xs truncate ${isWinner ? "text-ink" : isLoser ? "text-ink-faint" : "text-ink-soft"}`}
         >
           {name}
         </span>
       </div>
       {showScore && (
-        <span className={`text-xs tabular-nums flex-shrink-0 ml-1 ${isWinner ? "text-gray-900 font-semibold" : "text-gray-400"}`}>
+        <span className={`text-xs tabular-nums flex-shrink-0 ml-1 ${isWinner ? "text-ink font-semibold" : "text-ink-faint"}`}>
           {score}
         </span>
       )}
@@ -420,7 +420,7 @@ function ConnectorWrapper({ height, lines }: { height: number; lines: ConnectorL
       <div style={{ height: HEADER_H }} />
       <svg width={CONN_W} height={height} style={{ overflow: "visible" }}>
         {lines.map((l, i) => (
-          <g key={i} stroke="#d1d5db" strokeWidth={1} fill="none">
+          <g key={i} stroke="var(--color-rule)" strokeWidth={1} fill="none">
             <line x1={0} y1={l.from_y} x2={mid} y2={l.from_y} />
             <line x1={0} y1={l.to_y} x2={mid} y2={l.to_y} />
             <line x1={mid} y1={l.from_y} x2={mid} y2={l.to_y} />

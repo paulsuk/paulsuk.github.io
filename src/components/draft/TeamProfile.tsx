@@ -31,9 +31,9 @@ function CatRow({ cat, maxRank }: { cat: CategoryInfo; maxRank: number }) {
   return (
     <div className="flex items-center gap-2">
       <span className="w-10 text-xs font-bold text-right">{cat.name}</span>
-      <div className="flex-1 bg-gray-100 rounded h-5 relative">
+      <div className="flex-1 bg-rule/60 rounded h-5 relative">
         <div
-          className={`h-5 rounded ${TIER_COLORS[cat.tier] || "bg-gray-300"}`}
+          className={`h-5 rounded ${TIER_COLORS[cat.tier] || "bg-rule"}`}
           style={{ width: `${((maxRank - cat.rank + 1) / maxRank) * 100}%` }}
         />
         <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
@@ -42,7 +42,7 @@ function CatRow({ cat, maxRank }: { cat: CategoryInfo; maxRank: number }) {
       </div>
       <span
         className={`text-xs font-bold w-12 text-center rounded px-1 py-0.5 text-white ${
-          TIER_COLORS[cat.tier] || "bg-gray-400"
+          TIER_COLORS[cat.tier] || "bg-ink-faint"
         }`}
       >
         {TIER_LABELS[cat.tier] || "?"}
@@ -64,7 +64,7 @@ export function TeamProfile({ categories, strategy }: Props) {
   return (
     <div className="p-3">
       {strategy && (
-        <p className="text-sm text-gray-600 mb-3 italic">{strategy}</p>
+        <p className="text-sm text-ink-soft mb-3 italic">{strategy}</p>
       )}
       <div className="space-y-1.5">
         {batting.map((cat) => <CatRow key={cat.name} cat={cat} maxRank={maxRank} />)}

@@ -17,8 +17,8 @@ export default function TradeCard({ trade }: { trade: Trade }) {
       </div>
       {Array.from(byDest.entries()).map(([direction, players]) => (
         <div key={direction} className="text-sm">
-          <span className="text-gray-400">{direction}:</span>{" "}
-          <span className="font-medium text-gray-700">{players.join(", ")}</span>
+          <span className="text-ink-faint">{direction}:</span>{" "}
+          <span className="font-medium text-ink-soft">{players.join(", ")}</span>
         </div>
       ))}
     </div>

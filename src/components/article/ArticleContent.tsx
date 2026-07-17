@@ -90,7 +90,7 @@ export default function ArticleContent({ content, slug }: ArticleContentProps) {
   };
 
   return (
-    <div className="article-content prose prose-sm max-w-none prose-headings:font-semibold prose-p:text-gray-700 prose-a:text-blue-600 prose-img:rounded-lg">
+    <div className="article-content prose prose-sm max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-ink-soft prose-a:text-accent prose-img:rounded-sm [&>p:first-of-type]:font-display [&>p:first-of-type]:text-lg [&>p:first-of-type]:leading-relaxed [&>p:first-of-type]:text-ink">
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {processed}
       </ReactMarkdown>

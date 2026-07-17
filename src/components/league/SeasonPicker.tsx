@@ -16,7 +16,7 @@ export default function SeasonPicker({ seasons, selected, onChange, slug }: Seas
       value={selected ?? ""}
       onChange={(e) => onChange(Number(e.target.value))}
       aria-label="Select season"
-      className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      className="rounded-sm border border-rule bg-raised px-3 py-1.5 text-sm font-medium text-ink-soft hover:border-ink-faint focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
     >
       {seasons.map((s) => (
         <option key={s.season} value={s.season}>

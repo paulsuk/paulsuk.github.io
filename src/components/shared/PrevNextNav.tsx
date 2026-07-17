@@ -17,7 +17,7 @@ export default function PrevNextNav({ slug, prevId, nextId, className }: PrevNex
       {prevId ? (
         <Link
           to={`/${slug}/articles/${prevId}`}
-          className="text-blue-600 no-underline hover:text-blue-800"
+          className="text-accent no-underline hover:text-accent-deep"
         >
           &larr; Previous
         </Link>
@@ -27,7 +27,7 @@ export default function PrevNextNav({ slug, prevId, nextId, className }: PrevNex
       {nextId ? (
         <Link
           to={`/${slug}/articles/${nextId}`}
-          className="text-blue-600 no-underline hover:text-blue-800"
+          className="text-accent no-underline hover:text-accent-deep"
         >
           Next &rarr;
         </Link>

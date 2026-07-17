@@ -29,8 +29,8 @@ export default function KeepersCard({
             onClick={() => onSeasonChange(s)}
             className={`px-2 py-0.5 text-xs rounded-full transition-colors ${
               s === activeSeason
-                ? "bg-gray-900 text-white"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                ? "bg-ink text-paper"
+                : "bg-paper text-ink-soft hover:bg-rule"
             }`}
           >
             {formatSeason(s, slug)}
@@ -43,17 +43,17 @@ export default function KeepersCard({
         {activeKeepers.map((k: KeeperEntry) => (
           <div key={k.name} className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-gray-700">{k.name}</span>
+              <span className="font-medium text-ink-soft">{k.name}</span>
               {k.position && (
                 <span className="badge-position">{k.position}</span>
               )}
               {k.tenure != null && k.tenure > 1 && (
-                <span className="inline-flex items-center rounded px-1 py-0.5 text-[10px] font-medium bg-blue-100 text-blue-700">
+                <span className="inline-flex items-center rounded px-1 py-0.5 text-[10px] font-medium bg-accent/10 text-accent">
                   {k.tenure}yr
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-400">
+            <div className="flex items-center gap-2 text-xs text-ink-faint">
               {isBaseball && k.round_cost != null && (
                 <span>Cost: {k.round_cost}</span>
               )}

@@ -12,7 +12,7 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
     <div className="space-y-5">
       {/* Standings */}
       <div>
-        <h4 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <h4 className="eyebrow section-rule mb-2 pt-1">
           Standings — Week {recap.week}
         </h4>
         <div className="space-y-1">
@@ -23,10 +23,10 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
             return (
               <div key={s.team_key} className="flex items-center justify-between text-xs">
                 <span>
-                  <span className="font-medium text-gray-600">{s.rank}.</span>{" "}
-                  <span className="text-gray-800">{s.team_name}</span>
+                  <span className="font-medium text-ink-soft">{s.rank}.</span>{" "}
+                  <span className="text-ink">{s.team_name}</span>
                 </span>
-                <span className="tabular-nums text-gray-500">
+                <span className="tabular-nums text-ink-soft">
                   {w}-{l}-{t}
                 </span>
               </div>
@@ -40,13 +40,13 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
         <div className="space-y-1">
           {recap.matchups.map((m, i) => (
             <div key={`${m.team_1_name}-${m.team_2_name}-${i}`} className="text-xs">
-              <span className={m.cats_won_1 > m.cats_won_2 ? "font-medium" : "text-gray-500"}>
+              <span className={m.cats_won_1 > m.cats_won_2 ? "font-medium" : "text-ink-soft"}>
                 {m.team_1_name}
               </span>
-              <span className="mx-1 text-gray-400">
+              <span className="mx-1 text-ink-faint">
                 {m.cats_won_1}-{m.cats_won_2}
               </span>
-              <span className={m.cats_won_2 > m.cats_won_1 ? "font-medium" : "text-gray-500"}>
+              <span className={m.cats_won_2 > m.cats_won_1 ? "font-medium" : "text-ink-soft"}>
                 {m.team_2_name}
               </span>
             </div>

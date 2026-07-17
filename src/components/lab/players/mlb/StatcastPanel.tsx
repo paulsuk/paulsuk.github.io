@@ -20,11 +20,11 @@ export default function StatcastPanel({
 
   return (
     <div className="mb-6">
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">Statcast</h3>
+      <h3 className="text-sm font-semibold text-ink-soft mb-2">Statcast</h3>
       <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
         {cols.map(([key, label]) => (
-          <div key={key} className="bg-gray-50 rounded p-2 text-center">
-            <div className="text-xs text-gray-400 mb-0.5">{label}</div>
+          <div key={key} className="bg-paper rounded p-2 text-center">
+            <div className="text-xs text-ink-faint mb-0.5">{label}</div>
             <div className="text-sm font-medium tabular-nums">
               {stats[key] != null ? (stats[key] as number).toFixed(3).replace(/\.?0+$/, "") : "—"}
             </div>

@@ -89,15 +89,15 @@ export default function FranchiseOverview({
       {/* Ownership Timeline */}
       <Card title="Ownership History">
         {overview.ownership.length === 1 ? (
-          <p className="text-sm text-gray-600">
-            {overview.ownership[0].manager} &middot; Est. <span className="text-gray-400">{formatSeason(overview.ownership[0].from, slug)}</span> &mdash; present
+          <p className="text-sm text-ink-soft">
+            {overview.ownership[0].manager} &middot; Est. <span className="text-ink-faint">{formatSeason(overview.ownership[0].from, slug)}</span> &mdash; present
           </p>
         ) : (
           <div className="space-y-1">
             {overview.ownership.map((o) => (
               <div key={o.guid} className="flex items-center justify-between text-sm">
-                <span className="font-medium text-gray-700">{o.manager}</span>
-                <span className="text-gray-400 tabular-nums">
+                <span className="font-medium text-ink-soft">{o.manager}</span>
+                <span className="text-ink-faint tabular-nums">
                   {formatSeason(o.from, slug)}{o.to ? `\u2013${formatSeason(o.to, slug)}` : "+"}
                 </span>
               </div>
@@ -120,7 +120,7 @@ export default function FranchiseOverview({
                     <div>
                       <div className="text-sm font-medium">{era.name}</div>
                       <div className="text-label">
-                        <span className="text-gray-400">{formatSeason(era.from, slug)}{era.to ? `\u2013${formatSeason(era.to, slug)}` : "+"}</span> &middot; {era.seasons.length} season{era.seasons.length !== 1 ? "s" : ""}
+                        <span className="text-ink-faint">{formatSeason(era.from, slug)}{era.to ? `\u2013${formatSeason(era.to, slug)}` : "+"}</span> &middot; {era.seasons.length} season{era.seasons.length !== 1 ? "s" : ""}
                         {era.championships > 0 && (
                           <span className="ml-2 badge-championship">
                             {era.championships}x champ
@@ -151,9 +151,9 @@ export default function FranchiseOverview({
                 <SeasonRow season={sr} showManager={managerEras.length > 1} scoringMode={scoringMode} slug={slug} />
               </button>
               {currentMatchup && currentMatchup.season === sr.season && (
-                <div className="pl-4 py-1 text-sm text-gray-500">
+                <div className="pl-4 py-1 text-sm text-ink-soft">
                   This Week (Wk {currentMatchup.week}): vs {currentMatchup.opponent_team_name} &mdash;{" "}
-                  <span className="font-medium tabular-nums text-gray-700">
+                  <span className="font-medium tabular-nums text-ink-soft">
                     {currentMatchup.cats_won}-{currentMatchup.cats_lost}
                     {currentMatchup.cats_tied > 0 ? `-${currentMatchup.cats_tied}` : ""}
                   </span>
@@ -190,22 +190,22 @@ export default function FranchiseOverview({
                   const isWinning = entry.wins > entry.losses;
                   const isLosing = entry.wins < entry.losses;
                   return (
-                    <tr key={entry.franchise_id} className="border-b border-gray-50">
+                    <tr key={entry.franchise_id} className="border-b border-rule">
                       <td className="py-1.5 pr-4">
                         <Link
                           to={`/${slug}/history/franchise/${entry.franchise_id}`}
-                          className="font-medium text-gray-700 hover:text-gray-900"
+                          className="font-medium text-ink-soft hover:text-accent"
                         >
                           {entry.name}
                         </Link>
                       </td>
-                      <td className={`py-1.5 pr-4 tabular-nums ${isWinning ? "text-green-600" : ""}`}>
+                      <td className={`py-1.5 pr-4 tabular-nums ${isWinning ? "text-win" : ""}`}>
                         {entry.wins}
                       </td>
-                      <td className={`py-1.5 pr-4 tabular-nums ${isLosing ? "text-red-600" : ""}`}>
+                      <td className={`py-1.5 pr-4 tabular-nums ${isLosing ? "text-loss" : ""}`}>
                         {entry.losses}
                       </td>
-                      <td className="py-1.5 pr-4 tabular-nums text-gray-400">{entry.ties}</td>
+                      <td className="py-1.5 pr-4 tabular-nums text-ink-faint">{entry.ties}</td>
                       <td className="py-1.5 tabular-nums">{pct}</td>
                     </tr>
                   );

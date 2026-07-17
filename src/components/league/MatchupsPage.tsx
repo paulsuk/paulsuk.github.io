@@ -5,8 +5,8 @@ import SeasonPicker from "./SeasonPicker";
 import PlayoffBracket from "./PlayoffBracket";
 import MatchupCard from "./MatchupCard";
 import AwardsPodium from "./AwardsPodium";
-import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
+import Skeleton from "../shared/Skeleton";
 
 export default function MatchupsPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -41,7 +41,13 @@ export default function MatchupsPage() {
     setSearchParams(next);
   }
 
-  if (seasonsLoading) return <LoadingSpinner />;
+  if (seasonsLoading) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2">
+        {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)}
+      </div>
+    );
+  }
   if (seasonsError) return <ErrorBanner message={seasonsError} />;
   if (!seasons || seasons.length === 0) {
     return <ErrorBanner message="No synced seasons found for this league." />;
@@ -57,7 +63,11 @@ export default function MatchupsPage() {
           onChange={(s) => setSearchParams({ season: String(s) })} slug={slug!} />
       </div>
 
-      {loading && <LoadingSpinner />}
+      {loading && (
+        <div className="grid gap-4 md:grid-cols-2">
+          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)}
+        </div>
+      )}
       {error && <ErrorBanner message={error} />}
 
       {recap && (

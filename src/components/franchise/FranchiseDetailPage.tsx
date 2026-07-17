@@ -102,11 +102,11 @@ export default function FranchiseDetailPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="font-display text-2xl font-black tracking-tight">
             {overview.current_team_name}
             {medals.length > 0 && <span className="ml-2">{medals.join("")}</span>}
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-ink-soft">
             {overview.name} franchise &middot; Managed by {overview.current_manager}
           </p>
         </div>
@@ -115,13 +115,13 @@ export default function FranchiseDetailPage() {
             <div className="toggle-group">
               <button
                 onClick={() => setViewScope("franchise")}
-                className={`toggle-btn ${viewScope === "franchise" ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-700"} rounded-l-md`}
+                className={`toggle-btn ${viewScope === "franchise" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"} rounded-l-md`}
               >
                 All-Time
               </button>
               <button
                 onClick={() => setViewScope("manager")}
-                className={`toggle-btn ${viewScope === "manager" ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-700"} rounded-r-md`}
+                className={`toggle-btn ${viewScope === "manager" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"} rounded-r-md`}
               >
                 Current Manager
               </button>
@@ -130,13 +130,13 @@ export default function FranchiseDetailPage() {
           <div className="toggle-group">
             <button
               onClick={() => setScoringMode("category")}
-              className={`toggle-btn ${scoringMode === "category" ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-700"} rounded-l-md`}
+              className={`toggle-btn ${scoringMode === "category" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"} rounded-l-md`}
             >
               Categories
             </button>
             <button
               onClick={() => setScoringMode("matchup")}
-              className={`toggle-btn ${scoringMode === "matchup" ? "bg-gray-900 text-white" : "text-gray-500 hover:text-gray-700"} rounded-r-md`}
+              className={`toggle-btn ${scoringMode === "matchup" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"} rounded-r-md`}
             >
               Matchups
             </button>
