@@ -37,3 +37,9 @@ export function leagueBySportCode(code: string): LeagueConfig | null {
 export function defaultScoringMode(slug: string): ScoringMode {
   return leagueBySlug(slug)?.scoringMode ?? "matchup";
 }
+
+/** /lab/mlb/players/123 -> /lab/baseball/players/123 (query appended by caller). */
+export function legacyLabPath(pathname: string, newSlug: string): string {
+  const rest = pathname.split("/").slice(3).join("/");
+  return `/lab/${newSlug}${rest ? `/${rest}` : ""}`;
+}

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { LEAGUES, defaultScoringMode, leagueBySlug, leagueBySportCode } from "./league-config";
+import {
+  LEAGUES,
+  defaultScoringMode,
+  legacyLabPath,
+  leagueBySlug,
+  leagueBySportCode,
+} from "./league-config";
 
 describe("league-config", () => {
   it("has both leagues with distinct slugs and sport codes", () => {
@@ -14,5 +20,16 @@ describe("league-config", () => {
   it("preserves scoring-mode defaults", () => {
     expect(defaultScoringMode("baseball")).toBe("category");
     expect(defaultScoringMode("basketball")).toBe("matchup");
+  });
+});
+
+describe("legacyLabPath", () => {
+  it("rewrites deep links preserving sub-path", () => {
+    expect(legacyLabPath("/lab/mlb/players/123", "baseball")).toBe("/lab/baseball/players/123");
+    expect(legacyLabPath("/lab/nba/teams/5", "basketball")).toBe("/lab/basketball/teams/5");
+  });
+  it("handles bare legacy paths", () => {
+    expect(legacyLabPath("/lab/mlb", "baseball")).toBe("/lab/baseball");
+    expect(legacyLabPath("/lab/nba/", "basketball")).toBe("/lab/basketball");
   });
 });
