@@ -19,7 +19,11 @@ export default function MatchupsPage() {
 
   // 1) undated call learns the season's current/latest week (client-side cached)
   const { data: currentRecap } = useRecap(slug!, undefined, selectedSeason ?? undefined);
-  const currentWeek = currentRecap?.week ?? null;
+  // Guard against a stale response from the previous season: useApiData keeps old
+  // data until the new fetch resolves, so trust currentWeek only when seasons agree.
+  const seasonMatches =
+    currentRecap != null && (selectedSeason == null || currentRecap.season === selectedSeason);
+  const currentWeek = seasonMatches ? currentRecap.week : null;
 
   // 2) the page renders the selected week (falls back to current)
   const week = weekParam ? Number(weekParam) : currentWeek ?? undefined;
