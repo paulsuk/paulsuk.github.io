@@ -1,0 +1,80 @@
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useSeasons, useRecap, useArticles } from "../../api/hooks";
+import { formatSeason, winPct } from "../../utils/records-helpers";
+import { defaultScoringMode } from "../../utils/league-config";
+import SeasonPicker from "./SeasonPicker";
+import RankingsSection from "./RankingsSection";
+import ArticleCard from "../shared/ArticleCard";
+import LoadingSpinner from "../shared/LoadingSpinner";
+import ErrorBanner from "../shared/ErrorBanner";
+
+export default function LeagueHubPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const scoringMode = defaultScoringMode(slug!);
+  const seasonParam = searchParams.get("season");
+
+  const { data: seasons, loading: seasonsLoading, error: seasonsError } = useSeasons(slug!);
+  const selectedSeason = seasonParam
+    ? Number(seasonParam)
+    : seasons && seasons.length > 0 ? seasons[0].season : null;
+
+  const { data: recap, loading: recapLoading, error: recapError } = useRecap(
+    slug!, undefined, selectedSeason ?? undefined
+  );
+  const { data: articles } = useArticles(slug!, selectedSeason ?? undefined);
+  const latest = [...articles].sort((a, b) => b.date.localeCompare(a.date))[0];
+
+  if (seasonsLoading) return <LoadingSpinner />;
+  if (seasonsError) return <ErrorBanner message={seasonsError} />;
+  if (!seasons || seasons.length === 0) {
+    return <ErrorBanner message="No synced seasons found for this league." />;
+  }
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <p className="eyebrow">
+          {selectedSeason ? formatSeason(selectedSeason, slug!) : ""} Season
+          {recap ? ` — Week ${recap.week}` : ""}
+        </p>
+        <SeasonPicker seasons={seasons} selected={selectedSeason}
+          onChange={(s) => setSearchParams({ season: String(s) })} slug={slug!} />
+      </div>
+
+      {recapLoading && <LoadingSpinner />}
+      {recapError && <ErrorBanner message={recapError} />}
+      {recap && (
+        <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
+          <div className="space-y-8">
+            {latest && (
+              <section>
+                <h2 className="section-rule eyebrow mb-3 pt-1">Latest story</h2>
+                <ArticleCard article={latest} slug={slug!} />
+              </section>
+            )}
+            <RankingsSection profiles={recap.profiles} season={selectedSeason ?? recap.season} />
+          </div>
+          <aside className="space-y-2">
+            <h2 className="section-rule eyebrow mb-3 pt-1">
+              <Link to={`/${slug}/standings`} className="no-underline hover:text-accent">Standings ›</Link>
+            </h2>
+            {recap.standings.map((s) => {
+              const w = scoringMode === "category" ? s.cat_wins : s.wins;
+              const l = scoringMode === "category" ? s.cat_losses : s.losses;
+              const t = scoringMode === "category" ? s.cat_ties : s.ties;
+              return (
+                <div key={s.team_key} className="flex items-baseline justify-between text-sm">
+                  <span className="truncate">
+                    <span className="agate mr-1.5">{s.rank}.</span>{s.team_name}
+                  </span>
+                  <span className="agate">{w}-{l}-{t} ({winPct(w, l, t)})</span>
+                </div>
+              );
+            })}
+          </aside>
+        </div>
+      )}
+    </div>
+  );
+}

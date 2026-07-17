@@ -12,10 +12,9 @@ import {
   LegacyRecordsRedirect,
 } from "./components/league/legacy-redirects";
 
-// TODO(task 6): replace these three aliases with real LeagueHubPage/MatchupsPage/StandingsPage.
-const LeagueHubPage = lazy(() => import("./components/league/SportPage"));
-const MatchupsPage = lazy(() => import("./components/league/SportPage"));
-const StandingsPage = lazy(() => import("./components/league/SportPage"));
+const LeagueHubPage = lazy(() => import("./components/league/LeagueHubPage"));
+const MatchupsPage = lazy(() => import("./components/league/MatchupsPage"));
+const StandingsPage = lazy(() => import("./components/league/StandingsPage"));
 const ArticlesPage = lazy(() => import("./components/league/ArticlesPage"));
 const ArticlePage = lazy(() => import("./components/article/ArticlePage"));
 const HistoryPage = lazy(() => import("./components/records/HistoryPage"));
