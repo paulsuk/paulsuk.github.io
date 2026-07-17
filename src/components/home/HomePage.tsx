@@ -17,23 +17,25 @@ const sports = [
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col items-center pt-16">
-      <h1 className="mb-2 text-3xl font-bold">Paul Suk</h1>
-      <p className="mb-12 text-gray-500">Fantasy Sports Analytics</p>
+    <main className="mx-auto max-w-5xl px-4">
+      <div className="flex flex-col items-center pt-16">
+        <h1 className="mb-2 text-3xl font-bold">Paul Suk</h1>
+        <p className="mb-12 text-gray-500">Fantasy Sports Analytics</p>
 
-      <div className="flex gap-6">
-        {sports.map((s) => (
-          <Link
-            key={s.slug}
-            to={`/${s.slug}`}
-            className={`flex flex-col items-center gap-3 rounded-xl border p-8 no-underline transition-colors ${s.color}`}
-          >
-            <span className="text-5xl">{s.icon}</span>
-            <span className="text-lg font-medium text-gray-700">{s.label}</span>
-          </Link>
-        ))}
+        <div className="flex gap-6">
+          {sports.map((s) => (
+            <Link
+              key={s.slug}
+              to={`/${s.slug}`}
+              className={`flex flex-col items-center gap-3 rounded-xl border p-8 no-underline transition-colors ${s.color}`}
+            >
+              <span className="text-5xl">{s.icon}</span>
+              <span className="text-lg font-medium text-gray-700">{s.label}</span>
+            </Link>
+          ))}
+        </div>
+
       </div>
-
-    </div>
+    </main>
   );
 }
