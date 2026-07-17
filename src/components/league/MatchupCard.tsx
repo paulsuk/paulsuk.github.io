@@ -1,4 +1,5 @@
 import type { MatchupSummary } from "../../api/types";
+import { formatStatValue } from "../../utils/records-helpers";
 
 function TeamLine({ name, manager, cats, won }: { name: string; manager: string; cats: number; won: boolean }) {
   return (
@@ -48,7 +49,7 @@ export default function MatchupCard({ matchup: m }: { matchup: MatchupSummary })
             {standouts.map((s, i) => (
               <p key={`${s.player}-${s.cat}-${i}`} className="agate">
                 <span className="font-semibold text-ink">{s.player}</span>
-                {" — "}{s.cat}, z +{s.value.toFixed(1)}
+                {" — "}{formatStatValue(s.value)} {s.cat}
                 <span className="text-ink-faint"> ({s.team === 1 ? m.team_1_name : m.team_2_name})</span>
               </p>
             ))}

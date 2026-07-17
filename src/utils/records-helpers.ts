@@ -71,6 +71,15 @@ export function getFinishGroups(records: AnySeasonRecord[], field: "playoff_seed
 }
 
 /**
+ * Raw stat value for display: 4 -> "4", .333 -> "0.333", 2.5 -> "2.50".
+ */
+export function formatStatValue(v: number): string {
+  if (Number.isInteger(v)) return String(v);
+  if (Math.abs(v) < 1) return v.toFixed(3);
+  return v.toFixed(2);
+}
+
+/**
  * Format finish groups as a compact string for display.
  * Example: "1sts: 2 (2022, 2024), 2nds: 1 (2023)"
  */
