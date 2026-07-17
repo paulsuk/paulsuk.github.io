@@ -3,6 +3,8 @@ import { useSeasons, useRecap, usePlayoffs } from "../../api/hooks";
 import { formatSeason } from "../../utils/records-helpers";
 import SeasonPicker from "./SeasonPicker";
 import PlayoffBracket from "./PlayoffBracket";
+import MatchupCard from "./MatchupCard";
+import AwardsPodium from "./AwardsPodium";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 
@@ -75,17 +77,10 @@ export default function MatchupsPage() {
             </button>
           </div>
 
-          <div className="space-y-2">
-            {recap.matchups.map((m) => (
-              <div
-                key={`${m.team_1_name}-${m.team_2_name}`}
-                className="item-card flex items-center justify-between gap-3"
-              >
-                <span className="min-w-0 flex-1 truncate text-sm font-medium">{m.team_1_name}</span>
-                <span className="score-pill flex-shrink-0">{m.cats_won_1} – {m.cats_won_2}</span>
-                <span className="min-w-0 flex-1 truncate text-right text-sm font-medium">{m.team_2_name}</span>
-              </div>
-            ))}
+          <AwardsPodium recap={recap} />
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {recap.matchups.map((m, i) => <MatchupCard key={i} matchup={m} />)}
           </div>
         </>
       )}

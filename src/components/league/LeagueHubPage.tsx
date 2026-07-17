@@ -4,6 +4,7 @@ import { formatSeason, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
 import SeasonPicker from "./SeasonPicker";
 import RankingsSection from "./RankingsSection";
+import AwardsPodium from "./AwardsPodium";
 import ArticleCard from "../shared/ArticleCard";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
@@ -56,6 +57,7 @@ export default function LeagueHubPage() {
             <RankingsSection profiles={recap.profiles} season={selectedSeason ?? recap.season} />
           </div>
           <aside className="space-y-2">
+            {recap && <AwardsPodium recap={recap} compact />}
             <h2 className="section-rule eyebrow mb-3 pt-1">
               <Link to={`/${slug}/standings`} className="no-underline hover:text-accent">Standings ›</Link>
             </h2>
