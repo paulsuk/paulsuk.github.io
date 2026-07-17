@@ -51,7 +51,7 @@ export default function RankingsSection({ profiles, season }: RankingsSectionPro
                 />
                 <div className="min-w-0 flex-1">
                   {p.franchise_id ? (
-                    <Link to={`/${slug}/franchise/${p.franchise_id}`} className="text-sm font-medium hover:text-gray-500">
+                    <Link to={`/${slug}/history/franchise/${p.franchise_id}`} className="text-sm font-medium hover:text-gray-500">
                       {p.team_name}
                     </Link>
                   ) : (

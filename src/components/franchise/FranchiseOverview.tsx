@@ -193,7 +193,7 @@ export default function FranchiseOverview({
                     <tr key={entry.franchise_id} className="border-b border-gray-50">
                       <td className="py-1.5 pr-4">
                         <Link
-                          to={`/${slug}/franchise/${entry.franchise_id}`}
+                          to={`/${slug}/history/franchise/${entry.franchise_id}`}
                           className="font-medium text-gray-700 hover:text-gray-900"
                         >
                           {entry.name}

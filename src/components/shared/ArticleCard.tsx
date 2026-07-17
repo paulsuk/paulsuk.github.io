@@ -10,7 +10,7 @@ interface ArticleCardProps {
 export default function ArticleCard({ article, slug, basePath }: ArticleCardProps) {
   const to = basePath
     ? `${basePath}/${article.id}`
-    : `/${slug}/article/${article.id}`;
+    : `/${slug}/articles/${article.id}`;
   return (
     <Link
       to={to}

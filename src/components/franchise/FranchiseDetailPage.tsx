@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useFranchiseDetail } from "../../api/hooks";
 import type { TransactionCount, Trade, SeasonKeepers, ScoringMode } from "../../api/types";
 import LoadingSpinner from "../shared/LoadingSpinner";
@@ -7,7 +7,9 @@ import ErrorBanner from "../shared/ErrorBanner";
 import RosterTab from "./RosterTab";
 import FranchiseOverview from "./FranchiseOverview";
 import { getMedals, getChampionshipYears } from "../../utils/records-helpers";
-import { defaultScoringMode } from "../../utils/league-config";
+import { defaultScoringMode, leagueBySlug } from "../../utils/league-config";
+import { useDocumentTitle } from "../../utils/use-document-title";
+import Breadcrumbs from "../layout/Breadcrumbs";
 
 type ViewScope = "franchise" | "manager";
 type DetailTab = "overview" | "roster";
@@ -15,6 +17,8 @@ type DetailTab = "overview" | "roster";
 export default function FranchiseDetailPage() {
   const { slug, franchiseId } = useParams<{ slug: string; franchiseId: string }>();
   const { data, loading, error } = useFranchiseDetail(slug!, franchiseId!);
+  const leagueLabel = leagueBySlug(slug!)?.label ?? slug!;
+  useDocumentTitle(data?.overview.current_team_name);
   const [scoringMode, setScoringMode] = useState<ScoringMode>(() => defaultScoringMode(slug!));
   const [viewScope, setViewScope] = useState<ViewScope>("franchise");
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
@@ -69,9 +73,9 @@ export default function FranchiseDetailPage() {
     return data.keepers.filter((sk: SeasonKeepers) => sk.season >= currentEraFrom);
   }, [data, isManagerView, currentEraFrom]);
 
-  if (loading) return <main className="mx-auto max-w-5xl px-4 py-6"><LoadingSpinner /></main>;
-  if (error) return <main className="mx-auto max-w-5xl px-4 py-6"><ErrorBanner message={error} /></main>;
-  if (!data) return <main className="mx-auto max-w-5xl px-4 py-6"><ErrorBanner message="Franchise not found." /></main>;
+  if (loading) return <LoadingSpinner />;
+  if (error) return <ErrorBanner message={error} />;
+  if (!data) return <ErrorBanner message="Franchise not found." />;
 
   const { overview, manager_eras, h2h, rosters, roster_costs, current_matchup } = data;
   const hasMultipleOwners = overview.ownership.length > 1;
@@ -86,12 +90,14 @@ export default function FranchiseDetailPage() {
   const record = `${w}-${l}-${t}`;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-6">
-      {/* interim wrapper — replaced when this page moves under LeagueLayout (task 5) */}
-      <div className="space-y-6">
-      <Link to={`/${slug}/records`} className="text-sm text-gray-400 hover:text-gray-600">
-        &larr; Back to Records
-      </Link>
+    <div className="space-y-6">
+      <Breadcrumbs
+        items={[
+          { label: leagueLabel, to: `/${slug}` },
+          { label: "History", to: `/${slug}/history` },
+          { label: overview.current_team_name },
+        ]}
+      />
 
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -189,7 +195,6 @@ export default function FranchiseDetailPage() {
           slug={slug!}
         />
       )}
-      </div>
-    </main>
+    </div>
   );
 }

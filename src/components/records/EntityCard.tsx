@@ -129,7 +129,7 @@ export default function EntityCard({
 
           {slug && (ownership || franchiseId) && (
             <Link
-              to={`/${slug}/franchise/${franchiseId ?? id}`}
+              to={`/${slug}/history/franchise/${franchiseId ?? id}`}
               className="mt-3 inline-block text-sm font-medium text-gray-500 hover:text-gray-900"
             >
               View Franchise Details &rarr;

@@ -15,7 +15,7 @@ const TABS: { key: Tab; label: string }[] = [
 
 type ViewMode = "manager" | "franchise";
 
-export default function RecordsPage() {
+export default function HistoryPage() {
   const { slug, scoringMode, setScoringMode } = useSport();
   const [tab, setTab] = useState<Tab>("teams");
   const [currentOnly, setCurrentOnly] = useState(true);
@@ -35,7 +35,7 @@ export default function RecordsPage() {
   return (
     <div>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-2xl font-bold capitalize">{slug} Records & History</h1>
+        <h2 className="font-display text-xl font-bold">Records & History</h2>
         <div className="flex items-center gap-4">
           {tab === "teams" && (
             <div className="toggle-group">
