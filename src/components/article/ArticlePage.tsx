@@ -23,22 +23,26 @@ export default function ArticlePage() {
 
   if (!article) {
     return (
-      <div>
-        <Link
-          to={`/${slug}`}
-          className="mb-4 inline-block text-sm text-gray-500 no-underline hover:text-gray-700"
-        >
-          &larr; Back to {slug}
-        </Link>
-        <ErrorBanner message={`Article "${articleId}" not found.`} />
-      </div>
+      <main className="mx-auto max-w-5xl px-4 py-6">
+        <div>
+          <Link
+            to={`/${slug}`}
+            className="mb-4 inline-block text-sm text-gray-500 no-underline hover:text-gray-700"
+          >
+            &larr; Back to {slug}
+          </Link>
+          <ErrorBanner message={`Article "${articleId}" not found.`} />
+        </div>
+      </main>
     );
   }
 
   return (
-    <div>
-      {/* Back link */}
-      <Link
+    <main className="mx-auto max-w-5xl px-4 py-6">
+      {/* interim wrapper — replaced when this page moves under LeagueLayout (task 5) */}
+      <div>
+        {/* Back link */}
+        <Link
         to={`/${slug}`}
         className="mb-4 inline-block text-sm text-gray-500 no-underline hover:text-gray-700"
       >
@@ -107,6 +111,7 @@ export default function ArticlePage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </main>
   );
 }

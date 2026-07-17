@@ -69,9 +69,9 @@ export default function FranchiseDetailPage() {
     return data.keepers.filter((sk: SeasonKeepers) => sk.season >= currentEraFrom);
   }, [data, isManagerView, currentEraFrom]);
 
-  if (loading) return <LoadingSpinner />;
-  if (error) return <ErrorBanner message={error} />;
-  if (!data) return <ErrorBanner message="Franchise not found." />;
+  if (loading) return <main className="mx-auto max-w-5xl px-4 py-6"><LoadingSpinner /></main>;
+  if (error) return <main className="mx-auto max-w-5xl px-4 py-6"><ErrorBanner message={error} /></main>;
+  if (!data) return <main className="mx-auto max-w-5xl px-4 py-6"><ErrorBanner message="Franchise not found." /></main>;
 
   const { overview, manager_eras, h2h, rosters, roster_costs, current_matchup } = data;
   const hasMultipleOwners = overview.ownership.length > 1;
@@ -86,7 +86,9 @@ export default function FranchiseDetailPage() {
   const record = `${w}-${l}-${t}`;
 
   return (
-    <div className="space-y-6">
+    <main className="mx-auto max-w-5xl px-4 py-6">
+      {/* interim wrapper — replaced when this page moves under LeagueLayout (task 5) */}
+      <div className="space-y-6">
       <Link to={`/${slug}/records`} className="text-sm text-gray-400 hover:text-gray-600">
         &larr; Back to Records
       </Link>
@@ -187,6 +189,7 @@ export default function FranchiseDetailPage() {
           slug={slug!}
         />
       )}
-    </div>
+      </div>
+    </main>
   );
 }
