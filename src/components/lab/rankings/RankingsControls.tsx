@@ -2,8 +2,7 @@
 import PuntSelector from "./PuntSelector";
 import type { LabUiConfig, RankingsFilter } from "../../../api/types";
 
-const MLB_POSITIONS = ["All", "C", "1B", "2B", "SS", "3B", "OF", "SP", "RP"];
-const NBA_POSITIONS = ["All", "PG", "SG", "SF", "PF", "C"];
+import { MLB_POSITION_FILTERS as MLB_POSITIONS, NBA_POSITION_FILTERS as NBA_POSITIONS } from "../../../utils/lab-helpers";
 
 interface Props {
   sportCode: string;

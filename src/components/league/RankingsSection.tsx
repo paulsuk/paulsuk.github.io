@@ -1,8 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import type { TeamProfile } from "../../api/types";
-import { API_URL } from "../../api/client";
 import { winPct } from "../../utils/records-helpers";
 import Card from "../shared/Card";
+import { logoUrl, signed } from "../../utils/format";
 
 interface RankingsSectionProps {
   profiles: TeamProfile[];
@@ -24,11 +24,6 @@ function StreakBadge({ streak }: { streak: number }) {
     return <span className="badge-loss">L{Math.abs(streak)}</span>;
   }
   return null;
-}
-
-function logoUrl(slug: string, teamName: string, season: number): string {
-  const nameSlug = teamName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  return `${API_URL}/api/${slug}/assets/logo-${nameSlug}-${season}`;
 }
 
 export default function RankingsSection({ profiles, season }: RankingsSectionProps) {
@@ -85,7 +80,7 @@ export default function RankingsSection({ profiles, season }: RankingsSectionPro
               <div className="mt-1 flex flex-wrap items-center gap-x-4 text-xs text-ink-faint">
                 {p.season_mvp_name && (
                   <span>
-                    Season MVP: {p.season_mvp_name} ({p.season_mvp_pscore >= 0 ? "+" : ""}{p.season_mvp_pscore.toFixed(1)}/wk)
+                    Season MVP: {p.season_mvp_name} ({signed(p.season_mvp_pscore, 1)}/wk)
                   </span>
                 )}
                 {p.pscore != null && (

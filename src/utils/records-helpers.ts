@@ -115,3 +115,21 @@ export function rankStandings(standings: StandingEntry[], mode: ScoringMode): Ra
   }
   return sorted.map((s, i) => ({ ...s, displayRank: i + 1 }));
 }
+
+/** Record triple for the active scoring mode (category leagues re-read cat_*). */
+export function recordFor(
+  entry: {
+    wins: number; losses: number; ties: number;
+    cat_wins: number; cat_losses: number; cat_ties: number;
+  },
+  mode: ScoringMode,
+): { w: number; l: number; t: number } {
+  return mode === "category"
+    ? { w: entry.cat_wins, l: entry.cat_losses, t: entry.cat_ties }
+    : { w: entry.wins, l: entry.losses, t: entry.ties };
+}
+
+/** "W-L-T" display string. */
+export function formatRecord({ w, l, t }: { w: number; l: number; t: number }): string {
+  return `${w}-${l}-${t}`;
+}

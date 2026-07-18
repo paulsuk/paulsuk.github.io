@@ -3,6 +3,7 @@ import type { ManagerSummary, FranchiseStats } from "../../api/types";
 import { useSport } from "../../context/SportContext";
 import Card from "../shared/Card";
 import EntityCard from "./EntityCard";
+import { recordFor } from "../../utils/records-helpers";
 
 interface ManagersTabProps {
   managers: ManagerSummary[];
@@ -14,7 +15,6 @@ export default function ManagersTab({ managers, viewMode, franchiseStats }: Mana
   const { scoringMode } = useSport();
   const [expanded, setExpanded] = useState<string | null>(null);
   const toggle = (id: string) => setExpanded(expanded === id ? null : id);
-  const useCats = scoringMode === "category";
 
   if (viewMode === "franchise" && franchiseStats) {
     return (
@@ -30,9 +30,9 @@ export default function ManagersTab({ managers, viewMode, franchiseStats }: Mana
                   ? `${f.ownership.length} managers \u2014 ${f.seasons.length} seasons`
                   : `${f.current_manager} \u2014 ${f.seasons.length} season${f.seasons.length !== 1 ? "s" : ""}`
               }
-              wins={useCats ? f.cat_wins : f.wins}
-              losses={useCats ? f.cat_losses : f.losses}
-              ties={useCats ? f.cat_ties : f.ties}
+              wins={recordFor(f, scoringMode).w}
+              losses={recordFor(f, scoringMode).l}
+              ties={recordFor(f, scoringMode).t}
               seasonRecords={f.season_records}
               ownership={f.ownership}
               showManagerInSeasons
@@ -55,9 +55,9 @@ export default function ManagersTab({ managers, viewMode, franchiseStats }: Mana
             id={m.guid}
             name={m.name}
             subtitle={`${m.seasons.length} season${m.seasons.length !== 1 ? "s" : ""}`}
-            wins={useCats ? m.cat_wins : m.wins}
-            losses={useCats ? m.cat_losses : m.losses}
-            ties={useCats ? m.cat_ties : m.ties}
+            wins={recordFor(m, scoringMode).w}
+            losses={recordFor(m, scoringMode).l}
+            ties={recordFor(m, scoringMode).t}
             seasonRecords={m.season_records}
             playoffWins={m.playoff_wins}
             playoffLosses={m.playoff_losses}

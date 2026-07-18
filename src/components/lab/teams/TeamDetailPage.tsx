@@ -9,16 +9,14 @@ import type {
   CategoryAnalysisProps,
   ValueRangeBarProps,
 } from "../../../api/types";
-import { fmtWeekly, BATTING_CAT_ORDER, PITCHING_CAT_ORDER, RATE_CATS } from "../../../utils/lab-helpers";
+import { fmtWeekly, rankBadgeClass, BATTING_CAT_ORDER, PITCHING_CAT_ORDER, RATE_CATS } from "../../../utils/lab-helpers";
+import { fmtTiered, signed } from "../../../utils/format";
 import MatchupTool from "./MatchupTool";
 
 // ── Stat formatting ──────────────────────────────────────────────────────────
 
 function fmtStat(v: number | null | undefined): string {
-  if (v == null) return "—";
-  if (v >= 10) return v.toFixed(0);
-  if (v >= 1) return v.toFixed(2);
-  return v.toFixed(3);
+  return fmtTiered(v, 0);
 }
 
 // ── P-Score confidence interval range bar ────────────────────────────────────
@@ -48,13 +46,6 @@ function ValueRangeBar({ value, low, high }: ValueRangeBarProps) {
 }
 
 // ── Rank badge colors ────────────────────────────────────────────────────────
-
-function rankBadgeClass(rank: number, total: number): string {
-  if (rank <= 2) return "bg-green-100 text-green-800";
-  if (rank <= 5) return "bg-slate-100 text-slate-600";
-  if (rank <= total - 2) return "bg-amber-100 text-amber-700";
-  return "bg-red-100 text-red-700";
-}
 
 // ── Roster table with expandable rows ───────────────────────────────────────
 
@@ -140,7 +131,7 @@ function RosterTable({ players, statCols }: RosterTableProps) {
                                 key={cat}
                                 className={score >= 0 ? "text-green-700" : "text-red-600"}
                               >
-                                {cat} {score >= 0 ? `+${score.toFixed(2)}` : score.toFixed(2)}
+                                {cat} {signed(score)}
                               </span>
                             ))
                           ) : (

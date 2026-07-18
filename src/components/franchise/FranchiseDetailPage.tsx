@@ -10,6 +10,7 @@ import { getMedals, getChampionshipYears } from "../../utils/records-helpers";
 import { defaultScoringMode, leagueBySlug } from "../../utils/league-config";
 import { useDocumentTitle } from "../../utils/use-document-title";
 import Breadcrumbs from "../layout/Breadcrumbs";
+import { formatRecord, recordFor } from "../../utils/records-helpers";
 
 type ViewScope = "franchise" | "manager";
 type DetailTab = "overview" | "roster";
@@ -84,10 +85,8 @@ export default function FranchiseDetailPage() {
   const medals = getMedals(filteredRecords);
   const champYears = getChampionshipYears(filteredRecords);
 
-  const w = scoringMode === "category" ? displayStats.cat_wins : displayStats.wins;
-  const l = scoringMode === "category" ? displayStats.cat_losses : displayStats.losses;
-  const t = scoringMode === "category" ? displayStats.cat_ties : displayStats.ties;
-  const record = `${w}-${l}-${t}`;
+  const { w, l, t } = recordFor(displayStats, scoringMode);
+  const record = formatRecord({ w, l, t });
 
   return (
     <div className="space-y-6">

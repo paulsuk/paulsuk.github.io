@@ -1,3 +1,4 @@
+import { fmtCompact } from "../../../../utils/format";
 function derive(stats: Record<string, number | null>) {
   const pts = stats["PTS"] ?? 0;
   const fga = stats["FGA"] ?? 0;
@@ -33,7 +34,7 @@ export default function EfficiencyPanel({ stats }: { stats: Record<string, numbe
           <div key={label} className="bg-paper rounded p-2 text-center">
             <div className="text-xs text-ink-faint mb-0.5">{label}</div>
             <div className="text-sm font-medium tabular-nums">
-              {val.toFixed(3).replace(/\.?0+$/, "")}
+              {fmtCompact(val)}
             </div>
           </div>
         ))}

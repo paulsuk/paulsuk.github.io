@@ -1,4 +1,5 @@
 import type { SeasonHistoryRow } from "../../../api/types";
+import { fmtCompact } from "../../../utils/format";
 
 export default function SeasonHistory({ rows }: { rows: SeasonHistoryRow[] }) {
   if (!rows.length) return null;
@@ -24,7 +25,7 @@ export default function SeasonHistory({ rows }: { rows: SeasonHistoryRow[] }) {
                 {cols.map((c) => (
                   <td key={c} className="px-3 py-2 tabular-nums text-ink-soft text-right">
                     {row.stats[c] != null
-                      ? (row.stats[c] as number).toFixed(3).replace(/\.?0+$/, "")
+                      ? fmtCompact(row.stats[c] as number)
                       : "—"}
                   </td>
                 ))}

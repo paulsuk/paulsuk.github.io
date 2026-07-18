@@ -1,3 +1,4 @@
+import { fmtCompact } from "../../../../utils/format";
 const BATTER_STATCAST: [string, string][] = [
   ["xBA", "xBA"], ["xwOBA", "xwOBA"], ["xSLG", "xSLG"],
   ["barrel_rate", "Barrel%"], ["hard_hit_rate", "Hard Hit%"],
@@ -26,7 +27,7 @@ export default function StatcastPanel({
           <div key={key} className="bg-paper rounded p-2 text-center">
             <div className="text-xs text-ink-faint mb-0.5">{label}</div>
             <div className="text-sm font-medium tabular-nums">
-              {stats[key] != null ? (stats[key] as number).toFixed(3).replace(/\.?0+$/, "") : "—"}
+              {stats[key] != null ? fmtCompact(stats[key] as number) : "—"}
             </div>
           </div>
         ))}

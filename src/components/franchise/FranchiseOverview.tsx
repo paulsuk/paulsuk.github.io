@@ -19,6 +19,7 @@ import SeasonRoster from "./SeasonRoster";
 import KeepersCard from "./KeepersCard";
 import FranchiseTransactions from "./FranchiseTransactions";
 import { ordinal, getFinishGroups, formatFinishGroups, winPct, formatSeason } from "../../utils/records-helpers";
+import { recordFor } from "../../utils/records-helpers";
 
 interface FranchiseOverviewProps {
   overview: FranchiseDetailResponse["overview"];
@@ -111,9 +112,7 @@ export default function FranchiseOverview({
         <Card title="Manager Eras">
           <div className="space-y-3">
             {managerEras.map((era) => {
-              const ew = scoringMode === "category" ? era.cat_wins : era.wins;
-              const el = scoringMode === "category" ? era.cat_losses : era.losses;
-              const et = scoringMode === "category" ? era.cat_ties : era.ties;
+              const { w: ew, l: el, t: et } = recordFor(era, scoringMode);
               return (
                 <div key={era.guid} className="item-card">
                   <div className="flex items-center justify-between">

@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { PlayerSearch } from "./PlayerSearch";
 import type { DraftCandidate } from "../../api/types";
+import { MLB_POSITION_FILTERS } from "../../utils/lab-helpers";
 
 interface Props {
   candidates: DraftCandidate[];
@@ -8,7 +9,7 @@ interface Props {
   disabled?: boolean;
 }
 
-const POSITIONS = ["All", "C", "1B", "2B", "SS", "3B", "OF", "SP", "RP"];
+const POSITIONS = MLB_POSITION_FILTERS;
 
 export function BestAvailable({ candidates, onPick, disabled }: Props) {
   const [posFilter, setPosFilter] = useState("All");

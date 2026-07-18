@@ -1,4 +1,5 @@
 import type { ValueBreakdownItem } from "../../../api/types";
+import { fmtCompact, signed } from "../../../utils/format";
 
 export default function ValueBreakdown({ items }: { items: ValueBreakdownItem[] }) {
   if (!items.length) return null;
@@ -21,11 +22,11 @@ export default function ValueBreakdown({ items }: { items: ValueBreakdownItem[] 
                 />
               </div>
               <span className={`w-12 text-xs tabular-nums ${positive ? "text-blue-600" : "text-red-500"}`}>
-                {item.score > 0 ? "+" : ""}{item.score.toFixed(2)}
+                {signed(item.score)}
               </span>
               {item.raw_stat != null && (
                 <span className="w-14 text-xs text-ink-faint tabular-nums">
-                  ({item.raw_stat.toFixed(3).replace(/\.?0+$/, "")})
+                  ({fmtCompact(item.raw_stat)})
                 </span>
               )}
             </div>

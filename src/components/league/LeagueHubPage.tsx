@@ -8,6 +8,7 @@ import AwardsPodium from "./AwardsPodium";
 import ArticleCard from "../shared/ArticleCard";
 import ErrorBanner from "../shared/ErrorBanner";
 import Skeleton from "../shared/Skeleton";
+import { recordFor } from "../../utils/records-helpers";
 
 export default function LeagueHubPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -76,9 +77,7 @@ export default function LeagueHubPage() {
               <Link to={`/${slug}/standings`} className="no-underline hover:text-accent">Standings ›</Link>
             </h2>
             {rankStandings(recap.standings, scoringMode).map((s) => {
-              const w = scoringMode === "category" ? s.cat_wins : s.wins;
-              const l = scoringMode === "category" ? s.cat_losses : s.losses;
-              const t = scoringMode === "category" ? s.cat_ties : s.ties;
+              const { w, l, t } = recordFor(s, scoringMode);
               return (
                 <div key={s.team_key} className="flex items-baseline justify-between text-sm">
                   <span className="truncate">

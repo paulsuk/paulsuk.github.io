@@ -1,19 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import type { InlineTeamPanelProps, TeamsOverviewProps } from "../../../api/types";
+import { CAT_ORDER, rankBadgeClass } from "../../../utils/lab-helpers";
 
 function winProbColor(p: number): string {
   if (p >= 0.65) return "bg-green-100 text-green-800";
   if (p >= 0.50) return "bg-blue-50 text-blue-700";
   if (p >= 0.35) return "bg-yellow-50 text-yellow-700";
   return "bg-red-50 text-red-700";
-}
-
-function rankBadgeClass(rank: number, total: number): string {
-  if (rank <= 2) return "bg-green-100 text-green-800";
-  if (rank <= 5) return "bg-slate-100 text-slate-600";
-  if (rank <= total - 2) return "bg-amber-100 text-amber-700";
-  return "bg-red-100 text-red-700";
 }
 
 function InlineTeamPanel({
@@ -98,11 +92,6 @@ function InlineTeamPanel({
     </div>
   );
 }
-
-const CAT_ORDER = [
-  "R", "HR", "RBI", "SB", "AVG", "OPS",
-  "W", "QS", "ERA", "WHIP", "K/9", "SV+H",
-];
 
 export default function TeamsOverview({
   teams,

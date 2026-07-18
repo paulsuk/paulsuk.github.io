@@ -1,3 +1,5 @@
+import { BATTING_CAT_ORDER as BATTING_ORDER, PITCHING_CAT_ORDER as PITCHING_ORDER } from "../../utils/lab-helpers";
+
 interface CategoryInfo {
   name: string;
   total: number;
@@ -10,9 +12,6 @@ interface Props {
   numTeams: number;
   strategy?: string;
 }
-
-const BATTING_ORDER = ["R", "HR", "RBI", "SB", "AVG", "OPS"];
-const PITCHING_ORDER = ["W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
 
 const TIER_COLORS: Record<string, string> = {
   dominant: "bg-green-500",

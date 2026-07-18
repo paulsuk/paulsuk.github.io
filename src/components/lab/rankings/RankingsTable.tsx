@@ -2,12 +2,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { RankingsPlayer } from "../../../api/types";
+import { fmtCompact } from "../../../utils/format";
+import { CAT_ORDER } from "../../../utils/lab-helpers";
 
 // Columns to display per sport — must match backend stat keys exactly
 // (Yahoo's display_name for steals is "ST", not STL — a mismatch silently
 // hides the column because rendering filters by key-in-payload.)
-const MLB_DISPLAY_COLS = ["R", "HR", "RBI", "SB", "AVG", "OPS", "W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
 const NBA_DISPLAY_COLS = ["PTS", "REB", "AST", "ST", "BLK", "TO", "FG%", "FT%", "3PTM"];
+const MLB_DISPLAY_COLS = CAT_ORDER;
 
 const PAGE_SIZE = 50;
 
@@ -94,11 +96,6 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
     else { setSortCol(col); setSortAsc(col === "rank"); }
   }
 
-  function fmtStat(v: number | null | undefined): string {
-    if (v == null) return "—";
-    return v.toFixed(3).replace(/\.?0+$/, "");
-  }
-
   function fmtScore(v: number | undefined): string {
     if (v == null) return "—";
     return v.toFixed(2);
@@ -161,7 +158,7 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
                 <td className="px-3 py-2 stat-value text-blue-700">{p.value.toFixed(2)}</td>
                 {statCols.map((c) => (
                   <td key={c} className="px-3 py-2 tabular-nums text-ink-soft">
-                    {fmtStat(p.stats[c] as number | null)}
+                    {fmtCompact(p.stats[c] as number | null)}
                   </td>
                 ))}
                 {/* Divider cell */}

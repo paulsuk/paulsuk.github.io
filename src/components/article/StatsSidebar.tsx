@@ -1,6 +1,6 @@
 import type { RecapResponse } from "../../api/types";
 import { defaultScoringMode } from "../../utils/league-config";
-import { rankStandings } from "../../utils/records-helpers";
+import { rankStandings, recordFor } from "../../utils/records-helpers";
 
 interface StatsSidebarProps {
   recap: RecapResponse;
@@ -9,7 +9,6 @@ interface StatsSidebarProps {
 
 export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
   const scoringMode = defaultScoringMode(slug);
-  const useCats = scoringMode === "category";
 
   return (
     <div className="space-y-5">
@@ -20,9 +19,7 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
         </h4>
         <div className="space-y-1">
           {rankStandings(recap.standings, scoringMode).map((s) => {
-            const w = useCats ? s.cat_wins : s.wins;
-            const l = useCats ? s.cat_losses : s.losses;
-            const t = useCats ? s.cat_ties : s.ties;
+            const { w, l, t } = recordFor(s, scoringMode);
             return (
               <div key={s.team_key} className="flex items-center justify-between text-xs">
                 <span>

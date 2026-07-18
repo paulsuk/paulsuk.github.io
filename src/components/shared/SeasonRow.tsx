@@ -1,5 +1,6 @@
 import type { SeasonRecord, FranchiseSeasonRecord } from "../../api/types";
 import { finishBadge, winPct, formatSeason } from "../../utils/records-helpers";
+import { recordFor } from "../../utils/records-helpers";
 
 interface SeasonRowProps {
   season: SeasonRecord | FranchiseSeasonRecord;
@@ -10,9 +11,7 @@ interface SeasonRowProps {
 
 export default function SeasonRow({ season: sr, showManager, scoringMode = "matchup", slug }: SeasonRowProps) {
   const manager = "manager" in sr ? (sr as FranchiseSeasonRecord).manager : null;
-  const w = scoringMode === "category" ? sr.cat_wins : sr.wins;
-  const l = scoringMode === "category" ? sr.cat_losses : sr.losses;
-  const t = scoringMode === "category" ? sr.cat_ties : sr.ties;
+  const { w, l, t } = recordFor(sr, scoringMode);
 
   const pct = winPct(w, l, t);
 

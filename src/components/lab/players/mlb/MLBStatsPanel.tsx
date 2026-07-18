@@ -1,3 +1,4 @@
+import { fmtCompact } from "../../../../utils/format";
 const BATTER_COLS = ["HR", "R", "RBI", "SB", "AVG", "OBP", "SLG", "OPS", "BB%", "K%", "WAR"];
 const PITCHER_COLS = ["W", "SV", "ERA", "WHIP", "K", "IP", "K%", "BB%", "FIP", "WAR"];
 
@@ -16,7 +17,7 @@ export default function MLBStatsPanel({ stats, isPitcher }: { stats: Record<stri
           <div key={c} className="bg-paper rounded p-2 text-center">
             <div className="text-xs text-ink-faint mb-0.5">{c}</div>
             <div className="text-sm font-medium tabular-nums">
-              {stats[c] != null ? (stats[c] as number).toFixed(3).replace(/\.?0+$/, "") : "—"}
+              {stats[c] != null ? fmtCompact(stats[c] as number) : "—"}
             </div>
           </div>
         ))}

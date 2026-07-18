@@ -1,4 +1,5 @@
 import type { PlayerAward, RecapResponse } from "../../api/types";
+import { signed } from "../../utils/format";
 
 function AwardCard({ title, award, compact }: { title: string; award: PlayerAward; compact: boolean }) {
   const statBits = Object.entries(award.stat_line).map(([k, v]) => `${v} ${k}`);
@@ -12,7 +13,7 @@ function AwardCard({ title, award, compact }: { title: string; award: PlayerAwar
       {!compact && statBits.length > 0 && (
         <p className="agate mt-2">{statBits.join(" · ")}</p>
       )}
-      <p className="agate mt-1 text-accent">z {award.z_total >= 0 ? "+" : ""}{award.z_total.toFixed(1)}</p>
+      <p className="agate mt-1 text-accent">z {signed(award.z_total, 1)}</p>
     </div>
   );
 }

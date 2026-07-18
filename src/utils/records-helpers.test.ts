@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatStatValue } from "./records-helpers";
+import { formatRecord, formatStatValue, recordFor } from "./records-helpers";
 
 describe("formatStatValue", () => {
   it("formats integers plainly", () => {
@@ -57,5 +57,24 @@ describe("rankStandings", () => {
     const c = entry({ team_name: "C", cat_wins: 4, cat_losses: 6, cat_ties: 0 }); // .400
     const ranked = rankStandings([c, b, a], "category");
     expect(ranked.map((s) => s.team_name)).toEqual(["A", "B", "C"]);
+  });
+});
+
+describe("recordFor / formatRecord", () => {
+  const entry = {
+    wins: 10, losses: 4, ties: 2,
+    cat_wins: 80, cat_losses: 50, cat_ties: 6,
+  };
+
+  it("reads matchup fields in matchup mode", () => {
+    expect(recordFor(entry, "matchup")).toEqual({ w: 10, l: 4, t: 2 });
+  });
+
+  it("reads category fields in category mode", () => {
+    expect(recordFor(entry, "category")).toEqual({ w: 80, l: 50, t: 6 });
+  });
+
+  it("formats W-L-T", () => {
+    expect(formatRecord({ w: 10, l: 4, t: 2 })).toBe("10-4-2");
   });
 });

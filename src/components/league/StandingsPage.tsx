@@ -1,19 +1,13 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap } from "../../api/hooks";
 import type { TeamProfile } from "../../api/types";
-import { API_URL } from "../../api/client";
 import { formatSeason, rankStandings, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
 import SeasonPicker from "./SeasonPicker";
 import ErrorBanner from "../shared/ErrorBanner";
 import Skeleton from "../shared/Skeleton";
-
-// Copied verbatim from RankingsSection.tsx:29-32 — a shared util extraction is
-// deliberately not made this task (see task-6 controller resolutions).
-function logoUrl(slug: string, teamName: string, season: number): string {
-  const nameSlug = teamName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  return `${API_URL}/api/${slug}/assets/logo-${nameSlug}-${season}`;
-}
+import { logoUrl } from "../../utils/format";
+import { recordFor } from "../../utils/records-helpers";
 
 export default function StandingsPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -79,9 +73,7 @@ export default function StandingsPage() {
             </thead>
             <tbody>
               {rankStandings(recap.standings, scoringMode).map((s) => {
-                const w = scoringMode === "category" ? s.cat_wins : s.wins;
-                const l = scoringMode === "category" ? s.cat_losses : s.losses;
-                const t = scoringMode === "category" ? s.cat_ties : s.ties;
+                const { w, l, t } = recordFor(s, scoringMode);
                 const profile = profileByTeam.get(s.team_key);
                 return (
                   <tr key={s.team_key} className="border-b border-rule">
