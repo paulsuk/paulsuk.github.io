@@ -1,16 +1,6 @@
 export type ScoringMode = "category" | "matchup";
 
-export interface Franchise {
-  sport: string;
-  name: string;
-  slug: string;
-  is_default: boolean;
-  seasons: Record<number, string>;
-  latest_season: number;
-}
-
 export interface Season {
-  league_key: string;
   season: number;
   name: string;
   is_finished: boolean;
@@ -45,15 +35,12 @@ export interface MatchupSummary {
 }
 
 export interface PlayerAward {
-  player_key: string;
   name: string;
-  team_key: string;
   team_name: string;
   manager: string;
   position: string;
   z_total: number;
   stat_line: Record<string, number>;
-  z_scores: Record<string, number>;
 }
 
 export interface StandingEntry {
@@ -87,13 +74,9 @@ export interface TeamProfile {
   season_mvp_pscore: number;
   pscore?: number;
   franchise_id?: string;
-  opponent_name?: string;
-  h2h_record?: string;
 }
 
 export interface RecapResponse {
-  league_key: string;
-  league_name: string;
   season: number;
   week: number;
   week_start: string;
@@ -154,13 +137,6 @@ export interface FranchiseOwnership {
   to: number | null;
 }
 
-export interface FranchiseSummary {
-  id: string;
-  name: string;
-  current_manager: string;
-  ownership: FranchiseOwnership[];
-}
-
 export interface FranchiseSeasonRecord {
   season: number;
   team_name: string;
@@ -195,49 +171,8 @@ export interface FranchiseStats {
 export interface ManagersResponse {
   managers: ManagerSummary[];
   h2h: Record<string, Record<string, H2HRecord>>;
-  franchises?: FranchiseSummary[];
   franchise_h2h?: Record<string, Record<string, H2HRecord>>;
   franchise_stats?: FranchiseStats[];
-}
-
-export interface StreakRecord {
-  manager: string;
-  team_name: string;
-  streak: number;
-}
-
-export interface MatchupRecord {
-  winner: string;
-  loser: string;
-  winner_team: string;
-  loser_team: string;
-  score: string;
-  season: number;
-  week: number;
-}
-
-export interface CategoryRecord {
-  category: string;
-  value: number;
-  manager: string;
-  team_name: string;
-  season: number;
-  week: number;
-  higher_is_better: boolean;
-  seasons_active: number[];
-}
-
-export interface RecordsResponse {
-  category_records: CategoryRecord[];
-  streaks: {
-    longest_win_streak: StreakRecord;
-    longest_loss_streak: StreakRecord;
-    longest_undefeated_streak: StreakRecord;
-  };
-  matchup_records: {
-    biggest_blowout: MatchupRecord | null;
-    closest_match: MatchupRecord | null;
-  };
 }
 
 export interface PlayoffMatchup {
@@ -262,7 +197,6 @@ export interface PlayoffRound {
 }
 
 export interface PlayoffResponse {
-  league_key: string;
   rounds: PlayoffRound[];
 }
 
@@ -539,11 +473,6 @@ export interface DraftCandidate {
   hscore: number;
   gscore?: number;
   [key: string]: unknown;
-}
-
-export interface TeamRoster {
-  team_id: string;
-  roster: number[];
 }
 
 export interface DraftPreloadTeam {

@@ -56,15 +56,3 @@ export async function fetchApi<T>(path: string): Promise<T> {
 export function clearCache(url: string) {
   cache.delete(url);
 }
-
-export async function fetchText(url: string): Promise<string | null> {
-  const cached = getCached<string>(url);
-  if (cached) return cached;
-
-  const res = await fetch(url);
-  if (!res.ok) return null;
-
-  const text = await res.text();
-  cache.set(url, { data: text, timestamp: Date.now() });
-  return text;
-}

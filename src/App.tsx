@@ -11,7 +11,7 @@ import {
   LegacyFranchiseRedirect,
   LegacyLabRedirect,
   LegacyRecordsRedirect,
-} from "./components/league/legacy-redirects";
+} from "./components/shared/legacy-redirects";
 
 const LeagueHubPage = lazy(() => import("./components/league/LeagueHubPage"));
 const MatchupsPage = lazy(() => import("./components/league/MatchupsPage"));

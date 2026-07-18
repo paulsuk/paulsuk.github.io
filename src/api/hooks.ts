@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { API_URL, clearCache, fetchApi } from "./client";
-import type { Franchise, Season, RecapResponse, ManagersResponse, RecordsResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse } from "./types";
+import type { Season, RecapResponse, ManagersResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -38,10 +38,6 @@ function useApiData<T>(path: string | null): ApiState<T> {
   return { data, loading, error, refresh };
 }
 
-export function useFranchises() {
-  return useApiData<Franchise[]>("/api/franchises");
-}
-
 export function useSeasons(slug: string) {
   return useApiData<Season[]>(`/api/${slug}/seasons`);
 }
@@ -62,13 +58,6 @@ export function useManagers(slug: string) {
 
 export function useFranchiseDetail(slug: string, franchiseId: string) {
   return useApiData<FranchiseDetailResponse>(`/api/${slug}/franchise/${franchiseId}`);
-}
-
-export function useRecords(slug: string, includePlayoffs = false) {
-  const path = includePlayoffs
-    ? `/api/${slug}/records?include_playoffs=true`
-    : `/api/${slug}/records`;
-  return useApiData<RecordsResponse>(path);
 }
 
 export function usePlayoffs(slug: string, season?: number, enabled = true) {
