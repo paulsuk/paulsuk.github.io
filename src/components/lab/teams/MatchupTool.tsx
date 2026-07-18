@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { MatchupToolProps, MatchupTableProps } from "../../../api/types";
-import { fmtWeekly, BATTING_CATS, PITCHING_CATS, CAT_ORDER } from "../../../utils/lab-helpers";
+import { fmtWeekly, PITCHING_CATS, CAT_ORDER } from "../../../utils/lab-helpers";
 
 function getEdge(
   myRank: number | undefined,
@@ -22,10 +22,11 @@ function rankColorClass(rank: number | undefined, total: number): string {
 }
 
 function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
-  const battingCats = allCats.filter(
-    (c) => BATTING_CATS.has(c) || (!PITCHING_CATS.has(c) && !BATTING_CATS.has(c))
-  );
+  // Data-derived grouping: pitching section only when pitching cats exist
+  // (MLB); everything else (NBA) renders as one ungrouped list.
+  const battingCats = allCats.filter((c) => !PITCHING_CATS.has(c));
   const pitchingCats = allCats.filter((c) => PITCHING_CATS.has(c));
+  const isSplit = pitchingCats.length > 0;
 
   const renderRow = (cat: string) => {
     const myRank = myTeam.category_ranks[cat];
@@ -90,9 +91,9 @@ function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
           </tr>
         </thead>
         <tbody>
-          {sectionHeader("Batting")}
+          {isSplit && sectionHeader("Batting")}
           {battingCats.map(renderRow)}
-          {sectionHeader("Pitching")}
+          {isSplit && sectionHeader("Pitching")}
           {pitchingCats.map(renderRow)}
         </tbody>
       </table>

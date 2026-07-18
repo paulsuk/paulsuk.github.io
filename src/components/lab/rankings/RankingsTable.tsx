@@ -3,12 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { RankingsPlayer } from "../../../api/types";
 import { fmtCompact } from "../../../utils/format";
-import { CAT_ORDER } from "../../../utils/lab-helpers";
+import { CAT_ORDER, NBA_CAT_ORDER } from "../../../utils/lab-helpers";
 
-// Columns to display per sport — must match backend stat keys exactly
-// (Yahoo's display_name for steals is "ST", not STL — a mismatch silently
-// hides the column because rendering filters by key-in-payload.)
-const NBA_DISPLAY_COLS = ["PTS", "REB", "AST", "ST", "BLK", "TO", "FG%", "FT%", "3PTM"];
+// Columns to display per sport — must match backend stat keys exactly.
+const NBA_DISPLAY_COLS = NBA_CAT_ORDER;
 const MLB_DISPLAY_COLS = CAT_ORDER;
 
 const PAGE_SIZE = 50;

@@ -9,6 +9,8 @@ export const PITCHING_CAT_ORDER = ["W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
 export const BATTING_CATS = new Set(BATTING_CAT_ORDER);
 export const PITCHING_CATS = new Set(PITCHING_CAT_ORDER);
 export const CAT_ORDER = [...BATTING_CAT_ORDER, ...PITCHING_CAT_ORDER];
+// Yahoo display_name keys — steals is "ST", not STL.
+export const NBA_CAT_ORDER = ["PTS", "REB", "AST", "ST", "BLK", "TO", "FG%", "FT%", "3PTM"];
 export const RATE_CATS = new Set(["AVG", "ERA", "WHIP", "OPS", "K/9", "FG%", "FT%"]);
 
 // Position filter options (rankings controls + draft best-available).

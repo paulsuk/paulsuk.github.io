@@ -1,47 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import type {
-  FranchiseDetailResponse,
-  FranchiseSeasonRecord,
-  FranchiseH2HEntry,
-  TransactionCount,
-  Trade,
-  SeasonKeepers,
-  ManagerEra,
-  CurrentMatchup,
-  ScoringMode,
-  RosterPlayer,
-} from "../../api/types";
 import Card from "../shared/Card";
 import Stat from "../shared/Stat";
 import SeasonRow from "../shared/SeasonRow";
 import SeasonRoster from "./SeasonRoster";
 import KeepersCard from "./KeepersCard";
 import FranchiseTransactions from "./FranchiseTransactions";
-import { ordinal, getFinishGroups, formatFinishGroups, winPct, formatSeason } from "../../utils/records-helpers";
-import { recordFor } from "../../utils/records-helpers";
-
-interface FranchiseOverviewProps {
-  overview: FranchiseDetailResponse["overview"];
-  displayStats: FranchiseDetailResponse["stats"];
-  filteredRecords: FranchiseSeasonRecord[];
-  filteredCounts: TransactionCount[];
-  filteredTrades: Trade[];
-  filteredKeepers: SeasonKeepers[];
-  managerEras: ManagerEra[];
-  h2h: FranchiseH2HEntry[];
-  rosters: Record<number, RosterPlayer[]>;
-  currentMatchup: CurrentMatchup | null;
-  champYears: number[];
-  record: string;
-  w: number;
-  l: number;
-  t: number;
-  scoringMode: ScoringMode;
-  isManagerView: boolean;
-  isBaseball: boolean;
-  slug: string;
-}
+import { ordinal, getChampionshipYears, getFinishGroups, formatFinishGroups, winPct, formatSeason } from "../../utils/records-helpers";
+import { formatRecord, recordFor } from "../../utils/records-helpers";
+import { leagueBySlug } from "../../utils/league-config";
+import type { FranchiseH2HEntry, FranchiseOverviewProps, FranchiseSeasonRecord } from "../../api/types";
 
 export default function FranchiseOverview({
   overview,
@@ -54,18 +22,18 @@ export default function FranchiseOverview({
   h2h,
   rosters,
   currentMatchup,
-  champYears,
-  record,
-  w,
-  l,
-  t,
   scoringMode,
   isManagerView,
-  isBaseball,
   slug,
 }: FranchiseOverviewProps) {
   const [expandedSeason, setExpandedSeason] = useState<number | null>(null);
   const [keeperSeason, setKeeperSeason] = useState<number | null>(null);
+
+  // Derived here — not prop-drilled: the inputs are already in hand.
+  const { w, l, t } = recordFor(displayStats, scoringMode);
+  const record = formatRecord({ w, l, t });
+  const champYears = getChampionshipYears(filteredRecords);
+  const isBaseball = leagueBySlug(slug)?.sportCode === "mlb";
 
   return (
     <>

@@ -66,6 +66,22 @@ export interface SetupScreenProps {
   starting: boolean;
 }
 
+export interface FranchiseOverviewProps {
+  overview: FranchiseDetailResponse["overview"];
+  displayStats: FranchiseDetailResponse["stats"];
+  filteredRecords: FranchiseSeasonRecord[];
+  filteredCounts: TransactionCount[];
+  filteredTrades: Trade[];
+  filteredKeepers: SeasonKeepers[];
+  managerEras: ManagerEra[];
+  h2h: FranchiseH2HEntry[];
+  rosters: Record<number, RosterPlayer[]>;
+  currentMatchup: CurrentMatchup | null;
+  scoringMode: ScoringMode;
+  isManagerView: boolean;
+  slug: string;
+}
+
 export interface CategoryStandout {
   team: 1 | 2;
   player: string;

@@ -6,13 +6,13 @@ import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import RosterTab from "./RosterTab";
 import FranchiseOverview from "./FranchiseOverview";
-import { getMedals, getChampionshipYears } from "../../utils/records-helpers";
+import { getMedals } from "../../utils/records-helpers";
 import { leagueBySlug } from "../../utils/league-config";
 import { useSport } from "../../context/SportContext";
 import ToggleGroup from "../shared/ToggleGroup";
 import { useDocumentTitle } from "../../utils/use-document-title";
 import Breadcrumbs from "../layout/Breadcrumbs";
-import { formatRecord, recordFor } from "../../utils/records-helpers";
+import { EMPTY_FRANCHISE_STATS, aggregateSeasonRecords } from "../../utils/franchise-helpers";
 
 type ViewScope = "franchise" | "manager";
 type DetailTab = "overview" | "roster";
@@ -55,20 +55,9 @@ export default function FranchiseDetailPage() {
   }, [data, isManagerView, currentEraFrom]);
 
   const displayStats = useMemo(() => {
-    if (!data) return { wins: 0, losses: 0, ties: 0, cat_wins: 0, cat_losses: 0, cat_ties: 0, championships: 0, best_finish: null as number | null, worst_finish: null as number | null };
+    if (!data) return EMPTY_FRANCHISE_STATS;
     if (!isManagerView) return data.stats;
-    let wins = 0, losses = 0, ties = 0, cat_wins = 0, cat_losses = 0, cat_ties = 0, championships = 0;
-    let best_finish: number | null = null, worst_finish: number | null = null;
-    for (const sr of filteredRecords) {
-      wins += sr.wins; losses += sr.losses; ties += sr.ties;
-      cat_wins += sr.cat_wins; cat_losses += sr.cat_losses; cat_ties += sr.cat_ties;
-      if (sr.finish === 1) championships++;
-      if (sr.finish != null && sr.finish > 0) {
-        if (best_finish == null || sr.finish < best_finish) best_finish = sr.finish;
-        if (worst_finish == null || sr.finish > worst_finish) worst_finish = sr.finish;
-      }
-    }
-    return { wins, losses, ties, cat_wins, cat_losses, cat_ties, championships, best_finish, worst_finish };
+    return aggregateSeasonRecords(filteredRecords);
   }, [data, isManagerView, filteredRecords]);
 
   const filteredKeepers = useMemo(() => {
@@ -83,13 +72,10 @@ export default function FranchiseDetailPage() {
 
   const { overview, manager_eras, h2h, rosters, roster_costs, current_matchup } = data;
   const hasMultipleOwners = overview.ownership.length > 1;
-  const isBaseball = slug === "baseball";
+  const isBaseball = leagueBySlug(slug!)?.sportCode === "mlb";
 
   const medals = getMedals(filteredRecords);
-  const champYears = getChampionshipYears(filteredRecords);
 
-  const { w, l, t } = recordFor(displayStats, scoringMode);
-  const record = formatRecord({ w, l, t });
 
   return (
     <div className="space-y-6">
@@ -156,14 +142,8 @@ export default function FranchiseDetailPage() {
           h2h={h2h}
           rosters={rosters}
           currentMatchup={current_matchup}
-          champYears={champYears}
-          record={record}
-          w={w}
-          l={l}
-          t={t}
           scoringMode={scoringMode}
           isManagerView={isManagerView}
-          isBaseball={isBaseball}
           slug={slug!}
         />
       )}
