@@ -1,4 +1,6 @@
 import type { RecapResponse } from "../../api/types";
+import { defaultScoringMode } from "../../utils/league-config";
+import { rankStandings } from "../../utils/records-helpers";
 
 interface StatsSidebarProps {
   recap: RecapResponse;
@@ -6,7 +8,8 @@ interface StatsSidebarProps {
 }
 
 export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
-  const useCats = slug === "baseball";
+  const scoringMode = defaultScoringMode(slug);
+  const useCats = scoringMode === "category";
 
   return (
     <div className="space-y-5">
@@ -16,14 +19,14 @@ export default function StatsSidebar({ recap, slug }: StatsSidebarProps) {
           Standings — Week {recap.week}
         </h4>
         <div className="space-y-1">
-          {recap.standings.map((s) => {
+          {rankStandings(recap.standings, scoringMode).map((s) => {
             const w = useCats ? s.cat_wins : s.wins;
             const l = useCats ? s.cat_losses : s.losses;
             const t = useCats ? s.cat_ties : s.ties;
             return (
               <div key={s.team_key} className="flex items-center justify-between text-xs">
                 <span>
-                  <span className="font-medium text-ink-soft">{s.rank}.</span>{" "}
+                  <span className="font-medium text-ink-soft">{s.displayRank}.</span>{" "}
                   <span className="text-ink">{s.team_name}</span>
                 </span>
                 <span className="tabular-nums text-ink-soft">

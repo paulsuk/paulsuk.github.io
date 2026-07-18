@@ -75,14 +75,14 @@ export default function LeagueHubPage() {
             <h2 className="section-rule eyebrow mb-3 pt-1">
               <Link to={`/${slug}/standings`} className="no-underline hover:text-accent">Standings ›</Link>
             </h2>
-            {recap.standings.map((s) => {
+            {rankStandings(recap.standings, scoringMode).map((s) => {
               const w = scoringMode === "category" ? s.cat_wins : s.wins;
               const l = scoringMode === "category" ? s.cat_losses : s.losses;
               const t = scoringMode === "category" ? s.cat_ties : s.ties;
               return (
                 <div key={s.team_key} className="flex items-baseline justify-between text-sm">
                   <span className="truncate">
-                    <span className="agate mr-1.5">{s.rank}.</span>{s.team_name}
+                    <span className="agate mr-1.5">{s.displayRank}.</span>{s.team_name}
                   </span>
                   <span className="agate">{w}-{l}-{t} ({winPct(w, l, t)})</span>
                 </div>

@@ -1,4 +1,4 @@
-import type { SeasonRecord, FranchiseSeasonRecord } from "../api/types";
+import type { SeasonRecord, FranchiseSeasonRecord, ScoringMode, StandingEntry } from "../api/types";
 
 type AnySeasonRecord = SeasonRecord | FranchiseSeasonRecord;
 
@@ -88,4 +88,30 @@ export function formatFinishGroups(groups: FinishGroup[], slug: string): string 
   return groups
     .map((g) => `${ordinal(g.rank)}s: ${g.count} (${g.years.map((y) => formatSeason(y, slug)).join(", ")})`)
     .join(", ");
+}
+
+/** A standings entry paired with its display position after re-ranking. */
+export type RankedStanding = StandingEntry & { displayRank: number };
+
+/**
+ * Standings ordered for display. The served `rank` follows matchup records,
+ * but category (H2H-cat) leagues rank by category win pct — re-derive the
+ * order client-side for category mode (ties count half; tiebreak: cat wins,
+ * then team name). Matchup mode keeps the served rank order.
+ */
+export function rankStandings(standings: StandingEntry[], mode: ScoringMode): RankedStanding[] {
+  const sorted = [...standings];
+  if (mode === "category") {
+    const pct = (s: StandingEntry) => {
+      const games = s.cat_wins + s.cat_losses + s.cat_ties;
+      return games === 0 ? 0 : (s.cat_wins + s.cat_ties / 2) / games;
+    };
+    sorted.sort(
+      (a, b) =>
+        pct(b) - pct(a) || b.cat_wins - a.cat_wins || a.team_name.localeCompare(b.team_name)
+    );
+  } else {
+    sorted.sort((a, b) => a.rank - b.rank);
+  }
+  return sorted.map((s, i) => ({ ...s, displayRank: i + 1 }));
 }

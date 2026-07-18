@@ -2,7 +2,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap } from "../../api/hooks";
 import type { TeamProfile } from "../../api/types";
 import { API_URL } from "../../api/client";
-import { formatSeason, winPct } from "../../utils/records-helpers";
+import { formatSeason, rankStandings, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
 import SeasonPicker from "./SeasonPicker";
 import ErrorBanner from "../shared/ErrorBanner";
@@ -78,14 +78,14 @@ export default function StandingsPage() {
               </tr>
             </thead>
             <tbody>
-              {recap.standings.map((s) => {
+              {rankStandings(recap.standings, scoringMode).map((s) => {
                 const w = scoringMode === "category" ? s.cat_wins : s.wins;
                 const l = scoringMode === "category" ? s.cat_losses : s.losses;
                 const t = scoringMode === "category" ? s.cat_ties : s.ties;
                 const profile = profileByTeam.get(s.team_key);
                 return (
                   <tr key={s.team_key} className="border-b border-rule">
-                    <td className="py-2 pr-4 tabular-nums agate">{s.rank}</td>
+                    <td className="py-2 pr-4 tabular-nums agate">{s.displayRank}</td>
                     <td className="py-2 pr-4">
                       <div className="flex items-center gap-2">
                         <img
