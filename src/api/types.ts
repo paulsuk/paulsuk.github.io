@@ -6,6 +6,14 @@ export interface Season {
   is_finished: boolean;
 }
 
+export interface SeasonHeaderProps {
+  slug: string;
+  season: number | null;
+  seasons: Season[];
+  onChange: (season: number) => void;
+  suffix?: string;
+}
+
 export interface CategoryStandout {
   team: 1 | 2;
   player: string;

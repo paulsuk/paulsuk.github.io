@@ -1,9 +1,10 @@
-import { useParams, useSearchParams } from "react-router-dom";
-import { useSeasons, useRecap } from "../../api/hooks";
+import { useParams } from "react-router-dom";
+import { useRecap } from "../../api/hooks";
 import type { TeamProfile } from "../../api/types";
-import { formatSeason, rankStandings, winPct } from "../../utils/records-helpers";
+import { rankStandings, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
-import SeasonPicker from "./SeasonPicker";
+import SeasonHeader from "./SeasonHeader";
+import { NO_SEASONS_MESSAGE, useSeasonSelection } from "./useSeasonSelection";
 import ErrorBanner from "../shared/ErrorBanner";
 import Skeleton from "../shared/Skeleton";
 import { logoUrl } from "../../utils/format";
@@ -11,14 +12,9 @@ import { recordFor } from "../../utils/records-helpers";
 
 export default function StandingsPage() {
   const { slug } = useParams<{ slug: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
   const scoringMode = defaultScoringMode(slug!);
-  const seasonParam = searchParams.get("season");
-
-  const { data: seasons, loading: seasonsLoading, error: seasonsError } = useSeasons(slug!);
-  const selectedSeason = seasonParam
-    ? Number(seasonParam)
-    : seasons && seasons.length > 0 ? seasons[0].season : null;
+  const { seasons, selectedSeason, setSeason,
+          loading: seasonsLoading, error: seasonsError } = useSeasonSelection(slug!);
 
   const { data: recap, loading: recapLoading, error: recapError } = useRecap(
     slug!, undefined, selectedSeason ?? undefined
@@ -33,7 +29,7 @@ export default function StandingsPage() {
   }
   if (seasonsError) return <ErrorBanner message={seasonsError} />;
   if (!seasons || seasons.length === 0) {
-    return <ErrorBanner message="No synced seasons found for this league." />;
+    return <ErrorBanner message={NO_SEASONS_MESSAGE} />;
   }
 
   const profileByTeam = new Map<string, TeamProfile>(
@@ -42,14 +38,8 @@ export default function StandingsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <p className="eyebrow">
-          {selectedSeason ? formatSeason(selectedSeason, slug!) : ""} Season
-          {recap ? ` — Week ${recap.week}` : ""}
-        </p>
-        <SeasonPicker seasons={seasons} selected={selectedSeason}
-          onChange={(s) => setSearchParams({ season: String(s) })} slug={slug!} />
-      </div>
+      <SeasonHeader slug={slug!} season={selectedSeason} seasons={seasons}
+        onChange={setSeason} suffix={recap ? ` — Week ${recap.week}` : ""} />
 
       {recapLoading && (
         <div className="space-y-2">

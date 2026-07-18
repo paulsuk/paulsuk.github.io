@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import { useSeasons, useRecap, usePlayoffs } from "../../api/hooks";
-import { formatSeason } from "../../utils/records-helpers";
-import SeasonPicker from "./SeasonPicker";
+import { useRecap, usePlayoffs } from "../../api/hooks";
+import SeasonHeader from "./SeasonHeader";
+import { NO_SEASONS_MESSAGE, useSeasonSelection } from "./useSeasonSelection";
 import PlayoffBracket from "./PlayoffBracket";
 import MatchupCard from "./MatchupCard";
 import AwardsPodium from "./AwardsPodium";
@@ -11,13 +11,10 @@ import Skeleton from "../shared/Skeleton";
 export default function MatchupsPage() {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const seasonParam = searchParams.get("season");
   const weekParam = searchParams.get("week");
 
-  const { data: seasons, loading: seasonsLoading, error: seasonsError } = useSeasons(slug!);
-  const selectedSeason = seasonParam
-    ? Number(seasonParam)
-    : seasons && seasons.length > 0 ? seasons[0].season : null;
+  const { seasons, selectedSeason, setSeason,
+          loading: seasonsLoading, error: seasonsError } = useSeasonSelection(slug!);
 
   // 1) undated call learns the season's current/latest week (client-side cached)
   const { data: currentRecap } = useRecap(slug!, undefined, selectedSeason ?? undefined);
@@ -50,18 +47,13 @@ export default function MatchupsPage() {
   }
   if (seasonsError) return <ErrorBanner message={seasonsError} />;
   if (!seasons || seasons.length === 0) {
-    return <ErrorBanner message="No synced seasons found for this league." />;
+    return <ErrorBanner message={NO_SEASONS_MESSAGE} />;
   }
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <p className="eyebrow">
-          {selectedSeason ? formatSeason(selectedSeason, slug!) : ""} Season
-        </p>
-        <SeasonPicker seasons={seasons} selected={selectedSeason}
-          onChange={(s) => setSearchParams({ season: String(s) })} slug={slug!} />
-      </div>
+      <SeasonHeader slug={slug!} season={selectedSeason} seasons={seasons}
+        onChange={setSeason} />
 
       {loading && (
         <div className="grid gap-4 md:grid-cols-2">

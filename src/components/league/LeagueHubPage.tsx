@@ -1,8 +1,9 @@
-import { Link, useParams, useSearchParams } from "react-router-dom";
-import { useSeasons, useRecap, useArticles } from "../../api/hooks";
-import { formatSeason, rankStandings, winPct } from "../../utils/records-helpers";
+import { Link, useParams } from "react-router-dom";
+import { useRecap, useArticles } from "../../api/hooks";
+import { rankStandings, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
-import SeasonPicker from "./SeasonPicker";
+import SeasonHeader from "./SeasonHeader";
+import { NO_SEASONS_MESSAGE, useSeasonSelection } from "./useSeasonSelection";
 import RankingsSection from "./RankingsSection";
 import AwardsPodium from "./AwardsPodium";
 import ArticleCard from "../shared/ArticleCard";
@@ -12,14 +13,9 @@ import { recordFor } from "../../utils/records-helpers";
 
 export default function LeagueHubPage() {
   const { slug } = useParams<{ slug: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
   const scoringMode = defaultScoringMode(slug!);
-  const seasonParam = searchParams.get("season");
-
-  const { data: seasons, loading: seasonsLoading, error: seasonsError } = useSeasons(slug!);
-  const selectedSeason = seasonParam
-    ? Number(seasonParam)
-    : seasons && seasons.length > 0 ? seasons[0].season : null;
+  const { seasons, selectedSeason, setSeason,
+          loading: seasonsLoading, error: seasonsError } = useSeasonSelection(slug!);
 
   const { data: recap, loading: recapLoading, error: recapError } = useRecap(
     slug!, undefined, selectedSeason ?? undefined
@@ -37,19 +33,13 @@ export default function LeagueHubPage() {
   }
   if (seasonsError) return <ErrorBanner message={seasonsError} />;
   if (!seasons || seasons.length === 0) {
-    return <ErrorBanner message="No synced seasons found for this league." />;
+    return <ErrorBanner message={NO_SEASONS_MESSAGE} />;
   }
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <p className="eyebrow">
-          {selectedSeason ? formatSeason(selectedSeason, slug!) : ""} Season
-          {recap ? ` — Week ${recap.week}` : ""}
-        </p>
-        <SeasonPicker seasons={seasons} selected={selectedSeason}
-          onChange={(s) => setSearchParams({ season: String(s) })} slug={slug!} />
-      </div>
+      <SeasonHeader slug={slug!} season={selectedSeason} seasons={seasons}
+        onChange={setSeason} suffix={recap ? ` — Week ${recap.week}` : ""} />
 
       {recapLoading && (
         <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
