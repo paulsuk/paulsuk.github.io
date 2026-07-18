@@ -94,11 +94,15 @@ When adding a new page route:
 
 ```bash
 cd web
-npx tsc --noEmit
+npx tsc -b
 npm test
 ```
 
 Zero TypeScript errors and a green `vitest run` before committing. No exceptions.
+Use `tsc -b`, NOT plain `tsc --noEmit`: the root tsconfig is a solution file with
+no inputs, so `--noEmit` type-checks nothing and passes vacuously (caught
+2026-07-18 — a missing import sailed through it; only `tsc -b`, which
+`npm run build` also runs, flagged it).
 (`npm test` runs `vitest run --passWithNoTests`; specs live next to the module they
 cover, e.g. `utils/league-config.test.ts`, `utils/records-helpers.test.ts`.)
 
