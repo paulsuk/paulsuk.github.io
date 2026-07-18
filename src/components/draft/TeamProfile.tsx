@@ -7,6 +7,7 @@ interface CategoryInfo {
 
 interface Props {
   categories: CategoryInfo[];
+  numTeams: number;
   strategy?: string;
 }
 
@@ -34,7 +35,7 @@ function CatRow({ cat, maxRank }: { cat: CategoryInfo; maxRank: number }) {
       <div className="flex-1 bg-rule/60 rounded h-5 relative">
         <div
           className={`h-5 rounded ${TIER_COLORS[cat.tier] || "bg-rule"}`}
-          style={{ width: `${((maxRank - cat.rank + 1) / maxRank) * 100}%` }}
+          style={{ width: `${Math.max(0, ((maxRank - cat.rank + 1) / maxRank) * 100)}%` }}
         />
         <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
           #{cat.rank}
@@ -51,8 +52,11 @@ function CatRow({ cat, maxRank }: { cat: CategoryInfo; maxRank: number }) {
   );
 }
 
-export function TeamProfile({ categories, strategy }: Props) {
-  const maxRank = 10;
+export function TeamProfile({ categories, numTeams, strategy }: Props) {
+  // League size comes from the synced preload — never hardcoded (10-team
+  // baseball and 12-team basketball both route through here). Fall back to
+  // the worst observed rank if the preload is unavailable.
+  const maxRank = numTeams > 0 ? numTeams : Math.max(1, ...categories.map((c) => c.rank));
   const byName = Object.fromEntries(categories.map((c) => [c.name, c]));
 
   const batting = BATTING_ORDER.map((n) => byName[n]).filter(Boolean) as CategoryInfo[];

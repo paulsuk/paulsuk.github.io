@@ -321,7 +321,7 @@ export function DraftPage() {
       </div>
 
       <div className="h-88 border-t p-2 overflow-auto shrink-0">
-        <TeamProfile categories={categoryInfo} />
+        <TeamProfile categories={categoryInfo} numTeams={preload?.num_teams ?? 0} />
       </div>
     </div>
   );

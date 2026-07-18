@@ -1,11 +1,13 @@
 // web/src/components/lab/rankings/RankingsTable.tsx
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { RankingsPlayer } from "../../../api/types";
 
 // Columns to display per sport — must match backend stat keys exactly
+// (Yahoo's display_name for steals is "ST", not STL — a mismatch silently
+// hides the column because rendering filters by key-in-payload.)
 const MLB_DISPLAY_COLS = ["R", "HR", "RBI", "SB", "AVG", "OPS", "W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
-const NBA_DISPLAY_COLS = ["PTS", "REB", "AST", "STL", "BLK", "TO", "FG%", "FT%", "3PTM"];
+const NBA_DISPLAY_COLS = ["PTS", "REB", "AST", "ST", "BLK", "TO", "FG%", "FT%", "3PTM"];
 
 const PAGE_SIZE = 50;
 
@@ -43,10 +45,6 @@ interface Props {
   sportCode: string;
   slug: string;
   players: RankingsPlayer[];
-  season: string;
-  model: string;
-  start?: string;
-  end?: string;
   search: string;
 }
 
@@ -64,8 +62,13 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
     return players.filter((p) => p.name.toLowerCase().includes(q));
   }, [players, search]);
 
-  const sorted = useMemo(() => {
+  // Reset pagination when the visible set changes (never setState in a memo —
+  // render-phase setState breaks under StrictMode/concurrent rendering).
+  useEffect(() => {
     setPage(1);
+  }, [search, sortCol, sortAsc]);
+
+  const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
       let cmp = 0;
       if (sortCol === "rank") cmp = a.rank - b.rank;

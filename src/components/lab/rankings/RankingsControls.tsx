@@ -2,13 +2,11 @@
 import PuntSelector from "./PuntSelector";
 import type { LabUiConfig, RankingsFilter } from "../../../api/types";
 
-export type { RankingsFilter };
-
 const MLB_POSITIONS = ["All", "C", "1B", "2B", "SS", "3B", "OF", "SP", "RP"];
 const NBA_POSITIONS = ["All", "PG", "SG", "SF", "PF", "C"];
 
 interface Props {
-  sport: string;
+  sportCode: string;
   config: LabUiConfig;
   filter: RankingsFilter;
   teams: string[];
@@ -16,13 +14,13 @@ interface Props {
 }
 
 export default function RankingsControls({
-  sport,
+  sportCode,
   config,
   filter,
   teams,
   onChange,
 }: Props) {
-  const positions = sport === "mlb" ? MLB_POSITIONS : NBA_POSITIONS;
+  const positions = sportCode === "mlb" ? MLB_POSITIONS : NBA_POSITIONS;
   const selectedSeason = config.seasons.find((s) => s.id === filter.season);
   const dateEnabled = selectedSeason?.date_range_enabled ?? false;
 

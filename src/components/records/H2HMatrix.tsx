@@ -74,8 +74,9 @@ export default function H2HMatrix({ managers, h2h, viewMode, franchiseStats, fra
                   );
                 }
 
+                // Color and displayed pct use the same ties-as-half weighting
                 const total = record.wins + record.losses + record.ties;
-                const pctVal = total > 0 ? (record.wins + record.ties) / total : 0.5;
+                const pctVal = total > 0 ? (record.wins + 0.5 * record.ties) / total : 0.5;
                 const pct = winPct(record.wins, record.losses, record.ties);
                 const bg = cellColor(pctVal);
                 const recStr = `${record.wins}-${record.losses}${record.ties > 0 ? `-${record.ties}` : ""}`;

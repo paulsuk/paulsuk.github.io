@@ -63,7 +63,7 @@ export default function RankingsPage() {
   return (
     <div>
       <RankingsControls
-        sport={sportCode}
+        sportCode={sportCode}
         config={config}
         filter={effectiveFilter}
         teams={teams}
@@ -94,10 +94,6 @@ export default function RankingsPage() {
             sportCode={sportCode}
             slug={slug}
             players={rankings.players}
-            season={effectiveFilter.season}
-            model={effectiveFilter.model}
-            start={effectiveFilter.start || undefined}
-            end={effectiveFilter.end || undefined}
             search={effectiveFilter.search}
           />
         </>
