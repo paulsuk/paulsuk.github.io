@@ -1,6 +1,6 @@
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useSeasons, useRecap, useArticles } from "../../api/hooks";
-import { formatSeason, winPct } from "../../utils/records-helpers";
+import { formatSeason, rankStandings, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
 import SeasonPicker from "./SeasonPicker";
 import RankingsSection from "./RankingsSection";
