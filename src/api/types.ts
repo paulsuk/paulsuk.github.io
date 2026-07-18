@@ -48,6 +48,24 @@ export interface ToggleGroupProps<T extends string = string> {
   onChange: (value: T) => void;
 }
 
+export interface RestartDialogProps {
+  open: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}
+
+export interface SetupScreenProps {
+  preload: DraftPreload | null;
+  preloadLoading: boolean;
+  preloadError: string | null;
+  sessionError: string | null;
+  orderedTeams: DraftPreloadTeam[];
+  myTeamKey: string;
+  onSelectTeam: (teamKey: string) => void;
+  onStart: () => void;
+  starting: boolean;
+}
+
 export interface CategoryStandout {
   team: 1 | 2;
   player: string;

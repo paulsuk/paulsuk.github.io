@@ -1,7 +1,9 @@
 import { useState } from "react";
 
 const PASSWORD = "power overwhelming";
-const STORAGE_KEY = "fa_auth_lab";
+// Shared with the draft board's auth check — single definition of the key.
+export const LAB_AUTH_KEY = "fa_auth_lab";
+const STORAGE_KEY = LAB_AUTH_KEY;
 
 function normalize(s: string): string {
   return s.toLowerCase().replace(/\s+/g, "");

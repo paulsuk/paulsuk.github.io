@@ -3,40 +3,29 @@ import { Navigate } from "react-router-dom";
 import { DraftGrid } from "./DraftGrid";
 import { BestAvailable } from "./BestAvailable";
 import { TeamProfile } from "./TeamProfile";
+import { SetupScreen } from "./SetupScreen";
+import { RestartDialog } from "./RestartDialog";
 import { useDraftSession, loadSaved } from "./useDraftSession";
-import { API_URL } from "../../api/client";
-import type { DraftCandidate, DraftPreload, DraftPreloadTeam, DraftSessionConfig, TeamProfileResponse } from "../../api/types";
+import { useDraftPreload } from "./useDraftPreload";
+import { useRecommendations } from "./useRecommendations";
+import { DEFAULT_ROUNDS, generateDraftOrder } from "./draft-logic";
+import { LAB_AUTH_KEY } from "../layout/PasswordGate";
+import type { DraftSessionConfig } from "../../api/types";
 import { useLabSport } from "../../utils/use-lab-sport";
-
-function generateDraftOrder(orderedTeams: DraftPreloadTeam[], numRounds: number) {
-  const picks = [];
-  for (let round = 1; round <= numRounds; round++) {
-    for (let i = 0; i < orderedTeams.length; i++) {
-      picks.push({
-        pick_number: (round - 1) * orderedTeams.length + i + 1,
-        team_id: orderedTeams[i].team_key,
-        round,
-      });
-    }
-  }
-  return picks;
-}
 
 export function DraftPage() {
   const { slug } = useLabSport();
-  const authed = localStorage.getItem("fa_auth_lab") === "true";
+  const authed = localStorage.getItem(LAB_AUTH_KEY) === "true";
   const { session, grid, loading, error, logPick, undoPick, refreshGrid, connectSession, createSession, restoreSession } = useDraftSession();
-  const [candidates, setCandidates] = useState<DraftCandidate[]>([]);
-  const [playerNames, setPlayerNames] = useState<Record<number, string>>({});
-  const [teamNames, setTeamNames] = useState<Record<string, string>>({});
-  const [categoryInfo, setCategoryInfo] = useState<{ name: string; total: number; rank: number; tier: string }[]>([]);
-  const [recError, setRecError] = useState<string | null>(null);
+  const {
+    data: preload, loading: preloadLoading, error: preloadError,
+    orderedTeams, teamNames, keeperNames,
+  } = useDraftPreload(slug);
+  const {
+    data: candidates, categoryInfo, names: recNames, error: recError,
+    reload: loadRecommendations, removeCandidate, reset: resetCandidates,
+  } = useRecommendations(session?.session_id ?? null);
 
-  const [preload, setPreload] = useState<DraftPreload | null>(null);
-  const [preloadLoading, setPreloadLoading] = useState(false);
-  const [preloadError, setPreloadError] = useState<string | null>(null);
-
-  const [orderedTeams, setOrderedTeams] = useState<DraftPreloadTeam[]>([]);
   const [myTeamKey, setMyTeamKey] = useState("");
 
   // restoring=true while we're attempting auto-reconnect/restore on mount
@@ -45,44 +34,7 @@ export function DraftPage() {
   const [showRestartDialog, setShowRestartDialog] = useState(false);
   const [pickingId, setPickingId] = useState<number | null>(null);
 
-  // Load preload on mount
-  useEffect(() => {
-    const fetchPreload = async () => {
-      setPreloadLoading(true);
-      try {
-        const res = await fetch(`${API_URL}/api/draft/preload/${slug}`);
-        if (!res.ok) throw new Error(await res.text());
-        const data: DraftPreload = await res.json();
-        setPreload(data);
-
-        const nameMap: Record<string, string> = {};
-        for (const t of data.teams) nameMap[t.team_key] = t.name;
-        setTeamNames(nameMap);
-
-        setPlayerNames((prev) => {
-          const next = { ...prev };
-          for (const k of data.keepers) {
-            if (k.player_id && k.player_name) next[k.player_id] = k.player_name;
-          }
-          return next;
-        });
-
-        if (data.draft_order.length > 0) {
-          const round1 = data.draft_order.filter((p) => p.round === 1).sort((a, b) => a.pick_number - b.pick_number);
-          const teamMap = Object.fromEntries(data.teams.map((t) => [t.team_key, t]));
-          const ordered = round1.map((p) => teamMap[p.team_key]).filter(Boolean) as DraftPreloadTeam[];
-          setOrderedTeams(ordered.length === data.teams.length ? ordered : initTeamOrder(data));
-        } else {
-          setOrderedTeams(initTeamOrder(data));
-        }
-      } catch (e) {
-        setPreloadError((e as Error).message);
-      } finally {
-        setPreloadLoading(false);
-      }
-    };
-    fetchPreload();
-  }, []);
+  const playerNames = { ...keeperNames, ...recNames };
 
   // Auto-restore saved session on mount
   useEffect(() => {
@@ -103,32 +55,6 @@ export function DraftPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadRecommendations = useCallback(async () => {
-    if (!session) return;
-    try {
-      setRecError(null);
-      const res = await fetch(`${API_URL}/api/draft/sessions/${session.session_id}/recommendations?limit=1000`);
-      if (!res.ok) throw new Error(await res.text());
-      const data = await res.json() as TeamProfileResponse;
-      const recs = (data.recommendations ?? []).map((r) => ({ ...r, hscore: r.hscore ?? 0 }));
-      setCandidates(recs);
-      const p = data.team_profile;
-      setCategoryInfo(Object.keys(p.category_totals).map((name) => ({
-        name,
-        total: p.category_totals[name] ?? 0,
-        rank: p.category_ranks[name] ?? 5,
-        tier: p.category_tiers[name] ?? "swing",
-      })));
-      setPlayerNames((prev) => {
-        const next = { ...prev };
-        for (const r of recs) if (r.player_id && r.name) next[r.player_id] = r.name;
-        return next;
-      });
-    } catch (e) {
-      setRecError((e as Error).message);
-    }
-  }, [session]);
-
   useEffect(() => {
     if (!session) return;
     refreshGrid();
@@ -137,7 +63,7 @@ export function DraftPage() {
 
   const handleStart = async () => {
     if (!preload || !myTeamKey) return;
-    const numRounds = preload.num_rounds || 24;
+    const numRounds = preload.num_rounds || DEFAULT_ROUNDS;
     const order = preload.draft_order.length > 0
       ? preload.draft_order.map((p) => ({ pick_number: p.pick_number, team_id: p.team_key, round: p.round }))
       : generateDraftOrder(orderedTeams, numRounds);
@@ -159,20 +85,20 @@ export function DraftPage() {
     const saved = loadSaved();
     setShowRestartDialog(false);
     if (saved) {
-      setCandidates([]);
+      resetCandidates();
       await createSession(saved.config);
     }
   };
 
   const handlePick = useCallback(async (playerId: number) => {
     setPickingId(playerId);
-    setCandidates((prev) => prev.filter((c) => c.player_id !== playerId));
+    removeCandidate(playerId);
     await logPick(playerId);
     setPickingId(null);
     // Always reload after pick: on failure this restores the optimistically-removed
     // player; on success the useEffect on session.picks_made also fires (idempotent).
     await loadRecommendations();
-  }, [logPick, loadRecommendations]);
+  }, [logPick, loadRecommendations, removeCandidate]);
 
   // Auth gate
   if (!authed) return <Navigate to="/lab" replace />;
@@ -190,62 +116,17 @@ export function DraftPage() {
   // ---- Setup screen ----
   if (!session) {
     return (
-      <div className="p-6 max-w-xl mx-auto">
-        <h1 className="text-2xl font-bold mb-5">Draft Board</h1>
-
-        {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">{error}</div>}
-        {preloadLoading && <p className="text-ink-soft text-sm">Loading league data...</p>}
-        {preloadError && (
-          <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
-            <p className="font-medium">Could not load league data</p>
-            <p>{preloadError}</p>
-            <p className="mt-1 text-xs">Ensure 2026 is synced: <code>python main.py sync baseball</code></p>
-          </div>
-        )}
-
-        {preload && (
-          <div className="space-y-6">
-            <p className="text-sm text-ink-soft">
-              {preload.season} · {preload.num_teams} teams · {preload.num_rounds} rounds
-              {preload.keepers.length > 0 && ` · ${preload.keepers.length} keepers`}
-            </p>
-
-            <div>
-              <label className="block text-sm font-semibold mb-2">Select your team</label>
-              <div className="space-y-1">
-                {orderedTeams.map((t, idx) => (
-                  <div
-                    key={t.team_key}
-                    onClick={() => setMyTeamKey(t.team_key)}
-                    className={`flex items-center gap-2 p-2 rounded border cursor-pointer transition-colors ${
-                      myTeamKey === t.team_key
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-rule hover:border-ink-faint"
-                    }`}
-                  >
-                    <span className="text-ink-faint text-sm w-5 text-right shrink-0">{idx + 1}</span>
-                    <span className="flex-1 text-sm font-medium">{t.name}</span>
-                    {t.manager_name && (
-                      <span className="text-xs text-ink-soft">{t.manager_name}</span>
-                    )}
-                    {myTeamKey === t.team_key && (
-                      <span className="text-xs text-blue-600 font-semibold">me</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <button
-              onClick={handleStart}
-              disabled={loading || !myTeamKey}
-              className="w-full py-3 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 font-medium"
-            >
-              {loading ? "Starting..." : "Start Draft"}
-            </button>
-          </div>
-        )}
-      </div>
+      <SetupScreen
+        preload={preload}
+        preloadLoading={preloadLoading}
+        preloadError={preloadError}
+        sessionError={error}
+        orderedTeams={orderedTeams}
+        myTeamKey={myTeamKey}
+        onSelectTeam={setMyTeamKey}
+        onStart={handleStart}
+        starting={loading}
+      />
     );
   }
 
@@ -255,31 +136,11 @@ export function DraftPage() {
 
   return (
     <div className="h-screen flex flex-col">
-      {/* Restart confirmation dialog */}
-      {showRestartDialog && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-raised rounded-lg p-6 shadow-xl w-80">
-            <h2 className="text-lg font-bold mb-2">Restart Draft</h2>
-            <p className="text-sm text-ink-soft mb-4">
-              Start over from pick 1 with the same teams and keepers?
-            </p>
-            <div className="flex gap-2 justify-end">
-              <button
-                onClick={() => setShowRestartDialog(false)}
-                className="px-4 py-2 text-sm bg-rule/60 rounded hover:bg-rule"
-              >
-                Continue
-              </button>
-              <button
-                onClick={handleNewSession}
-                className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Start New Session
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <RestartDialog
+        open={showRestartDialog}
+        onCancel={() => setShowRestartDialog(false)}
+        onConfirm={handleNewSession}
+      />
 
       <div className="flex items-center justify-between px-3 py-1.5 border-b bg-raised text-sm shrink-0">
         <div className="flex items-center gap-3">
@@ -306,7 +167,7 @@ export function DraftPage() {
             teams={grid.length > 0 ? [...new Set(grid.map((p) => p.team_id))] : []}
             playerNames={playerNames}
             teamNames={teamNames}
-            numRounds={preload?.num_rounds ?? 24}
+            numRounds={preload?.num_rounds ?? DEFAULT_ROUNDS}
           />
         </div>
         <div className="w-1/3 p-2 flex flex-col overflow-hidden">
@@ -325,8 +186,4 @@ export function DraftPage() {
       </div>
     </div>
   );
-}
-
-function initTeamOrder(data: DraftPreload): DraftPreloadTeam[] {
-  return [...data.teams].sort((a, b) => a.team_key.localeCompare(b.team_key));
 }

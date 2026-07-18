@@ -1,17 +1,13 @@
 import { useState, useCallback, useRef } from "react";
 import { API_URL } from "../../api/client";
 import type { DraftSession, DraftPick, DraftSessionConfig, SavedDraftSession } from "../../api/types";
+import { parseSaved, restorePayload } from "./draft-logic";
 
 const API = "/api/draft";
 const STORAGE_KEY = "draft_session_v2";
 
 export function loadSaved(): SavedDraftSession | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as SavedDraftSession) : null;
-  } catch {
-    return null;
-  }
+  return parseSaved(localStorage.getItem(STORAGE_KEY));
 }
 
 function saveSaved(payload: SavedDraftSession): void {
@@ -83,7 +79,7 @@ export function useDraftSession() {
       const res = await fetch(`${API_URL}${API}/sessions/restore`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...saved.config, picks_made: saved.picks }),
+        body: JSON.stringify(restorePayload(saved)),
       });
       if (!res.ok) {
         // Server explicitly rejected the restore (4xx/5xx) — clear saved state
