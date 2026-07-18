@@ -36,11 +36,14 @@ export function getChampionshipYears(records: AnySeasonRecord[]): number[] {
 }
 
 /**
- * Winning percentage: (W + ½T) / (W + L + T), formatted as ".xxx" (no leading zero).
+ * Winning percentage: (W + ½T) / (W + L + T), formatted as ".xxx" (no leading
+ * zero). A perfect record keeps its leading 1 ("1.000", not ".000").
  */
 export function winPct(wins: number, losses: number, ties: number): string {
   const total = wins + losses + ties;
-  return total > 0 ? ((wins + 0.5 * ties) / total).toFixed(3).slice(1) : ".000";
+  const pct = total > 0 ? (wins + 0.5 * ties) / total : 0;
+  const s = pct.toFixed(3);
+  return s.startsWith("0") ? s.slice(1) : s;
 }
 
 /**

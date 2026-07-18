@@ -78,3 +78,85 @@ describe("recordFor / formatRecord", () => {
     expect(formatRecord({ w: 10, l: 4, t: 2 })).toBe("10-4-2");
   });
 });
+
+import { winPct, ordinal, formatSeason, getFinishGroups, formatFinishGroups } from "./records-helpers";
+import type { FranchiseSeasonRecord } from "../api/types";
+
+describe("winPct", () => {
+  it("counts ties as half a win, formatted .xxx", () => {
+    expect(winPct(10, 4, 2)).toBe(".688");
+  });
+
+  it("keeps the leading 1 on a perfect record (was rendered '.000')", () => {
+    expect(winPct(3, 0, 0)).toBe("1.000");
+  });
+
+  it("handles zero games and winless records", () => {
+    expect(winPct(0, 0, 0)).toBe(".000");
+    expect(winPct(0, 5, 0)).toBe(".000");
+  });
+});
+
+describe("ordinal", () => {
+  it("handles st/nd/rd/th including the 11-13 exceptions", () => {
+    expect(ordinal(1)).toBe("1st");
+    expect(ordinal(2)).toBe("2nd");
+    expect(ordinal(3)).toBe("3rd");
+    expect(ordinal(4)).toBe("4th");
+    expect(ordinal(11)).toBe("11th");
+    expect(ordinal(12)).toBe("12th");
+    expect(ordinal(13)).toBe("13th");
+    expect(ordinal(21)).toBe("21st");
+  });
+});
+
+describe("formatSeason", () => {
+  it("uses YY-YY for basketball, plain year otherwise", () => {
+    expect(formatSeason(2024, "basketball")).toBe("24-25");
+    expect(formatSeason(2024, "baseball")).toBe("2024");
+  });
+});
+
+describe("finish groups", () => {
+  const rec = (season: number, finish: number | null): FranchiseSeasonRecord => ({
+    season, team_name: "T", manager: "M",
+    wins: 0, losses: 0, ties: 0, cat_wins: 0, cat_losses: 0, cat_ties: 0,
+    finish, playoff_seed: null,
+  });
+
+  it("groups seasons by finish, skipping null/zero, sorted by rank", () => {
+    const groups = getFinishGroups(
+      [rec(2022, 1), rec(2023, 2), rec(2024, 1), rec(2025, null), rec(2026, 0)],
+      "finish",
+    );
+    expect(groups).toEqual([
+      { rank: 1, count: 2, years: [2022, 2024] },
+      { rank: 2, count: 1, years: [2023] },
+    ]);
+  });
+
+  it("formats groups compactly with season formatting", () => {
+    const groups = getFinishGroups([rec(2022, 1), rec(2024, 1), rec(2023, 2)], "finish");
+    expect(formatFinishGroups(groups, "baseball")).toBe("1sts: 2 (2022, 2024), 2nds: 1 (2023)");
+    expect(formatFinishGroups([], "baseball")).toBe("N/A");
+  });
+});
+
+describe("rankStandings tiebreak chain", () => {
+  const entry = (name: string, cw: number, cl: number, ct: number, rank: number): StandingEntry => ({
+    team_key: name, team_name: name, manager: "M",
+    wins: 0, losses: 0, ties: 0,
+    cat_wins: cw, cat_losses: cl, cat_ties: ct, rank,
+  });
+
+  it("equal pct breaks on cat_wins, then team name", () => {
+    // A and B: identical pct (.500) and equal cat wins -> name order.
+    // C: same pct but MORE cat wins -> ahead of both.
+    const ranked = rankStandings(
+      [entry("Bravo", 30, 30, 0, 1), entry("Alpha", 30, 30, 0, 2), entry("Charlie", 40, 40, 0, 3)],
+      "category",
+    );
+    expect(ranked.map((s) => s.team_name)).toEqual(["Charlie", "Alpha", "Bravo"]);
+    expect(ranked.map((s) => s.displayRank)).toEqual([1, 2, 3]);
+  });
+});
