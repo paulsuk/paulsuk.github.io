@@ -14,6 +14,40 @@ export interface SeasonHeaderProps {
   suffix?: string;
 }
 
+export interface PrevNextNavProps {
+  basePath: string;
+  prevId: string | null;
+  nextId: string | null;
+  className?: string;
+  linkClassName?: string;
+}
+
+export interface SeasonArticleListProps {
+  title: string;
+  basePath: string;
+  articles: { id: string; title: string }[];
+  currentId: string;
+  variant?: "league" | "lab";
+}
+
+export interface StatTile {
+  label: string;
+  value: string;
+}
+
+export interface StatTileGridProps {
+  title: string;
+  gridClassName: string;
+  tiles: StatTile[];
+  children?: React.ReactNode;
+}
+
+export interface ToggleGroupProps<T extends string = string> {
+  value: T;
+  options: readonly { value: T; label: string }[];
+  onChange: (value: T) => void;
+}
+
 export interface CategoryStandout {
   team: 1 | 2;
   player: string;

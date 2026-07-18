@@ -1,13 +1,15 @@
 import { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useFranchiseDetail } from "../../api/hooks";
-import type { TransactionCount, Trade, SeasonKeepers, ScoringMode } from "../../api/types";
+import type { TransactionCount, Trade, SeasonKeepers } from "../../api/types";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import RosterTab from "./RosterTab";
 import FranchiseOverview from "./FranchiseOverview";
 import { getMedals, getChampionshipYears } from "../../utils/records-helpers";
-import { defaultScoringMode, leagueBySlug } from "../../utils/league-config";
+import { leagueBySlug } from "../../utils/league-config";
+import { useSport } from "../../context/SportContext";
+import ToggleGroup from "../shared/ToggleGroup";
 import { useDocumentTitle } from "../../utils/use-document-title";
 import Breadcrumbs from "../layout/Breadcrumbs";
 import { formatRecord, recordFor } from "../../utils/records-helpers";
@@ -20,7 +22,8 @@ export default function FranchiseDetailPage() {
   const { data, loading, error } = useFranchiseDetail(slug!, franchiseId!);
   const leagueLabel = leagueBySlug(slug!)?.label ?? slug!;
   useDocumentTitle(data?.overview.current_team_name);
-  const [scoringMode, setScoringMode] = useState<ScoringMode>(() => defaultScoringMode(slug!));
+  // Shared with the history pages via SportContext — one toggle, one state.
+  const { scoringMode, setScoringMode } = useSport();
   const [viewScope, setViewScope] = useState<ViewScope>("franchise");
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
   const [rosterSeason, setRosterSeason] = useState<number | null>(null);
@@ -111,35 +114,17 @@ export default function FranchiseDetailPage() {
         </div>
         <div className="flex items-center gap-3">
           {hasMultipleOwners && (
-            <div className="toggle-group">
-              <button
-                onClick={() => setViewScope("franchise")}
-                className={`toggle-btn ${viewScope === "franchise" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"} rounded-l-md`}
-              >
-                All-Time
-              </button>
-              <button
-                onClick={() => setViewScope("manager")}
-                className={`toggle-btn ${viewScope === "manager" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"} rounded-r-md`}
-              >
-                Current Manager
-              </button>
-            </div>
+            <ToggleGroup value={viewScope} onChange={setViewScope}
+              options={[
+                { value: "franchise", label: "All-Time" },
+                { value: "manager", label: "Current Manager" },
+              ]} />
           )}
-          <div className="toggle-group">
-            <button
-              onClick={() => setScoringMode("category")}
-              className={`toggle-btn ${scoringMode === "category" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"} rounded-l-md`}
-            >
-              Categories
-            </button>
-            <button
-              onClick={() => setScoringMode("matchup")}
-              className={`toggle-btn ${scoringMode === "matchup" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"} rounded-r-md`}
-            >
-              Matchups
-            </button>
-          </div>
+          <ToggleGroup value={scoringMode} onChange={setScoringMode}
+            options={[
+              { value: "category", label: "Categories" },
+              { value: "matchup", label: "Matchups" },
+            ]} />
         </div>
       </div>
 

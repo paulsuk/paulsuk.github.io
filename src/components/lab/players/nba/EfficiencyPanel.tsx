@@ -1,4 +1,5 @@
 import { fmtCompact } from "../../../../utils/format";
+import StatTileGrid from "../../../shared/StatTileGrid";
 function derive(stats: Record<string, number | null>) {
   const pts = stats["PTS"] ?? 0;
   const fga = stats["FGA"] ?? 0;
@@ -23,25 +24,14 @@ function derive(stats: Record<string, number | null>) {
 
 export default function EfficiencyPanel({ stats }: { stats: Record<string, number | null> }) {
   const derived = derive(stats);
-  const cols = Object.entries(derived).filter(([, v]) => v != null) as [string, number][];
-  if (!cols.length) return null;
+  const tiles = (Object.entries(derived).filter(([, v]) => v != null) as [string, number][])
+    .map(([label, val]) => ({ label, value: fmtCompact(val) }));
 
   return (
-    <div className="mb-6">
-      <h3 className="text-sm font-semibold text-ink-soft mb-2">Efficiency</h3>
-      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-        {cols.map(([label, val]) => (
-          <div key={label} className="bg-paper rounded p-2 text-center">
-            <div className="text-xs text-ink-faint mb-0.5">{label}</div>
-            <div className="text-sm font-medium tabular-nums">
-              {fmtCompact(val)}
-            </div>
-          </div>
-        ))}
-      </div>
+    <StatTileGrid title="Efficiency" gridClassName="grid grid-cols-3 sm:grid-cols-5 gap-2" tiles={tiles}>
       <div className="mt-3 rounded border border-dashed border-rule p-3 text-center text-xs text-ink-faint">
         Advanced metrics (RAPM / EPM) — coming soon
       </div>
-    </div>
+    </StatTileGrid>
   );
 }

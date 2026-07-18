@@ -1,9 +1,10 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useArticle, useRecap } from "../../api/hooks";
 import { leagueBySlug } from "../../utils/league-config";
 import { useDocumentTitle } from "../../utils/use-document-title";
 import ArticleContent from "./ArticleContent";
 import StatsSidebar from "./StatsSidebar";
+import SeasonArticleList from "./SeasonArticleList";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import PrevNextNav from "../shared/PrevNextNav";
@@ -60,7 +61,7 @@ export default function ArticlePage() {
       </p>
 
       {/* Prev / Next navigation */}
-      <PrevNextNav slug={slug!} prevId={article.prev_id} nextId={article.next_id} className="mb-6" />
+      <PrevNextNav basePath={`/${slug}/articles`} prevId={article.prev_id} nextId={article.next_id} className="mb-6" />
 
       <div className="flex flex-col gap-8 lg:flex-row">
         {/* Article content */}
@@ -69,7 +70,7 @@ export default function ArticlePage() {
 
           {/* Bottom prev/next */}
           <PrevNextNav
-            slug={slug!}
+            basePath={`/${slug}/articles`}
             prevId={article.prev_id}
             nextId={article.next_id}
             className="mt-8 border-t border-rule pt-4"
@@ -85,31 +86,8 @@ export default function ArticlePage() {
             </div>
 
             {/* Season article list */}
-            {article.season_articles.length > 0 && (
-              <div className="card-editorial">
-                <h4 className="eyebrow section-rule mb-2 pt-1">
-                  Articles
-                </h4>
-                <div className="space-y-1">
-                  {article.season_articles.map((sa) => (
-                    <div key={sa.id} className="text-xs">
-                      {sa.id === article.id ? (
-                        <span className="font-medium text-ink">
-                          &#9654; {sa.title}
-                        </span>
-                      ) : (
-                        <Link
-                          to={`/${slug}/articles/${sa.id}`}
-                          className="text-ink-soft no-underline hover:text-accent"
-                        >
-                          &bull; {sa.title}
-                        </Link>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <SeasonArticleList title="Articles" basePath={`/${slug}/articles`}
+              articles={article.season_articles} currentId={article.id} />
           </div>
         </div>
       </div>

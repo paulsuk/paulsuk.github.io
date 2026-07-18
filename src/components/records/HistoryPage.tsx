@@ -5,6 +5,7 @@ import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import ManagersTab from "./ManagersTab";
 import H2HMatrix from "./H2HMatrix";
+import ToggleGroup from "../shared/ToggleGroup";
 
 type Tab = "teams" | "h2h";
 
@@ -38,43 +39,17 @@ export default function HistoryPage() {
         <h2 className="font-display text-xl font-bold">Records & History</h2>
         <div className="flex items-center gap-4">
           {tab === "teams" && (
-            <div className="toggle-group">
-              <button
-                onClick={() => setScoringMode("category")}
-                className={`toggle-btn ${
-                  scoringMode === "category" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"
-                } rounded-l-md`}
-              >
-                Categories
-              </button>
-              <button
-                onClick={() => setScoringMode("matchup")}
-                className={`toggle-btn ${
-                  scoringMode === "matchup" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"
-                } rounded-r-md`}
-              >
-                Matchups
-              </button>
-            </div>
+            <ToggleGroup value={scoringMode} onChange={setScoringMode}
+              options={[
+                { value: "category", label: "Categories" },
+                { value: "matchup", label: "Matchups" },
+              ]} />
           )}
-          <div className="toggle-group">
-            <button
-              onClick={() => setViewMode("manager")}
-              className={`toggle-btn ${
-                viewMode === "manager" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"
-              } rounded-l-md`}
-            >
-              By Manager
-            </button>
-            <button
-              onClick={() => setViewMode("franchise")}
-              className={`toggle-btn ${
-                viewMode === "franchise" ? "toggle-btn-active" : "text-ink-soft hover:text-ink"
-              } rounded-r-md`}
-            >
-              By Franchise
-            </button>
-          </div>
+          <ToggleGroup value={viewMode} onChange={setViewMode}
+            options={[
+              { value: "manager", label: "By Manager" },
+              { value: "franchise", label: "By Franchise" },
+            ]} />
           {viewMode === "manager" && (
             hasFormer ? (
               <label className="flex cursor-pointer items-center gap-2 text-sm text-ink-soft">
