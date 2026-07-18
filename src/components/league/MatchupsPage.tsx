@@ -88,7 +88,7 @@ export default function MatchupsPage() {
       )}
 
       {isFinished && playoffData && playoffData.rounds.length > 0 && (
-        <PlayoffBracket rounds={playoffData.rounds} totalRounds={playoffData.rounds.length} slug={slug!} />
+        <PlayoffBracket rounds={playoffData.rounds} />
       )}
     </div>
   );
