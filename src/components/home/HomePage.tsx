@@ -1,11 +1,7 @@
 import { Link } from "react-router-dom";
 import { LEAGUES } from "../../utils/league-config";
 import { useDocumentTitle } from "../../utils/use-document-title";
-
-const LEAGUE_ICONS: Record<string, string> = {
-  baseball: "⚾",
-  basketball: "🏀",
-};
+import LeagueHeroCard from "./LeagueHeroCard";
 
 export default function HomePage() {
   useDocumentTitle();
@@ -19,17 +15,7 @@ export default function HomePage() {
 
       <div className="grid gap-6 sm:grid-cols-2">
         {LEAGUES.map((l) => (
-          <Link
-            key={l.slug}
-            to={`/${l.slug}`}
-            className="card-editorial group flex flex-col items-center gap-3 py-10 no-underline transition-colors hover:border-ink"
-          >
-            <span className="text-6xl" aria-hidden>{LEAGUE_ICONS[l.slug]}</span>
-            <span className="font-display text-2xl font-black text-ink group-hover:text-accent">
-              {l.label}
-            </span>
-            <span className="text-xs italic text-ink-faint">{l.tagline}</span>
-          </Link>
+          <LeagueHeroCard key={l.slug} league={l} />
         ))}
       </div>
 
