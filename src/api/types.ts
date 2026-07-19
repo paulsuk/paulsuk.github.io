@@ -663,3 +663,97 @@ export interface ValueRangeBarProps {
   low: number;
   high: number;
 }
+
+// --- League history (Phase 2) ---
+
+export interface StandingsHistoryEntry {
+  season: number;
+  week: number;
+  team_key: string;
+  team_name: string;
+  manager: string;
+  franchise_id?: string | null;
+  rank: number;
+  wins: number;
+  losses: number;
+  ties: number;
+  cat_wins: number;
+  cat_losses: number;
+  cat_ties: number;
+}
+
+export interface StandingsHistoryResponse {
+  season: number;
+  entries: StandingsHistoryEntry[];
+}
+
+export interface AwardWeek {
+  week: number;
+  batter: PlayerAward | null;
+  pitcher: PlayerAward | null;
+  player: PlayerAward | null;
+}
+
+export interface AwardsHistoryResponse {
+  season: number;
+  weeks: AwardWeek[];
+}
+
+export interface TeamCategoryScore {
+  category: string;
+  score_per_week: number;
+  rank: number;
+}
+
+export interface TeamPScoreEntry {
+  team_key: string;
+  total_per_week: number;
+  season_mvp_name?: string | null;
+  season_mvp_pscore?: number | null;
+  categories: TeamCategoryScore[];
+}
+
+export interface TeamPScoresResponse {
+  season: number;
+  teams: TeamPScoreEntry[];
+}
+
+export interface PlayoffResume {
+  franchise_id: string;
+  name: string;
+  appearances: number;
+  playoff_wins: number;
+  playoff_losses: number;
+  finals_appearances: number;
+  championship_seasons: number[];
+  is_reigning_champ: boolean;
+}
+
+export interface PlayoffElimination {
+  season: number;
+  week: number;
+  round: string;
+  winner_fid?: string | null;
+  loser_fid?: string | null;
+  winner_name?: string | null;
+  loser_name?: string | null;
+  score?: string | null;
+}
+
+export interface PlayoffMatchupRecordEntry {
+  score: string;
+  season: number;
+  week: number;
+}
+
+export interface PlayoffRecords {
+  biggest_playoff_blowout?: PlayoffMatchupRecordEntry | null;
+  closest_playoff_matchup?: PlayoffMatchupRecordEntry | null;
+  finals?: PlayoffMatchupRecordEntry | null;
+}
+
+export interface PlayoffHistoryResponse {
+  resumes: PlayoffResume[];
+  eliminations: PlayoffElimination[];
+  records: PlayoffRecords;
+}

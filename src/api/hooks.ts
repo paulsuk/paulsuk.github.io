@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { API_URL, clearCache, fetchApi } from "./client";
-import type { Season, RecapResponse, ManagersResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse } from "./types";
+import type { Season, RecapResponse, ManagersResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse, StandingsHistoryResponse, AwardsHistoryResponse, TeamPScoresResponse, PlayoffHistoryResponse } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -147,4 +147,25 @@ export function useTeamAnalysis(sport: string | null) {
   return useApiData<TeamAnalysisResponse>(
     sport ? `/api/lab/${sport}/team-analysis` : null
   );
+}
+
+function seasonPath(slug: string, endpoint: string, season?: number): string {
+  const qs = season ? `?season=${season}` : "";
+  return `/api/${slug}/${endpoint}${qs}`;
+}
+
+export function useStandingsHistory(slug: string, season?: number) {
+  return useApiData<StandingsHistoryResponse>(seasonPath(slug, "standings-history", season));
+}
+
+export function useAwardsHistory(slug: string, season?: number) {
+  return useApiData<AwardsHistoryResponse>(seasonPath(slug, "awards-history", season));
+}
+
+export function useTeamPScores(slug: string, season?: number) {
+  return useApiData<TeamPScoresResponse>(seasonPath(slug, "team-pscores", season));
+}
+
+export function usePlayoffHistory(slug: string, enabled = true) {
+  return useApiData<PlayoffHistoryResponse>(enabled ? `/api/${slug}/playoff-history` : null);
 }
