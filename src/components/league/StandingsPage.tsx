@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useRecap, useStandingsHistory } from "../../api/hooks";
+import { useRecap, useStandingsHistory, useTeamPScores } from "../../api/hooks";
 import type { TeamProfile } from "../../api/types";
 import { rankStandings, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
 import SeasonHeader from "./SeasonHeader";
 import { NO_SEASONS_MESSAGE, useSeasonSelection } from "./useSeasonSelection";
 import StandingsRaceChart from "./StandingsRaceChart";
+import CategoryProfileMatrix from "./CategoryProfileMatrix";
 import ErrorBanner from "../shared/ErrorBanner";
 import Skeleton from "../shared/Skeleton";
 import Card from "../shared/Card";
@@ -22,6 +23,7 @@ export default function StandingsPage() {
     slug!, undefined, selectedSeason ?? undefined
   );
   const history = useStandingsHistory(slug!, selectedSeason ?? undefined);
+  const pscores = useTeamPScores(slug!, selectedSeason ?? undefined);
 
   if (seasonsLoading) {
     return (
@@ -107,6 +109,15 @@ export default function StandingsPage() {
         {history.data && history.data.entries.length > 0 && (
           <Card title="The race">
             <StandingsRaceChart entries={history.data.entries} />
+          </Card>
+        )}
+      </section>
+
+      <section className="mt-8">
+        {pscores.loading && <Skeleton className="h-64 w-full" />}
+        {pscores.data && recap?.standings && (
+          <Card title="Category profile">
+            <CategoryProfileMatrix teams={pscores.data.teams} standings={recap.standings} />
           </Card>
         )}
       </section>
