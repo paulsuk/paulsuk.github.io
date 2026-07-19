@@ -5,13 +5,15 @@ import LoadingSpinner from "../shared/LoadingSpinner";
 import ErrorBanner from "../shared/ErrorBanner";
 import ManagersTab from "./ManagersTab";
 import H2HMatrix from "./H2HMatrix";
+import PlayoffHistoryTab from "./PlayoffHistoryTab";
 import ToggleGroup from "../shared/ToggleGroup";
 
-type Tab = "teams" | "h2h";
+type Tab = "teams" | "h2h" | "playoffs";
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "teams", label: "Teams" },
   { key: "h2h", label: "Head-to-Head" },
+  { key: "playoffs", label: "Playoffs" },
 ];
 
 type ViewMode = "manager" | "franchise";
@@ -45,12 +47,14 @@ export default function HistoryPage() {
                 { value: "matchup", label: "Matchups" },
               ]} />
           )}
-          <ToggleGroup value={viewMode} onChange={setViewMode}
-            options={[
-              { value: "manager", label: "By Manager" },
-              { value: "franchise", label: "By Franchise" },
-            ]} />
-          {viewMode === "manager" && (
+          {tab !== "playoffs" && (
+            <ToggleGroup value={viewMode} onChange={setViewMode}
+              options={[
+                { value: "manager", label: "By Manager" },
+                { value: "franchise", label: "By Franchise" },
+              ]} />
+          )}
+          {tab !== "playoffs" && viewMode === "manager" && (
             hasFormer ? (
               <label className="flex cursor-pointer items-center gap-2 text-sm text-ink-soft">
                 <input
@@ -103,6 +107,8 @@ export default function HistoryPage() {
           )}
         </>
       )}
+
+      <PlayoffHistoryTab slug={slug} active={tab === "playoffs"} />
     </div>
   );
 }
