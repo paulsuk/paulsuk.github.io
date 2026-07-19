@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useRecap, useStandingsHistory, useTeamPScores } from "../../api/hooks";
+import { useAwardsHistory, useRecap, useStandingsHistory, useTeamPScores } from "../../api/hooks";
 import type { TeamProfile } from "../../api/types";
 import { rankStandings, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
@@ -7,6 +7,7 @@ import SeasonHeader from "./SeasonHeader";
 import { NO_SEASONS_MESSAGE, useSeasonSelection } from "./useSeasonSelection";
 import StandingsRaceChart from "./StandingsRaceChart";
 import CategoryProfileMatrix from "./CategoryProfileMatrix";
+import AwardWall from "./AwardWall";
 import ErrorBanner from "../shared/ErrorBanner";
 import Skeleton from "../shared/Skeleton";
 import Card from "../shared/Card";
@@ -24,6 +25,7 @@ export default function StandingsPage() {
   );
   const history = useStandingsHistory(slug!, selectedSeason ?? undefined);
   const pscores = useTeamPScores(slug!, selectedSeason ?? undefined);
+  const awards = useAwardsHistory(slug!, selectedSeason ?? undefined);
 
   if (seasonsLoading) {
     return (
@@ -121,6 +123,12 @@ export default function StandingsPage() {
           </Card>
         )}
       </section>
+
+      {awards.data && awards.data.weeks.length > 0 && (
+        <Card title="Weekly honors" className="mt-8">
+          <AwardWall weeks={awards.data.weeks} />
+        </Card>
+      )}
     </div>
   );
 }
