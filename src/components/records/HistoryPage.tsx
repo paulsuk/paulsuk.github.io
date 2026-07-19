@@ -84,8 +84,8 @@ export default function HistoryPage() {
         ))}
       </div>
 
-      {loading && <LoadingSpinner />}
-      {error && <ErrorBanner message={error} />}
+      {tab !== "playoffs" && loading && <LoadingSpinner />}
+      {tab !== "playoffs" && error && <ErrorBanner message={error} />}
 
       {!loading && !error && (
         <>

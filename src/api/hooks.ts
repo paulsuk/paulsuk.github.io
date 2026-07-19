@@ -154,16 +154,16 @@ function seasonPath(slug: string, endpoint: string, season?: number): string {
   return `/api/${slug}/${endpoint}${qs}`;
 }
 
-export function useStandingsHistory(slug: string, season?: number) {
-  return useApiData<StandingsHistoryResponse>(seasonPath(slug, "standings-history", season));
+export function useStandingsHistory(slug: string | null, season?: number) {
+  return useApiData<StandingsHistoryResponse>(slug ? seasonPath(slug, "standings-history", season) : null);
 }
 
-export function useAwardsHistory(slug: string, season?: number) {
-  return useApiData<AwardsHistoryResponse>(seasonPath(slug, "awards-history", season));
+export function useAwardsHistory(slug: string | null, season?: number) {
+  return useApiData<AwardsHistoryResponse>(slug ? seasonPath(slug, "awards-history", season) : null);
 }
 
-export function useTeamPScores(slug: string, season?: number) {
-  return useApiData<TeamPScoresResponse>(seasonPath(slug, "team-pscores", season));
+export function useTeamPScores(slug: string | null, season?: number) {
+  return useApiData<TeamPScoresResponse>(slug ? seasonPath(slug, "team-pscores", season) : null);
 }
 
 export function usePlayoffHistory(slug: string, enabled = true) {

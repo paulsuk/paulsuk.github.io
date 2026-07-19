@@ -23,9 +23,18 @@ export default function StandingsPage() {
   const { data: recap, loading: recapLoading, error: recapError } = useRecap(
     slug!, undefined, selectedSeason ?? undefined
   );
-  const history = useStandingsHistory(slug!, selectedSeason ?? undefined);
-  const pscores = useTeamPScores(slug!, selectedSeason ?? undefined);
-  const awards = useAwardsHistory(slug!, selectedSeason ?? undefined);
+  // Season-scoped: useSeasonSelection resolves selectedSeason to a concrete
+  // season number once the synced seasons list loads (or immediately from
+  // ?season= in the URL) — it is never left null to mean "current season".
+  // So gate these three Phase 2 hooks on `selectedSeason !== null` rather
+  // than on seasonsLoading: that lets an explicit ?season= link fetch right
+  // away without waiting on the seasons-list request, while still avoiding
+  // the unresolved-default double-fetch (once with no ?season=, again once
+  // the default latest season resolves).
+  const seasonResolvedSlug = selectedSeason !== null ? slug! : null;
+  const history = useStandingsHistory(seasonResolvedSlug, selectedSeason ?? undefined);
+  const pscores = useTeamPScores(seasonResolvedSlug, selectedSeason ?? undefined);
+  const awards = useAwardsHistory(seasonResolvedSlug, selectedSeason ?? undefined);
 
   if (seasonsLoading) {
     return (
@@ -124,11 +133,14 @@ export default function StandingsPage() {
         )}
       </section>
 
-      {awards.data && awards.data.weeks.length > 0 && (
-        <Card title="Weekly honors" className="mt-8">
-          <AwardWall weeks={awards.data.weeks} />
-        </Card>
-      )}
+      <section className="mt-8">
+        {awards.loading && <Skeleton className="h-64 w-full" />}
+        {awards.data && awards.data.weeks.length > 0 && (
+          <Card title="Weekly honors">
+            <AwardWall weeks={awards.data.weeks} />
+          </Card>
+        )}
+      </section>
     </div>
   );
 }
