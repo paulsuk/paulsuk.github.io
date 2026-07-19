@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
-import { useRecap } from "../../api/hooks";
+import { useRecap, useStandingsHistory } from "../../api/hooks";
 import type { TeamProfile } from "../../api/types";
 import { rankStandings, winPct } from "../../utils/records-helpers";
 import { defaultScoringMode } from "../../utils/league-config";
 import SeasonHeader from "./SeasonHeader";
 import { NO_SEASONS_MESSAGE, useSeasonSelection } from "./useSeasonSelection";
+import StandingsRaceChart from "./StandingsRaceChart";
 import ErrorBanner from "../shared/ErrorBanner";
 import Skeleton from "../shared/Skeleton";
+import Card from "../shared/Card";
 import { logoUrl } from "../../utils/format";
 import { recordFor } from "../../utils/records-helpers";
 
@@ -19,6 +21,7 @@ export default function StandingsPage() {
   const { data: recap, loading: recapLoading, error: recapError } = useRecap(
     slug!, undefined, selectedSeason ?? undefined
   );
+  const history = useStandingsHistory(slug!, selectedSeason ?? undefined);
 
   if (seasonsLoading) {
     return (
@@ -98,6 +101,15 @@ export default function StandingsPage() {
           </table>
         </div>
       )}
+
+      <section className="mt-8">
+        {history.loading && <Skeleton className="h-64 w-full" />}
+        {history.data && history.data.entries.length > 0 && (
+          <Card title="The race">
+            <StandingsRaceChart entries={history.data.entries} />
+          </Card>
+        )}
+      </section>
     </div>
   );
 }
