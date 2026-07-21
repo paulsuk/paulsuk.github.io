@@ -1,4 +1,4 @@
-import type { PlayerAward, PlayerRef, RecapResponse } from "../../api/types";
+import type { PlayerAward, PlayerChip as PlayerChipType, PlayerRef, RecapResponse } from "../../api/types";
 import { signed } from "../../utils/format";
 import { usePlayers } from "../../api/hooks";
 import { useSport } from "../../context/SportContext";
@@ -14,7 +14,7 @@ function AwardCard({
   title: string;
   award: PlayerAward;
   compact: boolean;
-  chipMap: Record<string, import("../../api/types").PlayerChip>;
+  chipMap: Record<string, PlayerChipType>;
 }) {
   const statBits = Object.entries(award.stat_line).map(([k, v]) => `${v} ${k}`);
   const chip = chipMap[award.player_key];

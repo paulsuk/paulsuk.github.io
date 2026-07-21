@@ -19,10 +19,15 @@ function getCached<T>(key: string): T | null {
   return entry.data as T;
 }
 
-async function fetchWithRetry(url: string, retries = 2, delay = 2000): Promise<Response> {
+async function fetchWithRetry(
+  url: string,
+  init?: RequestInit,
+  retries = 2,
+  delay = 2000,
+): Promise<Response> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, init);
       if (res.status === 503 && attempt < retries) {
         await new Promise((r) => setTimeout(r, delay * (attempt + 1)));
         continue;
@@ -36,7 +41,7 @@ async function fetchWithRetry(url: string, retries = 2, delay = 2000): Promise<R
       throw err;
     }
   }
-  return fetch(url); // unreachable, satisfies TS
+  return fetch(url, init); // unreachable, satisfies TS
 }
 
 export async function fetchApi<T>(path: string): Promise<T> {
@@ -59,7 +64,7 @@ export function clearCache(url: string) {
 
 export async function postApi<T>(path: string, body: unknown): Promise<T> {
   const url = `${API_URL}${path}`;
-  const res = await fetch(url, {
+  const res = await fetchWithRetry(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

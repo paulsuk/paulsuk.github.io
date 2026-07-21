@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import type { PlayerCard as PlayerCardData } from "../../api/types";
 
 export default function PlayerCard({
@@ -50,9 +51,9 @@ export default function PlayerCard({
       )}
 
       {labHref && (
-        <a href={labHref} className="mt-4 inline-block text-xs text-ink-faint hover:text-accent">
+        <Link to={labHref} className="mt-4 inline-block text-xs text-ink-faint hover:text-accent">
           View in lab →
-        </a>
+        </Link>
       )}
     </div>
   );

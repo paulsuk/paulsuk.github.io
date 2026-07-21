@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { usePlayer } from "../../api/hooks";
 import { useSport } from "../../context/SportContext";
+import { leagueBySlug } from "../../utils/league-config";
 import Breadcrumbs from "../layout/Breadcrumbs";
 import { LAB_AUTH_KEY } from "../layout/PasswordGate";
 import ErrorBanner from "../shared/ErrorBanner";
@@ -21,7 +22,13 @@ export default function LeaguePlayerPage() {
 
   return (
     <div>
-      <Breadcrumbs items={[{ label: "Players" }, { label: player?.name ?? "…" }]} />
+      <Breadcrumbs
+        items={[
+          { label: leagueBySlug(slug)?.label ?? slug, to: `/${slug}` },
+          { label: "Players" },
+          { label: player?.name ?? "…" },
+        ]}
+      />
       {error && <ErrorBanner message={error} />}
       {loading && <Skeleton className="h-40 w-full" />}
       {player && <PlayerCard player={player} labHref={labHref} />}
