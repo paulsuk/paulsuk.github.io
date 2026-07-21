@@ -86,6 +86,7 @@ export interface CategoryStandout {
   team: 1 | 2;
   player: string;
   value: number;
+  player_uid: string | null;
 }
 
 export interface MatchupCategory {
@@ -111,6 +112,7 @@ export interface MatchupSummary {
 }
 
 export interface PlayerAward {
+  player_key: string;
   name: string;
   team_name: string;
   manager: string;
@@ -756,4 +758,41 @@ export interface PlayoffHistoryResponse {
   resumes: PlayoffResume[];
   eliminations: PlayoffElimination[];
   records: PlayoffRecords;
+}
+
+// --- Player surface (Phase 3a) ---
+
+export interface PlayerHeadshot {
+  primary: string | null;
+  fallback: string | null;
+}
+
+export interface PlayerChip {
+  uid: string;
+  name: string;
+  sport: string;
+  team: string | null;
+  primary_position: string | null;
+  headshot: PlayerHeadshot;
+}
+
+export interface PlayerCard extends PlayerChip {
+  eligible_positions: string[];
+  source_id: string | null;
+  yahoo_player_ids: string[];
+  stat_season: number | null;
+  stat_line: Record<string, number> | null;
+}
+
+export interface PlayerRef {
+  type: "uid" | "yahoo";
+  value: string;
+}
+
+export interface PlayerResolveResponse {
+  players: Record<string, PlayerChip>;
+}
+
+export interface PlayerSearchResponse {
+  results: PlayerChip[];
 }
