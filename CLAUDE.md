@@ -21,6 +21,11 @@ function useMyData(slug: string) {
 
 New hooks go in `web/src/api/hooks.ts`. New types go in `web/src/api/types.ts`.
 
+`usePlayer(uid)` / `usePlayers(ids)` (batch) / `usePlayerSearch(sport, q)` follow
+the same `{ data, loading, error }` contract. `usePlayers` is POST (batch
+resolve) and uses the new `postApi` helper in `web/src/api/client.ts` — the
+POST counterpart to the existing GET fetch helper, same JSON/error handling.
+
 ## Types Live in `api/types.ts`
 
 Never define or export a TypeScript `interface` or `type` inside a component file. If a component needs a type, it belongs in `web/src/api/types.ts`.
@@ -77,7 +82,8 @@ When adding a new page route:
    `/{slug}/history`) render inside `league/LeagueLayout.tsx`, which owns the masthead
    title, tagline, and the section nav bar (`SECTIONS` array — This Week / Matchups /
    Standings / Articles / History). Add a new league section there, not in a one-off
-   layout. Non-league detail pages (article, franchise) render their own
+   layout. Non-league detail pages (article, franchise, player — e.g.
+   `/{slug}/players/:uid` → `league/LeaguePlayerPage.tsx`) render their own
    `<Breadcrumbs items={[...]} />` (`layout/Breadcrumbs.tsx`) at the top of the page body.
 4. Always show `<ErrorBanner message={error} />` when the hook returns an error.
 5. For in-page data loading (after the route chunk has already loaded), use
@@ -89,6 +95,12 @@ When adding a new page route:
    `defaultScoringMode`) is the single source of truth for slug↔sport-code↔scoring-mode
    mapping and taglines. Don't hardcode `"baseball"`/`"basketball"` or `"mlb"`/`"nba"`
    branches elsewhere — read or extend this module instead.
+7. Shared presentational player components — `shared/PlayerChip.tsx` (compact,
+   for lists/podiums/rows) and `shared/PlayerCard.tsx` (full card) — already wrap
+   the editorial tokens + `onError` headshot fallback; reuse them instead of
+   rebuilding player display. Currently wired into `AwardsPodium.tsx` (resolved
+   by award `player_key`) and `MatchupCard.tsx`'s standouts row (resolved by
+   `player_uid`).
 
 ## Verification Before Commit
 
