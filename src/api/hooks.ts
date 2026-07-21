@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { API_URL, clearCache, fetchApi } from "./client";
-import type { Season, RecapResponse, ManagersResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse, StandingsHistoryResponse, AwardsHistoryResponse, TeamPScoresResponse, PlayoffHistoryResponse } from "./types";
+import { API_URL, clearCache, fetchApi, postApi } from "./client";
+import type { Season, RecapResponse, ManagersResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse, StandingsHistoryResponse, AwardsHistoryResponse, TeamPScoresResponse, PlayoffHistoryResponse, PlayerCard, PlayerChip, PlayerRef, PlayerResolveResponse, PlayerSearchResponse } from "./types";
 
 interface ApiState<T> {
   data: T | null;
@@ -168,4 +168,41 @@ export function useTeamPScores(slug: string | null, season?: number) {
 
 export function usePlayoffHistory(slug: string, enabled = true) {
   return useApiData<PlayoffHistoryResponse>(enabled ? `/api/${slug}/playoff-history` : null);
+}
+
+export function usePlayer(uid: string | null) {
+  return useApiData<PlayerCard>(uid ? `/api/players/${encodeURIComponent(uid)}` : null);
+}
+
+export function usePlayers(sport: string, refs: PlayerRef[]) {
+  const [data, setData] = useState<Record<string, PlayerChip>>({});
+  const [loading, setLoading] = useState(refs.length > 0);
+  const [error, setError] = useState<string | null>(null);
+  // Stable key so the effect only re-fires when the ref set actually changes.
+  const key = refs.map((r) => `${r.type}:${r.value}`).sort().join("|");
+
+  useEffect(() => {
+    if (refs.length === 0) {
+      setData({});
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    postApi<PlayerResolveResponse>("/api/players/resolve", { sport, ids: refs })
+      .then((r) => setData(r.players))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sport, key]);
+
+  return { data, loading, error };
+}
+
+export function usePlayerSearch(sport: string, q: string) {
+  const path = q.trim().length >= 2
+    ? `/api/players/search?sport=${sport}&q=${encodeURIComponent(q.trim())}`
+    : null;
+  const { data, loading, error } = useApiData<PlayerSearchResponse>(path);
+  return { data: data?.results ?? [], loading, error };
 }
