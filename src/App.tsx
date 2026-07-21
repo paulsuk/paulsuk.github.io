@@ -20,6 +20,7 @@ const ArticlesPage = lazy(() => import("./components/league/ArticlesPage"));
 const ArticlePage = lazy(() => import("./components/article/ArticlePage"));
 const HistoryPage = lazy(() => import("./components/records/HistoryPage"));
 const FranchiseDetailPage = lazy(() => import("./components/franchise/FranchiseDetailPage"));
+const LeaguePlayerPage = lazy(() => import("./components/league/LeaguePlayerPage"));
 const RankingsPage = lazy(() => import("./components/lab/rankings/RankingsPage"));
 const PlayerDetailPage = lazy(() => import("./components/lab/players/PlayerDetailPage"));
 const DraftPage = lazy(() =>
@@ -61,6 +62,7 @@ export default function App() {
             <Route path="articles/:articleId" element={<ArticlePage />} />
             <Route path="history" element={<HistoryPage />} />
             <Route path="history/franchise/:franchiseId" element={<FranchiseDetailPage />} />
+            <Route path="players/:uid" element={<LeaguePlayerPage />} />
             {/* legacy URLs */}
             <Route path="records" element={<LegacyRecordsRedirect />} />
             <Route path="article/:articleId" element={<LegacyArticleRedirect />} />
