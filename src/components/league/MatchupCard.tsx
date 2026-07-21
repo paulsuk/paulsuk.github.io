@@ -1,5 +1,9 @@
 import type { MatchupSummary } from "../../api/types";
 import { formatStatValue } from "../../utils/records-helpers";
+import { usePlayers } from "../../api/hooks";
+import { useSport } from "../../context/SportContext";
+import { leagueBySlug } from "../../utils/league-config";
+import PlayerChip from "../shared/PlayerChip";
 
 function TeamLine({ name, manager, cats, won }: { name: string; manager: string; cats: number; won: boolean }) {
   return (
@@ -18,6 +22,18 @@ function TeamLine({ name, manager, cats, won }: { name: string; manager: string;
 export default function MatchupCard({ matchup: m }: { matchup: MatchupSummary }) {
   const w1 = m.cats_won_1 > m.cats_won_2;
   const w2 = m.cats_won_2 > m.cats_won_1;
+
+  const { slug } = useSport();
+  const sport = leagueBySlug(slug)?.sportCode ?? "mlb";
+  const standouts = m.categories.flatMap((c) =>
+    (c.standouts ?? []).map((s) => ({ ...s, cat: c.display_name }))
+  );
+  const refs = standouts
+    .map((s) => s.player_uid)
+    .filter((u): u is string => Boolean(u))
+    .map((u) => ({ type: "uid" as const, value: u }));
+  const { data: chipMap } = usePlayers(sport, refs);
+
   return (
     <div className="card-editorial">
       {(m.is_playoffs || m.is_consolation) && (
@@ -38,24 +54,21 @@ export default function MatchupCard({ matchup: m }: { matchup: MatchupSummary })
           </span>
         ))}
       </div>
-      {(() => {
-        const standouts = m.categories.flatMap((c) =>
-          (c.standouts ?? []).map((s) => ({ ...s, cat: c.display_name }))
-        );
-        if (standouts.length === 0) return null;
-        return (
-          <div className="mt-2 border-t border-rule pt-2">
-            <p className="eyebrow mb-1">Went off</p>
-            {standouts.map((s, i) => (
+      {standouts.length > 0 && (
+        <div className="mt-2 border-t border-rule pt-2">
+          <p className="eyebrow mb-1">Went off</p>
+          {standouts.map((s, i) => {
+            const chip = s.player_uid ? chipMap[s.player_uid] : undefined;
+            return (
               <p key={`${s.player}-${s.cat}-${i}`} className="agate">
-                <span className="font-semibold text-ink">{s.player}</span>
+                {chip ? <PlayerChip player={chip} /> : <span className="font-semibold text-ink">{s.player}</span>}
                 {" — "}{formatStatValue(s.value)} {s.cat}
                 <span className="text-ink-faint"> ({s.team === 1 ? m.team_1_name : m.team_2_name})</span>
               </p>
-            ))}
-          </div>
-        );
-      })()}
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
