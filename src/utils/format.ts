@@ -20,6 +20,28 @@ export function signed(v: number, dp = 2): string {
   return `${v >= 0 ? "+" : ""}${v.toFixed(dp)}`;
 }
 
+// Rate stats keep their conventional precision by NAME; percentages (keys ending
+// in "%", stored as fractions) get 3dp. Everything else is a counting stat.
+const STAT_DECIMALS: Record<string, number> = {
+  AVG: 3, OBP: 3, SLG: 3, OPS: 3, BABIP: 3, ISO: 3, wOBA: 3,
+  ERA: 2, WHIP: 2, "K/9": 2, "BB/9": 2, "K/BB": 2, FIP: 2, xFIP: 2, "HR/9": 2,
+};
+
+/**
+ * Stat-aware value formatter for user-facing stat lines. Rate stats keep their
+ * decimals by name (AVG/OPS → 3dp, ERA/WHIP → 2dp, any "%" → 3dp); counting
+ * stats (HR, PTS, REB, …) show 1 decimal so a whole value reads "36.0", not "36".
+ * Without a key, falls back to magnitude (rates are < 1).
+ */
+export function formatStat(value: number, key?: string): string {
+  if (key) {
+    if (key in STAT_DECIMALS) return value.toFixed(STAT_DECIMALS[key]);
+    if (key.endsWith("%")) return value.toFixed(3);
+    return value.toFixed(1);
+  }
+  return Math.abs(value) < 1 ? value.toFixed(3) : value.toFixed(1);
+}
+
 /** Team logo asset URL — name slugified the same way the publisher does. */
 export function logoUrl(slug: string, teamName: string, season: number): string {
   const nameSlug = teamName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

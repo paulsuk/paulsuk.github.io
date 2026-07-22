@@ -1,5 +1,5 @@
 import type { PlayerAward, PlayerChip as PlayerChipType, PlayerRef, RecapResponse } from "../../api/types";
-import { signed } from "../../utils/format";
+import { formatStat, signed } from "../../utils/format";
 import { usePlayers } from "../../api/hooks";
 import { useSport } from "../../context/SportContext";
 import { leagueBySlug } from "../../utils/league-config";
@@ -16,7 +16,7 @@ function AwardCard({
   compact: boolean;
   chipMap: Record<string, PlayerChipType>;
 }) {
-  const statBits = Object.entries(award.stat_line).map(([k, v]) => `${v} ${k}`);
+  const statBits = Object.entries(award.stat_line).map(([k, v]) => `${formatStat(v, k)} ${k}`);
   const chip = chipMap[award.player_key];
   return (
     <div className={compact ? "" : "card-editorial"}>
