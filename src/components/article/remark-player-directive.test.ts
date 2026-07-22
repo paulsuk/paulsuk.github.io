@@ -3,7 +3,35 @@ import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkDirective from "remark-directive";
 import remarkRehype from "remark-rehype";
-import { extractPlayerUids, remarkPlayerDirective } from "./remark-player-directive";
+import remarkGfm from "remark-gfm";
+import {
+  buildRemarkPlugins,
+  extractPlayerUids,
+  remarkPlayerDirective,
+} from "./remark-player-directive";
+
+// Shared hast-walking helpers (used by the real-pipeline and buildRemarkPlugins
+// describe blocks below — assertions read the hast tree directly, no jsdom).
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function collectText(node: any): string {
+  if (node.type === "text") return node.value ?? "";
+  if (Array.isArray(node.children)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return node.children.map((c: any) => collectText(c)).join("");
+  }
+  return "";
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function hasTag(node: any, tagName: string): boolean {
+  if (node.type === "element" && node.tagName === tagName) return true;
+  if (Array.isArray(node.children)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return node.children.some((c: any) => hasTag(c, tagName));
+  }
+  return false;
+}
 
 describe("extractPlayerUids", () => {
   it("pulls uids from :player directives, in order", () => {
@@ -52,7 +80,32 @@ describe("remarkPlayerDirective", () => {
     expect(node.data?.hProperties?.uid).toBe("mlb:1");
   });
 
-  it("leaves a textDirective with a different name untouched", () => {
+  it("reverts a positioned non-player directive to its literal source slice", () => {
+    const source = "a 15:6 K:BB run";
+    // Offsets 8..11 point at ":BB" — the slice remark-directive consumed.
+    const tree = {
+      type: "root",
+      children: [
+        {
+          type: "textDirective",
+          name: "BB",
+          attributes: { uid: "mlb:1" },
+          data: { stale: true },
+          children: [{ type: "text", value: "BB" }],
+          position: { start: { offset: 8 }, end: { offset: 11 } },
+        },
+      ],
+    };
+    remarkPlayerDirective(source)(tree);
+    const node = tree.children[0] as unknown as Record<string, unknown>;
+    expect(node.type).toBe("text");
+    expect(node.value).toBe(":BB");
+    expect(node.children).toBeUndefined();
+    expect(node.data).toBeUndefined();
+    expect(node.attributes).toBeUndefined();
+  });
+
+  it("leaves a position-less non-player directive untouched (no offsets to revert with)", () => {
     const tree = {
       type: "root",
       children: [
@@ -65,8 +118,16 @@ describe("remarkPlayerDirective", () => {
       ],
     };
     remarkPlayerDirective("")(tree);
-    const node = tree.children[0] as unknown as { data?: { hName?: string } };
+    const node = tree.children[0] as unknown as {
+      type: string;
+      data?: { hName?: string };
+      children?: unknown[];
+      attributes?: Record<string, string>;
+    };
+    expect(node.type).toBe("textDirective");
     expect(node.data?.hName).toBeUndefined();
+    expect(node.children).toEqual([{ type: "text", value: "A" }]);
+    expect(node.attributes).toEqual({ uid: "mlb:1" });
   });
 
   it("annotates a player directive nested inside another node's children", () => {
@@ -129,26 +190,6 @@ describe("remarkPlayerDirective — real pipeline (spurious directive corruption
     return unified().use(remarkRehype).runSync(tree);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function collectText(node: any): string {
-    if (node.type === "text") return node.value ?? "";
-    if (Array.isArray(node.children)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return node.children.map((c: any) => collectText(c)).join("");
-    }
-    return "";
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function hasTag(node: any, tagName: string): boolean {
-    if (node.type === "element" && node.tagName === tagName) return true;
-    if (Array.isArray(node.children)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return node.children.some((c: any) => hasTag(c, tagName));
-    }
-    return false;
-  }
-
   it('preserves "held a 3:1 edge" verbatim with no leaked <div>', () => {
     const md = "held a 3:1 edge";
     const hast = toHast(md);
@@ -184,5 +225,37 @@ describe("remarkPlayerDirective — real pipeline (spurious directive corruption
     const text = collectText(hast);
     expect(text).toContain("Aaron Judge");
     expect(text).toContain("went off");
+  });
+});
+
+// Unlike the pipeline block above (which calls the transform directly against
+// a parsed tree), these tests register buildRemarkPlugins' array via unified's
+// `.use()` — mirroring how react-markdown consumes `remarkPlugins`. That is
+// the point: unified calls a `.use()` array entry once at freeze time with no
+// tree argument, so if the helper's nullary-closure attacher were regressed to
+// a pre-invoked `remarkPlayerDirective(source)` entry, the transform would
+// fire at freeze time against `tree === undefined` and never run on the real
+// tree — the direct-call tests above would still pass, but the wiring test
+// below would fail (no player-chip produced).
+describe("buildRemarkPlugins", () => {
+  it("returns exactly the pre-directive legacy list ([remarkGfm]) when there are no chips", () => {
+    const md = "Final: 6-4. First pitch 5:30. K:BB ratio held up.";
+    const plugins = buildRemarkPlugins([], md);
+    expect(plugins).toHaveLength(1);
+    expect(plugins[0]).toBe(remarkGfm);
+  });
+
+  it("wires the directive transform so a .use()-registered pipeline runs it on the real tree", () => {
+    const md = ':player[Aaron Judge]{uid="mlb:592450"} held a 3:1 edge';
+    const uids = extractPlayerUids(md);
+    const processor = unified()
+      .use(remarkParse)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- plugin-array union vs unified's .use() overloads; `any` per this file's existing convention
+      .use(buildRemarkPlugins(uids, md) as any)
+      .use(remarkRehype);
+    const hast = processor.runSync(processor.parse(md));
+    expect(hasTag(hast, "player-chip")).toBe(true);
+    expect(collectText(hast)).toContain("held a 3:1 edge");
+    expect(hasTag(hast, "div")).toBe(false);
   });
 });

@@ -1,3 +1,6 @@
+import remarkGfm from "remark-gfm";
+import remarkDirective from "remark-directive";
+
 // :player[Label]{uid="sport:id"} — quoted-attribute form is the contract (see
 // the Phase 3b spec). extractPlayerUids pre-scans the raw markdown so the whole
 // article's chips resolve in ONE usePlayers batch (no per-chip fetch waterfall).
@@ -60,4 +63,31 @@ function annotate(node: any, source: string): void {
 export function remarkPlayerDirective(source: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- remark/mdast node shape; typed as any per plan to avoid an @types/mdast dep
   return (tree: any): void => annotate(tree, source);
+}
+
+// The remarkPlugins list ArticleContent hands to react-markdown. With no
+// :player directives this is exactly the pre-directive legacy list
+// ([remarkGfm]), so the entire back-catalog of articles renders byte-for-byte
+// as before.
+//
+// remarkPlayerDirective(source) is called ourselves — not placed pre-invoked
+// directly as a plugins-array entry. unified calls a `.use()` array entry once
+// at freeze time with no tree argument; an already-invoked transformer placed
+// there directly fires prematurely against `tree === undefined` and is never
+// invoked again against the real tree (verified empirically against unified
+// 11.0.5 while debugging this fix — see remark-player-directive.test.ts's
+// buildRemarkPlugins describe block, which locks this wiring through a real
+// pipeline). Wrapping the already-built transform in a nullary closure keeps
+// unified's two-phase attach/run contract intact: the closure is called once
+// at freeze time (returning the real transformer), which unified then invokes
+// against the actual parsed tree.
+//
+// `source` must be the exact string the caller parses (ArticleContent's
+// `processed`, post-mergeLogosIntoHeadings): the transform reverts spurious
+// non-player directives to literal text by slicing `source` at mdast position
+// offsets, so any mismatch mis-slices the reverted text.
+export function buildRemarkPlugins(uids: string[], source: string) {
+  if (uids.length === 0) return [remarkGfm];
+  const playerDirectiveTransform = remarkPlayerDirective(source);
+  return [remarkGfm, remarkDirective, () => playerDirectiveTransform];
 }

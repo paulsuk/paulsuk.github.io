@@ -1,14 +1,12 @@
 import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkDirective from "remark-directive";
 import type { Components } from "react-markdown";
 import type { ReactNode } from "react";
 import { API_URL } from "../../api/client";
 import { usePlayers } from "../../api/hooks";
 import { leagueBySlug } from "../../utils/league-config";
 import PlayerChip from "../shared/PlayerChip";
-import { extractPlayerUids, remarkPlayerDirective } from "./remark-player-directive";
+import { buildRemarkPlugins, extractPlayerUids } from "./remark-player-directive";
 
 interface ArticleContentProps {
   content: string;
@@ -40,10 +38,11 @@ export default function ArticleContent({ content, slug }: ArticleContentProps) {
   const processed = mergeLogosIntoHeadings(content);
 
   const sport = leagueBySlug(slug)?.sportCode ?? "";
-  // Extract uids from `processed` (what ReactMarkdown actually parses), not
-  // raw `content` — mergeLogosIntoHeadings can shift character offsets, and
-  // remarkPlayerDirective below reconstructs reverted (non-player) directive
-  // text via position offsets into whatever string was parsed.
+  // The uid strings themselves are offset-independent — extractPlayerUids
+  // would return the same list from raw `content`. What must match the parsed
+  // string is buildRemarkPlugins' `source` arg below: the transform reverts
+  // spurious non-player directives via position offsets into whatever string
+  // ReactMarkdown actually parses, so both calls read `processed`.
   const uids = useMemo(() => extractPlayerUids(processed), [processed]);
   const refs = useMemo(
     () => uids.map((uid) => ({ type: "uid" as const, value: uid })),
@@ -53,23 +52,9 @@ export default function ArticleContent({ content, slug }: ArticleContentProps) {
   // Gate the directive parser on chip presence: with no :player directives,
   // remarkPlugins is exactly the pre-directive legacy list ([remarkGfm]), so
   // the entire back-catalog of articles renders byte-for-byte as before.
-  //
-  // remarkPlayerDirective(processed) is called ourselves — not placed
-  // pre-invoked directly as a plugins-array entry. unified calls a `.use()`
-  // array entry once at freeze time with no tree argument; an
-  // already-invoked transformer placed there directly fires prematurely
-  // against `tree === undefined` and is never invoked again against the real
-  // tree (verified empirically against unified 11.0.5 while debugging this
-  // fix — see remark-player-directive.test.ts's pipeline describe block).
-  // Wrapping the already-built transform in a nullary closure keeps unified's
-  // two-phase attach/run contract intact: the closure is called once at
-  // freeze time (returning the real transformer), which unified then invokes
-  // against the actual parsed tree.
-  const remarkPlugins = useMemo(() => {
-    if (uids.length === 0) return [remarkGfm];
-    const playerDirectiveTransform = remarkPlayerDirective(processed);
-    return [remarkGfm, remarkDirective, () => playerDirectiveTransform];
-  }, [uids.length, processed]);
+  // (Attacher wiring — why the transform is wrapped in a nullary closure —
+  // is documented on buildRemarkPlugins itself.)
+  const remarkPlugins = useMemo(() => buildRemarkPlugins(uids, processed), [uids, processed]);
 
   const components: Components & Record<string, unknown> = {
     img: ({ src, alt, ...props }) => {
