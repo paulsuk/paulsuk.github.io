@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { PlayerCard as PlayerCardData } from "../../api/types";
+import { formatStatValue } from "../../utils/records-helpers";
 
 export default function PlayerCard({
   player,
@@ -14,7 +15,7 @@ export default function PlayerCard({
     ? player.eligible_positions.join(" · ")
     : player.primary_position ?? "";
   const statBits = player.stat_line
-    ? Object.entries(player.stat_line).map(([k, v]) => `${v} ${k}`)
+    ? Object.entries(player.stat_line).map(([k, v]) => `${formatStatValue(v)} ${k}`)
     : [];
 
   return (
