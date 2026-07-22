@@ -20,6 +20,7 @@ export function extractPlayerUids(content: string): string[] {
 // won't render an unknown directive node, so map it to a <player-chip uid="...">
 // hast element the components map can pick up. Unknown directive names are left
 // untouched → they render as their literal text (safe no-op).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- remark/mdast node shape; typed as any per plan to avoid an @types/mdast dep
 function annotate(node: any): void {
   if (node.type === "textDirective" && node.name === "player") {
     node.data = node.data || {};
@@ -30,5 +31,6 @@ function annotate(node: any): void {
 }
 
 export function remarkPlayerDirective() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- remark/mdast node shape; typed as any per plan to avoid an @types/mdast dep
   return (tree: any): void => annotate(tree);
 }
