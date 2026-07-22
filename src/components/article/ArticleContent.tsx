@@ -1,8 +1,14 @@
+import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkDirective from "remark-directive";
 import type { Components } from "react-markdown";
 import type { ReactNode } from "react";
 import { API_URL } from "../../api/client";
+import { usePlayers } from "../../api/hooks";
+import { leagueBySlug } from "../../utils/league-config";
+import PlayerChip from "../shared/PlayerChip";
+import { extractPlayerUids, remarkPlayerDirective } from "./remark-player-directive";
 
 interface ArticleContentProps {
   content: string;
@@ -33,7 +39,15 @@ function mergeLogosIntoHeadings(md: string): string {
 export default function ArticleContent({ content, slug }: ArticleContentProps) {
   const processed = mergeLogosIntoHeadings(content);
 
-  const components: Components = {
+  const sport = leagueBySlug(slug)?.sportCode ?? "";
+  const uids = useMemo(() => extractPlayerUids(content), [content]);
+  const refs = useMemo(
+    () => uids.map((uid) => ({ type: "uid" as const, value: uid })),
+    [uids],
+  );
+  const { data: players } = usePlayers(sport, refs);
+
+  const components: Components & Record<string, unknown> = {
     img: ({ src, alt, ...props }) => {
       let resolvedSrc = src ?? "";
       if (resolvedSrc.startsWith("/api/")) {
@@ -87,11 +101,19 @@ export default function ArticleContent({ content, slug }: ArticleContentProps) {
         </h3>
       );
     },
+    "player-chip": ({ uid, children }: { uid?: string; children?: ReactNode }) => {
+      const resolved = uid ? players[uid] : undefined;
+      // Resolved -> inline headshot chip; loading / unknown uid -> plain label.
+      return resolved ? <PlayerChip player={resolved} /> : <>{children}</>;
+    },
   };
 
   return (
     <div className="article-content prose prose-sm max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-ink-soft prose-a:text-accent prose-img:rounded-sm [&>p:first-of-type]:font-display [&>p:first-of-type]:text-lg [&>p:first-of-type]:leading-relaxed [&>p:first-of-type]:text-ink">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm, remarkDirective, remarkPlayerDirective]}
+        components={components}
+      >
         {processed}
       </ReactMarkdown>
     </div>
