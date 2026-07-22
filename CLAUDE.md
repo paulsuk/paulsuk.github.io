@@ -55,7 +55,15 @@ etc.). Never hardcode `gray-*`, `bg-white`, or raw hex grays in a component — 
 token classes so the palette stays swappable in one place. The `lab/` and `draft/`
 surfaces (internal analytics tools) get the same neutral-gray→token treatment but keep
 `blue-*` as intentional "tool chrome" — that allowance does not extend to the rest of the
-site.
+site. Multi-series charts (e.g. the standings race) use the dataviz-validated categorical
+palette `--color-series-1..8` — composite-encoded with direct labels + hover; run any new
+chart colors through the dataviz skill's palette validator on the real surface before shipping.
+
+**Stat values:** render any user-facing stat line through `formatStat(value, key)`
+(`utils/format.ts`) — it keeps rate stats' precision by name (AVG/OPS 3dp, ERA/WHIP 2dp,
+`%`→3dp) and shows counting stats to 1 decimal. Prefer it over the magnitude-only
+`fmtCompact`/`formatStatValue` heuristics for new stat lines (the lab panels still use the old
+formatters — a Phase 4 cleanup).
 
 ## Image Error Handling
 
