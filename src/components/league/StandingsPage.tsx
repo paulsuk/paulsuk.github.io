@@ -128,7 +128,7 @@ export default function StandingsPage() {
         {history.loading && <Skeleton className="h-64 w-full" />}
         {history.data && history.data.entries.length > 0 && (
           <Card title="The race">
-            <StandingsRaceChart entries={history.data.entries} />
+            <StandingsRaceChart entries={history.data.entries} scoringMode={scoringMode} />
           </Card>
         )}
       </section>

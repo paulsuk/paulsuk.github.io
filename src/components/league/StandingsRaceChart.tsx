@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { StandingsHistoryEntry } from "../../api/types";
-import { LABEL_W, buildRaceLayout, xForWeekIndex, yForRank } from "./race-chart-layout";
+import type { ScoringMode, StandingsHistoryEntry } from "../../api/types";
+import { LABEL_W, buildRaceLayout, xForWeekIndex } from "./race-chart-layout";
 
 // Categorical series palette (dataviz-validated on the light surface): 8 hues,
 // assigned by a stable per-team slot; teams 9+ reuse hues 1–4 as dashed lines.
@@ -12,11 +12,12 @@ const SERIES = [
 
 interface StandingsRaceChartProps {
   entries: StandingsHistoryEntry[];
+  scoringMode: ScoringMode;
 }
 
-export default function StandingsRaceChart({ entries }: StandingsRaceChartProps) {
+export default function StandingsRaceChart({ entries, scoringMode }: StandingsRaceChartProps) {
   const [active, setActive] = useState<string | null>(null);
-  const layout = buildRaceLayout(entries);
+  const layout = buildRaceLayout(entries, scoringMode);
   if (layout.series.length === 0) return null;
 
   // Stable team_key -> palette slot (sorted by key so each team's color is fixed,
@@ -32,7 +33,7 @@ export default function StandingsRaceChart({ entries }: StandingsRaceChartProps)
         width={layout.width}
         height={layout.height}
         role="group"
-        aria-label="Standings rank by week"
+        aria-label="Games above or below .500 by week"
         className="block"
       >
         {layout.weeks.map((w, i) => (
@@ -48,24 +49,25 @@ export default function StandingsRaceChart({ entries }: StandingsRaceChartProps)
             {w}
           </text>
         ))}
-        {Array.from({ length: layout.teamCount }, (_, r) => (
-          <g key={r}>
+        {layout.ticks.map((tk) => (
+          <g key={tk.value}>
             <line
               x1={xForWeekIndex(0)}
               x2={xForWeekIndex(layout.weeks.length - 1)}
-              y1={yForRank(r + 1)}
-              y2={yForRank(r + 1)}
-              stroke="var(--color-rule)"
-              strokeWidth="0.5"
+              y1={tk.y}
+              y2={tk.y}
+              stroke={tk.value === 0 ? "var(--color-ink-faint)" : "var(--color-rule)"}
+              strokeWidth={tk.value === 0 ? 1 : 0.5}
+              strokeDasharray={tk.value === 0 ? undefined : "2 3"}
             />
             <text
-              x={10}
-              y={yForRank(r + 1) + 3}
+              x={8}
+              y={tk.y + 3}
               fontSize="10"
               fill="var(--color-ink-faint)"
               style={{ fontVariantNumeric: "tabular-nums" }}
             >
-              {r + 1}
+              {tk.label}
             </text>
           </g>
         ))}
@@ -85,7 +87,7 @@ export default function StandingsRaceChart({ entries }: StandingsRaceChartProps)
               onFocus={() => setActive(s.team_key)}
               onBlur={() => setActive((prev) => (prev === s.team_key ? null : prev))}
               tabIndex={0}
-              aria-label={`${s.team_name}, rank ${s.final.rank} after week ${s.final.week}`}
+              aria-label={`${s.team_name}, ${last.value > 0 ? "+" : ""}${last.value} games vs .500 after week ${last.week}`}
               // No custom focus ring: the accent highlight (stroke + label color
               // flip) IS the focus indicator here, same as the hover state.
               // Don't "fix" this by adding a focus outline back.
