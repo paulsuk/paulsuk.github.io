@@ -2,6 +2,14 @@ import { useState } from "react";
 import type { StandingsHistoryEntry } from "../../api/types";
 import { LABEL_W, buildRaceLayout, xForWeekIndex, yForRank } from "./race-chart-layout";
 
+// Categorical series palette (dataviz-validated on the light surface): 8 hues,
+// assigned by a stable per-team slot; teams 9+ reuse hues 1–4 as dashed lines.
+// Identity is color + the end-of-line label + hover (composite encoding).
+const SERIES = [
+  "var(--color-series-1)", "var(--color-series-2)", "var(--color-series-3)", "var(--color-series-4)",
+  "var(--color-series-5)", "var(--color-series-6)", "var(--color-series-7)", "var(--color-series-8)",
+];
+
 interface StandingsRaceChartProps {
   entries: StandingsHistoryEntry[];
 }
@@ -10,6 +18,12 @@ export default function StandingsRaceChart({ entries }: StandingsRaceChartProps)
   const [active, setActive] = useState<string | null>(null);
   const layout = buildRaceLayout(entries);
   if (layout.series.length === 0) return null;
+
+  // Stable team_key -> palette slot (sorted by key so each team's color is fixed,
+  // independent of its current rank and stable across hover).
+  const slotByKey = new Map(
+    layout.series.map((s) => s.team_key).sort().map((k, i) => [k, i] as const)
+  );
 
   return (
     <div className="overflow-x-auto">
@@ -60,6 +74,9 @@ export default function StandingsRaceChart({ entries }: StandingsRaceChartProps)
           const dimmed = active !== null && !isActive;
           const last = s.points[s.points.length - 1];
           const points = s.points.map((p) => `${p.x},${p.y}`).join(" ");
+          const slot = slotByKey.get(s.team_key) ?? 0;
+          const color = SERIES[slot % SERIES.length];
+          const dashed = slot >= SERIES.length;
           return (
             <g
               key={s.team_key}
@@ -89,18 +106,28 @@ export default function StandingsRaceChart({ entries }: StandingsRaceChartProps)
               <polyline
                 points={points}
                 fill="none"
-                stroke={isActive ? "var(--color-accent)" : "var(--color-ink-faint)"}
-                strokeOpacity={dimmed ? 0.25 : 1}
-                strokeWidth={isActive ? 2.5 : 1.5}
+                stroke={color}
+                strokeDasharray={dashed ? "5 3" : undefined}
+                strokeOpacity={dimmed ? 0.2 : 1}
+                strokeWidth={isActive ? 2.75 : 1.75}
                 strokeLinejoin="round"
                 strokeLinecap="round"
+                pointerEvents="none"
+              />
+              <circle
+                cx={last.x}
+                cy={last.y}
+                r={isActive ? 3 : 2.2}
+                fill={color}
+                opacity={dimmed ? 0.2 : 1}
                 pointerEvents="none"
               />
               <text
                 x={layout.width - LABEL_W + 10}
                 y={last.y + 3}
                 fontSize="11"
-                fill={isActive ? "var(--color-accent)" : "var(--color-ink-soft)"}
+                fontWeight={isActive ? 600 : 400}
+                fill={isActive ? "var(--color-ink)" : "var(--color-ink-soft)"}
                 opacity={dimmed ? 0.4 : 1}
               >
                 {s.team_name}
