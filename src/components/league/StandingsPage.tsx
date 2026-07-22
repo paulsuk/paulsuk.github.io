@@ -73,6 +73,7 @@ export default function StandingsPage() {
                 <th className="pb-2 pr-4">Manager</th>
                 <th className="pb-2 pr-4">Record</th>
                 <th className="pb-2 pr-4">Pct</th>
+                <th className="pb-2 pr-4">±.500</th>
                 <th className="pb-2 pr-4">Streak</th>
                 <th className="pb-2">Last 3</th>
               </tr>
@@ -98,6 +99,14 @@ export default function StandingsPage() {
                     <td className="py-2 pr-4 agate">{s.manager}</td>
                     <td className="py-2 pr-4 tabular-nums">{w}-{l}-{t}</td>
                     <td className="py-2 pr-4 tabular-nums agate">{winPct(w, l, t)}</td>
+                    <td className="py-2 pr-4 tabular-nums">
+                      {(() => {
+                        const over = (w - l) / 2;
+                        if (over === 0) return <span className="text-ink-faint">Even</span>;
+                        const mag = Number.isInteger(over) ? String(Math.abs(over)) : Math.abs(over).toFixed(1);
+                        return <span className={over > 0 ? "text-win" : "text-loss"}>{over > 0 ? "+" : "-"}{mag}</span>;
+                      })()}
+                    </td>
                     <td className="py-2 pr-4">
                       {profile && profile.streak > 0 && (
                         <span className="badge-win">W{profile.streak}</span>
