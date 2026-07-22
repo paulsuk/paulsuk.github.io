@@ -29,16 +29,6 @@ export default function Masthead() {
               {l.label}
             </NavLink>
           ))}
-          <NavLink
-            to="/lab"
-            className={({ isActive }) =>
-              `-mb-0.5 ml-auto border-b-[3px] pb-2 font-mono text-sm font-semibold no-underline transition-colors ${
-                isActive ? "border-accent text-ink" : "border-transparent text-ink-faint hover:text-ink"
-              }`
-            }
-          >
-            The Lab
-          </NavLink>
         </nav>
       </div>
     </header>
