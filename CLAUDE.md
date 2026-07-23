@@ -54,17 +54,22 @@ Fraunces display serif, hairline rules). Design tokens live in `src/index.css` u
 `.toggle-group` / `.toggle-btn-active`, `.badge-*`, `.item-card`, `.table-dense` /
 `.th-dense` / `.td-dense`, `.cell-num`, `.score-cell`, `.lab-link`, etc.). Never hardcode `gray-*`, `bg-white`, or raw hex grays in a component — use the
 token classes so the palette stays swappable in one place. The `lab/` and `draft/`
-surfaces (internal analytics tools) get the same neutral-gray→token treatment but keep
-`blue-*` as intentional "tool chrome" — that allowance does not extend to the rest of the
-site. Multi-series charts (e.g. the standings race) use the dataviz-validated categorical
+surfaces (internal analytics tools) use the same tokens at
+higher density: `--color-tool` / `--color-tool-soft` are the lab's neutral
+data-highlight ("tool chrome" — score cells, active tool tabs, lab links), applied
+through the lab primitives (`.score-cell`, `.tab-btn-active-tool`, `.lab-link`,
+`.table-dense` / `.th-dense` / `.td-dense`, `.cell-num`). Raw `blue-*` classes are
+dead everywhere. Differentiation from the league side is density + type (mono
+numerals), never darkness — there is no dark mode, permanently. Multi-series charts (e.g. the standings race) use the dataviz-validated categorical
 palette `--color-series-1..8` — composite-encoded with direct labels + hover; run any new
 chart colors through the dataviz skill's palette validator on the real surface before shipping.
 
 **Stat values:** render any user-facing stat line through `formatStat(value, key)`
-(`utils/format.ts`) — it keeps rate stats' precision by name (AVG/OPS 3dp, ERA/WHIP 2dp,
-`%`→3dp) and shows counting stats to 1 decimal. Prefer it over the magnitude-only
-`fmtCompact`/`formatStatValue` heuristics for new stat lines (the lab panels still use the old
-formatters — a Phase 4 cleanup).
+(`utils/format.ts`) — rate stats keep precision by name (AVG/OPS 3dp, ERA/WHIP 2dp),
+fraction percents 3dp, 0-100 percents (Statcast/efficiency keys in
+`PERCENT_100_KEYS`) 1dp, counting stats 1dp. **Model scores are not stats:**
+P-score / z / H / G / category-score cells keep fixed `.toFixed(2)` / `.toFixed(1)`
+renders — never route them through `formatStat`.
 
 ## Image Error Handling
 
