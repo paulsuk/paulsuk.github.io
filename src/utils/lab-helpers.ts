@@ -21,3 +21,8 @@ export function rankBadgeClass(rank: number, total: number): string {
   if (rank <= total - 2) return "text-ink-faint";
   return "bg-loss/10 text-loss";
 }
+
+/** Lab player URLs accept legacy numeric Yahoo ids alongside canonical uids. */
+export function isNumericPlayerParam(param: string): boolean {
+  return /^\d+$/.test(param);
+}

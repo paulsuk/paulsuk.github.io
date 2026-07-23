@@ -16,8 +16,8 @@ export default function LeaguePlayerPage() {
   const labAuthed =
     typeof localStorage !== "undefined" && localStorage.getItem(LAB_AUTH_KEY) === "true";
   const labHref =
-    labAuthed && player?.yahoo_player_ids?.[0]
-      ? `/lab/${slug}/players/${player.yahoo_player_ids[0]}`
+    labAuthed && player
+      ? `/lab/${slug}/players/${encodeURIComponent(player.uid)}`
       : null;
 
   return (

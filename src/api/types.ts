@@ -320,6 +320,7 @@ export interface CurrentMatchup {
 export interface RankingsPlayer {
   rank: number;
   player_id: number;
+  player_uid: string | null;
   name: string;
   team: string | null;
   positions: string | null;
@@ -392,6 +393,7 @@ export interface TransactionRecord {
 
 export interface PlayerDetail {
   player_id: number;
+  player_uid: string | null;
   name: string;
   team: string | null;
   positions: string | null;

@@ -145,7 +145,7 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
                 <td className="td-dense text-ink-faint tabular-nums">{p.rank}</td>
                 <td className="td-dense">
                   <button
-                    onClick={() => navigate(`/lab/${slug}/players/${p.player_id}`)}
+                    onClick={() => navigate(`/lab/${slug}/players/${encodeURIComponent(p.player_uid ?? String(p.player_id))}`)}
                     className="font-medium text-ink hover:text-tool hover:underline text-left"
                   >
                     {p.name}

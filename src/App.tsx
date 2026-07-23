@@ -45,7 +45,7 @@ export default function App() {
             <Route path=":slug" element={<LabSportLayout />}>
               <Route index element={<Navigate to="rankings" replace />} />
               <Route path="rankings" element={<RankingsPage />} />
-              <Route path="players/:id" element={<PlayerDetailPage />} />
+              <Route path="players/:uid" element={<PlayerDetailPage />} />
               <Route path="teams" element={<TeamsPage />} />
               <Route path="teams/:teamId" element={<TeamDetailPage />} />
               <Route path="draft" element={<DraftPage />} />

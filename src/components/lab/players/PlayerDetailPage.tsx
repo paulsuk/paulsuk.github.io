@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { usePlayerDetail, useLabUiConfig, useRankings } from "../../../api/hooks";
 import { useLabSport } from "../../../utils/use-lab-sport";
+import { LAB_DEFAULT_SEASON, LAB_DEFAULT_MODEL } from "../../../utils/lab-config";
+import { isNumericPlayerParam } from "../../../utils/lab-helpers";
 import PlayerHeader from "./PlayerHeader";
 import PlayerSelectors from "./PlayerSelectors";
 import ValueBreakdown from "./ValueBreakdown";
@@ -13,19 +15,18 @@ import NBAStatsPanel from "./nba/NBAStatsPanel";
 import EfficiencyPanel from "./nba/EfficiencyPanel";
 import LoadingSpinner from "../../shared/LoadingSpinner";
 import ErrorBanner from "../../shared/ErrorBanner";
+import { LabNumericPlayerRedirect } from "../../shared/legacy-redirects";
 
 export default function PlayerDetailPage() {
   const { slug, sportCode } = useLabSport();
-  const { id } = useParams<{ id: string }>();
+  const { uid: playerParam } = useParams<{ uid: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const [season, setSeason] = useState(searchParams.get("season") || "projections");
-  const [model, setModel] = useState(searchParams.get("model") || "pscore");
+  const [season, setSeason] = useState(searchParams.get("season") || LAB_DEFAULT_SEASON);
+  const [model, setModel] = useState(searchParams.get("model") || LAB_DEFAULT_MODEL);
   const start = searchParams.get("start") ?? undefined;
   const end = searchParams.get("end") ?? undefined;
-
-  const playerId = id ? parseInt(id, 10) : null;
 
   // Player name search state
   const [searchText, setSearchText] = useState("");
@@ -59,10 +60,19 @@ export default function PlayerDetailPage() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  const isLegacyNumeric = !!playerParam && isNumericPlayerParam(playerParam);
   const { data: config, loading: configLoading } = useLabUiConfig(sportCode);
   const { data: player, loading, error } = usePlayerDetail(
-    sportCode, playerId, season, model, start, end
+    sportCode,
+    isLegacyNumeric ? null : (playerParam ?? null),
+    season, model, start, end,
   );
+
+  if (isLegacyNumeric) {
+    return (
+      <LabNumericPlayerRedirect slug={slug} sportCode={sportCode} numericId={playerParam!} />
+    );
+  }
 
   if (configLoading || loading) return <LoadingSpinner />;
   if (error) return <ErrorBanner message={error} />;
@@ -70,11 +80,11 @@ export default function PlayerDetailPage() {
 
   const isPitcher = "ERA" in player.stats && !("HR" in player.stats);
 
-  function navigateToPlayer(newPlayerId: number) {
+  function navigateToPlayer(uid: string) {
     const params = new URLSearchParams({ season, model });
     if (start) params.set("start", start);
     if (end) params.set("end", end);
-    navigate(`/lab/${slug}/players/${newPlayerId}?${params.toString()}`);
+    navigate(`/lab/${slug}/players/${encodeURIComponent(uid)}?${params.toString()}`);
     setSearchText("");
     setShowDropdown(false);
   }
@@ -109,7 +119,7 @@ export default function PlayerDetailPage() {
                 <button
                   key={p.player_id}
                   className="w-full text-left px-3 py-2 text-sm hover:bg-tool-soft flex items-center justify-between"
-                  onClick={() => navigateToPlayer(p.player_id)}
+                  onClick={() => navigateToPlayer(p.player_uid ?? String(p.player_id))}
                 >
                   <span className="font-medium text-ink">{p.name}</span>
                   <span className="text-xs text-ink-faint">{p.positions ?? ""} · #{p.rank}</span>

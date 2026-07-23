@@ -112,7 +112,7 @@ export function useRankings(
 
 export function usePlayerDetail(
   sport: string,
-  playerId: number | null,
+  playerRef: string | null,
   season: string,
   model: string,
   start?: string,
@@ -121,8 +121,8 @@ export function usePlayerDetail(
   const params = new URLSearchParams({ season, model });
   if (start) params.set("start", start);
   if (end) params.set("end", end);
-  const url = playerId
-    ? `/api/lab/${sport}/players/${playerId}?${params.toString()}`
+  const url = playerRef
+    ? `/api/lab/${sport}/players/${encodeURIComponent(playerRef)}?${params.toString()}`
     : null;
   return useApiData<PlayerDetail>(url);
 }

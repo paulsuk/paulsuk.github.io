@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { rankBadgeClass } from "./lab-helpers";
+import { isNumericPlayerParam, rankBadgeClass } from "./lab-helpers";
+
+describe("isNumericPlayerParam", () => {
+  it("accepts bare yahoo ids only", () => {
+    expect(isNumericPlayerParam("10835")).toBe(true);
+    expect(isNumericPlayerParam("mlb:592450")).toBe(false);
+    expect(isNumericPlayerParam("mlb:yahoo:10835")).toBe(false);
+    expect(isNumericPlayerParam("")).toBe(false);
+    expect(isNumericPlayerParam("12a")).toBe(false);
+  });
+});
 
 describe("rankBadgeClass", () => {
   it("maps league-relative tiers to token classes", () => {
