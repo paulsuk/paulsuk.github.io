@@ -67,7 +67,7 @@ export default function PlayerSearchBox({
         onFocus={() => setOpen(true)}
         className="w-56 rounded-sm border border-rule bg-raised px-3 py-1.5 text-sm"
       />
-      {open && results.length > 0 && (
+      {open && active && results.length > 0 && (
         <div className="absolute right-0 top-full z-50 mt-1 w-72 rounded-sm border border-rule bg-raised shadow-lg">
           {results.map((chip) => (
             <button
