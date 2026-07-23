@@ -8,4 +8,9 @@ describe("lab-config", () => {
     expect(firstNumericSeason([{ id: "projections" }])).toBeNull();
     expect(firstNumericSeason([])).toBeNull();
   });
+  it("matches a leading 4-digit year even with a suffix (e.g. in-progress season)", () => {
+    expect(
+      firstNumericSeason([{ id: "projections" }, { id: "2026_ytd" }, { id: "2025" }])
+    ).toBe("2026_ytd");
+  });
 });

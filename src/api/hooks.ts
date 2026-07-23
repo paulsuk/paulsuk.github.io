@@ -112,7 +112,9 @@ export function useRankings(
 }
 
 export function usePlayerSeries(sport: string | null, season: string) {
-  const year = Number(season);
+  // parseInt, not Number: real season ids can carry suffixes (e.g. "2026_ytd")
+  // — parseInt reads the leading year and ignores the rest; Number would NaN.
+  const year = Number.parseInt(season, 10);
   const path =
     sport && Number.isInteger(year) && year >= DAILY_ERA_START
       ? `/api/lab/${sport}/player-series?season=${year}`

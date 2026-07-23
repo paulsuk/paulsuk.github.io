@@ -11,8 +11,10 @@ export const DAILY_ERA_START = 2026;
 /** Players-index browse listing depth (top-N by value). */
 export const PLAYERS_INDEX_TOP_N = 50;
 
-/** First real (numeric) season in a lab_ui seasons list — the players-index
- * browse season; null when only projections are served. */
+/** First real (year-based) season in a lab_ui seasons list — the players-index
+ * browse season; null when only projections are served. Real season ids may
+ * carry a suffix (e.g. "2026_ytd" for the in-progress season), so match on a
+ * leading 4-digit year rather than requiring the whole id to be numeric. */
 export function firstNumericSeason(seasons: { id: string }[]): string | null {
-  return seasons.find((s) => /^\d+$/.test(s.id))?.id ?? null;
+  return seasons.find((s) => /^\d{4}/.test(s.id))?.id ?? null;
 }
