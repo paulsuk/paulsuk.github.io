@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import { usePlayerDetail, useLabUiConfig, useRankings } from "../../../api/hooks";
+import { usePlayerDetail, useLabUiConfig } from "../../../api/hooks";
 import { useLabSport } from "../../../utils/use-lab-sport";
 import { LAB_DEFAULT_SEASON, LAB_DEFAULT_MODEL } from "../../../utils/lab-config";
 import { isNumericPlayerParam } from "../../../utils/lab-helpers";
+import PlayerSearchBox from "./PlayerSearchBox";
 import PlayerHeader from "./PlayerHeader";
 import PlayerSelectors from "./PlayerSelectors";
 import ValueBreakdown from "./ValueBreakdown";
@@ -27,38 +28,6 @@ export default function PlayerDetailPage() {
   const [model, setModel] = useState(searchParams.get("model") || LAB_DEFAULT_MODEL);
   const start = searchParams.get("start") ?? undefined;
   const end = searchParams.get("end") ?? undefined;
-
-  // Player name search state
-  const [searchText, setSearchText] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
-
-  // Load all players for the current season/model (used for name search)
-  const { data: allRankings } = useRankings(sportCode, {
-    season,
-    model,
-    start: start || undefined,
-    end: end || undefined,
-  });
-
-  // Filter players by typed name
-  const searchResults =
-    searchText.length >= 2
-      ? (allRankings?.players ?? []).filter((p) =>
-          p.name.toLowerCase().includes(searchText.toLowerCase())
-        ).slice(0, 10)
-      : [];
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setShowDropdown(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
 
   const isLegacyNumeric = !!playerParam && isNumericPlayerParam(playerParam);
   const { data: config, loading: configLoading } = useLabUiConfig(sportCode);
@@ -85,8 +54,6 @@ export default function PlayerDetailPage() {
     if (start) params.set("start", start);
     if (end) params.set("end", end);
     navigate(`/lab/${slug}/players/${encodeURIComponent(uid)}?${params.toString()}`);
-    setSearchText("");
-    setShowDropdown(false);
   }
 
   return (
@@ -100,34 +67,11 @@ export default function PlayerDetailPage() {
           ← Back to Rankings
         </button>
 
-        {/* Player name search */}
-        <div ref={searchRef} className="relative">
-          <input
-            type="search"
-            placeholder="Find another player..."
-            value={searchText}
-            onChange={(e) => {
-              setSearchText(e.target.value);
-              setShowDropdown(true);
-            }}
-            onFocus={() => setShowDropdown(true)}
-            className="rounded border border-rule px-3 py-1.5 text-sm w-52 shadow-sm"
-          />
-          {showDropdown && searchResults.length > 0 && (
-            <div className="absolute right-0 top-full mt-1 w-64 bg-raised border border-rule rounded-lg shadow-lg z-50">
-              {searchResults.map((p) => (
-                <button
-                  key={p.player_id}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-tool-soft flex items-center justify-between"
-                  onClick={() => navigateToPlayer(p.player_uid ?? String(p.player_id))}
-                >
-                  <span className="font-medium text-ink">{p.name}</span>
-                  <span className="text-xs text-ink-faint">{p.positions ?? ""} · #{p.rank}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <PlayerSearchBox
+          sportCode={sportCode}
+          onSelect={(uid) => navigateToPlayer(uid)}
+          placeholder="Find another player..."
+        />
       </div>
 
       <PlayerHeader
