@@ -88,6 +88,7 @@ export default function PlayersIndexPage() {
           <button
             key={pos}
             onClick={() => setPosition(pos)}
+            aria-pressed={position === pos}
             className={`rounded-sm px-2 py-0.5 text-xs font-medium ${
               position === pos
                 ? "bg-ink text-paper"
@@ -111,7 +112,7 @@ export default function PlayersIndexPage() {
                 <th className="table-header th-dense">Team</th>
                 <th className="table-header th-dense">Pos</th>
                 <th className="table-header th-dense bg-tool-soft text-tool">Value</th>
-                {seriesData?.series && (
+                {seriesData && seriesData.weeks.length > 0 && (
                   <th className="table-header th-dense">Form</th>
                 )}
               </tr>
@@ -148,7 +149,7 @@ export default function PlayersIndexPage() {
                     <td className="td-dense score-cell font-semibold">
                       {p.value.toFixed(2)}
                     </td>
-                    {seriesData?.series && (
+                    {seriesData && seriesData.weeks.length > 0 && (
                       <td className="td-dense">
                         {p.player_uid && seriesData.series[p.player_uid] ? (
                           <Sparkline values={seriesData.series[p.player_uid]} />

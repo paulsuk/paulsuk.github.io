@@ -98,7 +98,7 @@ export default function RankingsPage() {
             slug={slug}
             players={rankings.players}
             search={effectiveFilter.search}
-            series={seriesData?.series ?? null}
+            series={seriesData && seriesData.weeks.length > 0 ? seriesData.series : null}
           />
         </>
       )}

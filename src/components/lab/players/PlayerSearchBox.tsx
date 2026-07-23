@@ -38,7 +38,7 @@ export default function PlayerSearchBox({
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const debounced = useDebouncedValue(q, 250);
-  const { data: results, loading } = usePlayerSearch(sportCode, debounced);
+  const { data: results, loading, error } = usePlayerSearch(sportCode, debounced);
   const boxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function PlayerSearchBox({
   }, []);
 
   const active = debounced.trim().length >= 2;
-  const showEmpty = open && active && !loading && results.length === 0;
+  const showEmpty = open && active && !loading && results.length === 0 && !error;
 
   return (
     <div ref={boxRef} className="relative">
