@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import type { RosterTableProps } from "../../../api/types";
-import { fmtTiered, signed } from "../../../utils/format";
+import { formatStat, signed } from "../../../utils/format";
 import ValueRangeBar from "./ValueRangeBar";
-
-function fmtStat(v: number | null | undefined): string {
-  return fmtTiered(v, 0);
-}
 
 /** Roster table with expandable per-player rows (CI bar + category scores). */
 export default function RosterTable({ players, statCols }: RosterTableProps) {
@@ -17,16 +13,16 @@ export default function RosterTable({ players, statCols }: RosterTableProps) {
 
   return (
     <div className="overflow-x-auto rounded-lg border border-rule">
-      <table className="w-full text-sm whitespace-nowrap">
+      <table className="table-dense whitespace-nowrap">
         <thead className="bg-paper">
           <tr>
-            <th className="table-header px-3 py-2 text-left">Name</th>
-            <th className="table-header px-3 py-2 text-left">Pos</th>
-            <th className="table-header px-3 py-2 text-right text-blue-600">
+            <th className="table-header th-dense text-left">Name</th>
+            <th className="table-header th-dense text-left">Pos</th>
+            <th className="table-header th-dense text-right text-tool">
               P-Score
             </th>
             {statCols.map((c) => (
-              <th key={c} className="table-header px-2 py-2 text-right">
+              <th key={c} className="table-header th-dense text-right">
                 {c}
               </th>
             ))}
@@ -48,21 +44,21 @@ export default function RosterTable({ players, statCols }: RosterTableProps) {
                   }
                   className="cursor-pointer hover:bg-paper"
                 >
-                  <td className="px-3 py-2 font-medium text-ink">
+                  <td className="td-dense font-medium text-ink">
                     {player.name}
                   </td>
-                  <td className="px-3 py-2 text-ink-soft">
+                  <td className="td-dense text-ink-soft">
                     {player.positions ?? "—"}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums text-blue-700 font-semibold">
+                  <td className="td-dense text-right cell-num font-semibold text-tool">
                     {player.value != null ? player.value.toFixed(2) : "—"}
                   </td>
                   {statCols.map((c) => (
                     <td
                       key={c}
-                      className="px-2 py-2 text-right tabular-nums text-ink-soft"
+                      className="td-dense text-right cell-num text-ink-soft"
                     >
-                      {fmtStat(player.stats[c])}
+                      {player.stats[c] != null ? formatStat(player.stats[c] as number, c) : "—"}
                     </td>
                   ))}
                 </tr>
@@ -88,7 +84,7 @@ export default function RosterTable({ players, statCols }: RosterTableProps) {
                             scoreEntries.map(([cat, score]) => (
                               <span
                                 key={cat}
-                                className={score >= 0 ? "text-green-700" : "text-red-600"}
+                                className={score >= 0 ? "text-win" : "text-loss"}
                               >
                                 {cat} {signed(score)}
                               </span>

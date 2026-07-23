@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { MatchupToolProps, MatchupTableProps } from "../../../api/types";
-import { fmtWeekly, PITCHING_CATS, CAT_ORDER } from "../../../utils/lab-helpers";
+import { formatStat } from "../../../utils/format";
+import { PITCHING_CATS, CAT_ORDER } from "../../../utils/lab-helpers";
 
 function getEdge(
   myRank: number | undefined,
@@ -9,15 +10,15 @@ function getEdge(
   if (myRank == null || oppRank == null) {
     return { label: "—", colorClass: "text-ink-faint" };
   }
-  if (myRank <= oppRank - 2) return { label: "▲ Win", colorClass: "text-green-700" };
-  if (oppRank <= myRank - 2) return { label: "▼ Lose", colorClass: "text-red-600" };
+  if (myRank <= oppRank - 2) return { label: "▲ Win", colorClass: "text-win" };
+  if (oppRank <= myRank - 2) return { label: "▼ Lose", colorClass: "text-loss" };
   return { label: "— Toss-up", colorClass: "text-ink-soft" };
 }
 
 function rankColorClass(rank: number | undefined, total: number): string {
   if (rank == null) return "text-ink-soft";
-  if (rank <= 3) return "text-green-700";
-  if (rank >= total - 2) return "text-red-600";
+  if (rank <= 3) return "text-win";
+  if (rank >= total - 2) return "text-loss";
   return "text-ink-soft";
 }
 
@@ -36,13 +37,13 @@ function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
     const edge = getEdge(myRank, oppRank);
 
     const fmt = (weekly: number | undefined, rank: number | undefined) =>
-      `${fmtWeekly(weekly)}${rank != null ? ` · #${rank}` : ""}`;
+      `${weekly != null ? formatStat(weekly, cat) : "—"}${rank != null ? ` · #${rank}` : ""}`;
 
     return (
       <tr key={cat} className="border-t border-rule">
-        <td className="px-3 py-2 font-medium text-ink-soft">{cat}</td>
+        <td className="td-dense font-medium text-ink-soft">{cat}</td>
         <td
-          className={`px-3 py-2 text-right tabular-nums ${rankColorClass(
+          className={`td-dense text-right cell-num ${rankColorClass(
             myRank,
             total
           )}`}
@@ -50,14 +51,14 @@ function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
           {fmt(myWeekly, myRank)}
         </td>
         <td
-          className={`px-3 py-2 text-right tabular-nums ${rankColorClass(
+          className={`td-dense text-right cell-num ${rankColorClass(
             oppRank,
             total
           )}`}
         >
           {fmt(oppWeekly, oppRank)}
         </td>
-        <td className={`px-3 py-2 text-right font-medium ${edge.colorClass}`}>
+        <td className={`td-dense text-right font-medium ${edge.colorClass}`}>
           {edge.label}
         </td>
       </tr>
@@ -77,17 +78,17 @@ function MatchupTable({ myTeam, opponent, allCats, total }: MatchupTableProps) {
 
   return (
     <div className="overflow-x-auto rounded-lg border border-rule">
-      <table className="w-full text-sm">
+      <table className="table-dense">
         <thead className="bg-paper">
           <tr>
-            <th className="table-header px-3 py-2 text-left">Cat</th>
-            <th className="table-header px-3 py-2 text-right">
+            <th className="table-header th-dense text-left">Cat</th>
+            <th className="table-header th-dense text-right">
               {myTeam.team_name}
             </th>
-            <th className="table-header px-3 py-2 text-right">
+            <th className="table-header th-dense text-right">
               {opponent.team_name}
             </th>
-            <th className="table-header px-3 py-2 text-right">Edge</th>
+            <th className="table-header th-dense text-right">Edge</th>
           </tr>
         </thead>
         <tbody>

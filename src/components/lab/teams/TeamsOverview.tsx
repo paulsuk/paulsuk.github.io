@@ -4,10 +4,10 @@ import type { InlineTeamPanelProps, TeamsOverviewProps } from "../../../api/type
 import { CAT_ORDER, rankBadgeClass } from "../../../utils/lab-helpers";
 
 function winProbColor(p: number): string {
-  if (p >= 0.65) return "bg-green-100 text-green-800";
-  if (p >= 0.50) return "bg-blue-50 text-blue-700";
-  if (p >= 0.35) return "bg-yellow-50 text-yellow-700";
-  return "bg-red-50 text-red-700";
+  if (p >= 0.65) return "bg-win/10 text-win";
+  if (p >= 0.5) return "bg-tool-soft text-tool";
+  if (p >= 0.35) return "text-ink-faint";
+  return "bg-loss/10 text-loss";
 }
 
 function InlineTeamPanel({
@@ -29,7 +29,7 @@ function InlineTeamPanel({
         <div className="font-semibold text-ink">{team.team_name}</div>
         <div className="text-ink-soft text-xs">{team.manager_name ?? "—"}</div>
         <div className="mt-1 text-xs">
-          <span className="text-blue-700 font-semibold">
+          <span className="text-tool font-semibold">
             P-Score {team.team_value.toFixed(1)}
           </span>
           {" · "}
@@ -76,14 +76,14 @@ function InlineTeamPanel({
         {topPlayer && (
           <div className="text-xs text-ink-soft mb-1">
             <div className="font-medium text-ink">{topPlayer.name}</div>
-            <div className="text-blue-700">
+            <div className="text-tool">
               P-Score {topPlayer.value != null ? topPlayer.value.toFixed(2) : "—"}
             </div>
           </div>
         )}
         <Link
           to={`/lab/${slug}/teams/${encodeURIComponent(team.team_id)}`}
-          className="text-xs text-blue-600 hover:underline"
+          className="text-xs lab-link"
           onClick={(e) => e.stopPropagation()}
         >
           Full analysis →
@@ -110,16 +110,16 @@ export default function TeamsOverview({
 
   return (
     <div className="overflow-x-auto rounded-lg border border-rule">
-      <table className="w-full text-sm whitespace-nowrap">
+      <table className="table-dense whitespace-nowrap">
         <thead className="bg-paper">
           <tr>
-            <th className="table-header px-3 py-2 text-left">#</th>
-            <th className="table-header px-3 py-2 text-left">Team</th>
-            <th className="table-header px-3 py-2 text-left">Manager</th>
-            <th className="table-header px-3 py-2 text-right">P-Score</th>
-            <th className="table-header px-3 py-2 text-right">Exp W%</th>
+            <th className="table-header th-dense text-left">#</th>
+            <th className="table-header th-dense text-left">Team</th>
+            <th className="table-header th-dense text-left">Manager</th>
+            <th className="table-header th-dense text-right">P-Score</th>
+            <th className="table-header th-dense text-right">Exp W%</th>
             {cats.map((c) => (
-              <th key={c} className="table-header px-2 py-2 text-center">
+              <th key={c} className="table-header th-dense text-center">
                 {c}
               </th>
             ))}
@@ -133,22 +133,22 @@ export default function TeamsOverview({
                 <tr
                   onClick={() => onSelect(team.team_id)}
                   className={`cursor-pointer hover:bg-paper ${
-                    isSelected ? "bg-blue-50" : ""
+                    isSelected ? "bg-tool-soft" : ""
                   }`}
                 >
-                  <td className="px-3 py-2 text-ink-faint tabular-nums">
+                  <td className="td-dense text-ink-faint tabular-nums">
                     {i + 1}
                   </td>
-                  <td className="px-3 py-2 font-medium text-ink">
+                  <td className="td-dense font-medium text-ink">
                     {team.team_name}
                   </td>
-                  <td className="px-3 py-2 text-ink-soft">
+                  <td className="td-dense text-ink-soft">
                     {team.manager_name ?? "—"}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums stat-value text-blue-700">
+                  <td className="td-dense text-right cell-num font-semibold text-tool">
                     {team.team_value.toFixed(1)}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums font-medium">
+                  <td className="td-dense text-right tabular-nums font-medium">
                     {(team.expected_wins * 100).toFixed(1)}%
                   </td>
                   {cats.map((c) => {
@@ -156,7 +156,7 @@ export default function TeamsOverview({
                     return (
                       <td
                         key={c}
-                        className={`px-2 py-2 text-center tabular-nums text-xs ${winProbColor(
+                        className={`td-dense text-center tabular-nums text-xs ${winProbColor(
                           p
                         )}`}
                       >
@@ -169,7 +169,7 @@ export default function TeamsOverview({
                   <tr>
                     <td
                       colSpan={totalCols}
-                      className="px-4 py-3 bg-blue-50 border-b border-blue-100"
+                      className="px-4 py-3 bg-tool-soft border-b border-rule"
                     >
                       <InlineTeamPanel
                         team={team}

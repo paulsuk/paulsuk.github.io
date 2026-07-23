@@ -17,10 +17,13 @@ export const RATE_CATS = new Set(["AVG", "ERA", "WHIP", "OPS", "K/9", "FG%", "FT
 export const MLB_POSITION_FILTERS = ["All", "C", "1B", "2B", "SS", "3B", "OF", "SP", "RP"];
 export const NBA_POSITION_FILTERS = ["All", "PG", "SG", "SF", "PF", "C"];
 
-/** Rank pill color by league-relative tier (shared by team overview + detail). */
+/** Rank pill by league-relative tier (shared by team overview + detail).
+ * Mid tiers are a neutral ink ramp, not a third hue (Phase 4 / dataviz:
+ * ordinal position wants monotone lightness, and amber under 3:1 on paper
+ * had no icon/label mitigation). Win/loss bookend the extremes. */
 export function rankBadgeClass(rank: number, total: number): string {
-  if (rank <= 2) return "bg-green-100 text-green-800";
-  if (rank <= 5) return "bg-slate-100 text-slate-600";
-  if (rank <= total - 2) return "bg-amber-100 text-amber-700";
-  return "bg-red-100 text-red-700";
+  if (rank <= 2) return "bg-win/10 text-win";
+  if (rank <= 5) return "bg-rule/50 text-ink-soft";
+  if (rank <= total - 2) return "text-ink-faint";
+  return "bg-loss/10 text-loss";
 }

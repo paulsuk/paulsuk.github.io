@@ -5,8 +5,8 @@ export default function ValueRangeBar({ value, low, high }: ValueRangeBarProps) 
   const width = high - low;
   const isWide = width > 4;
   const pct = Math.min(1, Math.max(0, (value - low) / (width || 1))) * 100;
-  const trackColor = isWide ? "bg-red-200" : "bg-blue-200";
-  const dotColor = isWide ? "bg-red-500" : "bg-blue-600";
+  const trackColor = isWide ? "bg-loss/25" : "bg-tool/25";
+  const dotColor = isWide ? "bg-loss" : "bg-tool";
 
   return (
     <div className="mt-1">

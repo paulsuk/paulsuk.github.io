@@ -1,12 +1,16 @@
 import type { CategoryAnalysisProps } from "../../../api/types";
+import { formatStat } from "../../../utils/format";
 import {
   BATTING_CAT_ORDER,
   NBA_CAT_ORDER,
   PITCHING_CAT_ORDER,
   RATE_CATS,
-  fmtWeekly,
   rankBadgeClass,
 } from "../../../utils/lab-helpers";
+
+function fmtStatOrDash(v: number | undefined, key: string): string {
+  return v != null ? formatStat(v, key) : "—";
+}
 
 /**
  * Per-category projection/rank/win% tables. Grouping is data-derived:
@@ -32,11 +36,11 @@ export default function CategoryAnalysis({ team }: CategoryAnalysisProps) {
 
     return (
       <tr key={cat} className="border-t border-rule">
-        <td className="py-1.5 px-3 text-ink-soft">{cat}</td>
-        <td className="py-1.5 px-3 text-right tabular-nums text-ink-soft">
-          {isRate ? fmtWeekly(weekly) : `${fmtWeekly(weekly)}/wk`}
+        <td className="td-dense text-ink-soft">{cat}</td>
+        <td className="td-dense text-right cell-num text-ink-soft">
+          {isRate ? fmtStatOrDash(weekly, cat) : `${fmtStatOrDash(weekly, cat)}/wk`}
         </td>
-        <td className="py-1.5 px-3 text-right">
+        <td className="td-dense text-right">
           {rank != null && (
             <span
               className={`px-1.5 py-0.5 rounded text-xs font-semibold ${rankBadgeClass(
@@ -49,11 +53,11 @@ export default function CategoryAnalysis({ team }: CategoryAnalysisProps) {
           )}
         </td>
         <td
-          className={`py-1.5 px-3 text-right tabular-nums font-medium ${
+          className={`td-dense text-right tabular-nums font-medium ${
             prob >= 0.65
-              ? "text-green-700"
+              ? "text-win"
               : prob <= 0.35
-              ? "text-red-600"
+              ? "text-loss"
               : "text-ink-soft"
           }`}
         >
@@ -65,10 +69,10 @@ export default function CategoryAnalysis({ team }: CategoryAnalysisProps) {
 
   const header = (
     <tr className="text-ink-faint text-xs">
-      <td className="px-3 py-1">Cat</td>
-      <td className="px-3 py-1 text-right">Proj/wk</td>
-      <td className="px-3 py-1 text-right">Rank</td>
-      <td className="px-3 py-1 text-right">Win%</td>
+      <td className="th-dense">Cat</td>
+      <td className="th-dense text-right">Proj/wk</td>
+      <td className="th-dense text-right">Rank</td>
+      <td className="th-dense text-right">Win%</td>
     </tr>
   );
 
@@ -77,7 +81,7 @@ export default function CategoryAnalysis({ team }: CategoryAnalysisProps) {
       <div className="bg-paper px-3 py-1.5 text-xs font-semibold text-ink-soft uppercase tracking-wider">
         {label}
       </div>
-      <table className="w-full text-sm">
+      <table className="table-dense">
         <thead>{header}</thead>
         <tbody>{cats.map(renderRow)}</tbody>
       </table>

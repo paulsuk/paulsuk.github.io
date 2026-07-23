@@ -15,6 +15,7 @@ export default function TeamsPage() {
 
   return (
     <div>
+      <p className="eyebrow mb-3">Teams</p>
       <p className="text-meta mb-4">
         {data.season} season · {data.teams.length} teams
       </p>

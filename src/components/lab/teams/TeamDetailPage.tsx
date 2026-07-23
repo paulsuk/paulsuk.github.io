@@ -33,7 +33,7 @@ export default function TeamDetailPage() {
       {/* Back link */}
       <Link
         to={`/lab/${slug}/teams`}
-        className="text-sm text-blue-600 hover:underline mb-4 inline-block"
+        className="text-sm lab-link mb-4 inline-block"
       >
         ← Back to teams
       </Link>
@@ -46,7 +46,7 @@ export default function TeamDetailPage() {
         )}
         <p className="text-sm text-ink-soft mt-1">
           {data.season} season ·{" "}
-          <span className="font-semibold text-blue-700">
+          <span className="font-semibold text-tool">
             P-Score {team.team_value.toFixed(1)}
           </span>{" "}
           ·{" "}
