@@ -11,15 +11,13 @@ export default function LabRootLayout() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-6">
       <PasswordGate>
-        <nav className="mb-4 flex items-center gap-2">
+        <nav className="tab-bar">
           {LAB_TABS.map((tab) => (
             <NavLink
               key={tab.to}
               to={tab.to}
               className={({ isActive }) =>
-                isActive
-                  ? "rounded-sm bg-ink px-2.5 py-0.5 font-mono text-sm font-bold text-paper no-underline"
-                  : "px-1 font-mono text-sm text-ink-soft no-underline hover:text-ink"
+                `tab-btn font-mono no-underline ${isActive ? "tab-btn-active-tool" : ""}`
               }
             >
               {tab.label}

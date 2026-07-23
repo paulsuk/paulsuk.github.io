@@ -31,17 +31,13 @@ export default function LabSportLayout() {
 
   return (
     <div>
-      <nav className="flex gap-1 border-b border-rule mb-6">
+      <nav className="tab-bar">
         {toolTabs.map((tab) => (
           <NavLink
             key={tab.to}
             to={tab.to}
             className={({ isActive }) =>
-              `px-4 py-2 text-sm font-medium transition-colors ${
-                isActive
-                  ? "border-b-2 border-blue-600 text-blue-700"
-                  : "text-ink-soft hover:text-ink"
-              }`
+              `tab-btn font-mono no-underline ${isActive ? "tab-btn-active-tool" : ""}`
             }
           >
             {tab.label}

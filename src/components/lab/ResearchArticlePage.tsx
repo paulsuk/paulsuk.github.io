@@ -43,7 +43,7 @@ export default function ResearchArticlePage() {
 
       {/* Prev / Next navigation */}
       <PrevNextNav basePath="/lab/research" prevId={article.prev_id} nextId={article.next_id}
-        className="mb-6" linkClassName="text-blue-600 no-underline hover:text-blue-800" />
+        className="mb-6" linkClassName="lab-link" />
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="min-w-0 flex-1">
@@ -52,7 +52,7 @@ export default function ResearchArticlePage() {
           {/* Bottom prev/next */}
           <PrevNextNav basePath="/lab/research" prevId={article.prev_id} nextId={article.next_id}
             className="mt-8 border-t border-rule pt-4"
-            linkClassName="text-blue-600 no-underline hover:text-blue-800" />
+            linkClassName="lab-link" />
         </div>
 
         {/* Article list sidebar */}
