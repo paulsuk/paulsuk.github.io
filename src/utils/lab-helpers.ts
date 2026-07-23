@@ -1,9 +1,3 @@
-import { fmtTiered } from "./format";
-
-export function fmtWeekly(v: number | undefined): string {
-  return fmtTiered(v, 1);
-}
-
 export const BATTING_CAT_ORDER = ["R", "HR", "RBI", "SB", "AVG", "OPS"];
 export const PITCHING_CAT_ORDER = ["W", "QS", "ERA", "WHIP", "K/9", "SV+H"];
 export const BATTING_CATS = new Set(BATTING_CAT_ORDER);
