@@ -62,6 +62,7 @@ export default function RankingsPage() {
 
   return (
     <div>
+      <p className="eyebrow mb-3">Rankings</p>
       <RankingsControls
         sportCode={sportCode}
         config={config}

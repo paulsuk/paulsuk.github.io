@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { RankingsPlayer } from "../../../api/types";
-import { fmtCompact } from "../../../utils/format";
+import { formatStat } from "../../../utils/format";
 import { CAT_ORDER, NBA_CAT_ORDER } from "../../../utils/lab-helpers";
 
 // Columns to display per sport — must match backend stat keys exactly.
@@ -24,7 +24,7 @@ function Th({ label, col, sortCol, sortAsc, onSort, className = "" }: ThProps) {
   const active = sortCol === col;
   return (
     <th
-      className={`table-header cursor-pointer px-3 py-2 hover:text-ink whitespace-nowrap ${className}`}
+      className={`table-header cursor-pointer th-dense hover:text-ink whitespace-nowrap ${className}`}
       onClick={() => onSort(col)}
       tabIndex={0}
       role="columnheader"
@@ -112,20 +112,20 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
     <div>
       <p className="text-meta mb-2">{sorted.length} players</p>
       <div className="overflow-x-auto rounded-lg border border-rule">
-        <table className="w-full text-sm">
+        <table className="table-dense">
           <thead className="bg-paper">
             <tr>
               <Th label="#" col="rank" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               <Th label="Name" col="name" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
-              <th className="table-header px-3 py-2">Team</th>
-              <th className="table-header px-3 py-2">Pos</th>
+              <th className="table-header th-dense">Team</th>
+              <th className="table-header th-dense">Pos</th>
               <Th label="P-Score" col="value" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               {/* Raw stats */}
               {statCols.map((c) => (
                 <Th key={c} label={c} col={c} sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               ))}
               {/* Per-stat model scores — visually separated */}
-              <th className="px-3 py-2 border-l-2 border-blue-200" />
+              <th className="px-3 py-2 border-l-2 border-rule" />
               {statCols.map((c) => (
                 <Th
                   key={`${c}__score`}
@@ -134,7 +134,7 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
                   sortCol={sortCol}
                   sortAsc={sortAsc}
                   onSort={handleSort}
-                  className="bg-blue-50 text-blue-700"
+                  className="bg-tool-soft text-tool"
                 />
               ))}
             </tr>
@@ -146,23 +146,23 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
                 <td className="px-3 py-2">
                   <button
                     onClick={() => navigate(`/lab/${slug}/players/${p.player_id}`)}
-                    className="font-medium text-ink hover:text-blue-600 hover:underline text-left"
+                    className="font-medium text-ink hover:text-tool hover:underline text-left"
                   >
                     {p.name}
                   </button>
                 </td>
                 <td className="px-3 py-2 text-ink-soft">{p.team ?? "—"}</td>
                 <td className="px-3 py-2 text-ink-soft text-xs">{p.positions ?? "—"}</td>
-                <td className="px-3 py-2 stat-value text-blue-700">{p.value.toFixed(2)}</td>
+                <td className="td-dense cell-num font-semibold text-tool">{p.value.toFixed(2)}</td>
                 {statCols.map((c) => (
-                  <td key={c} className="px-3 py-2 tabular-nums text-ink-soft">
-                    {fmtCompact(p.stats[c] as number | null)}
+                  <td key={c} className="td-dense cell-num text-ink-soft">
+                    {p.stats[c] != null ? formatStat(p.stats[c] as number, c) : "—"}
                   </td>
                 ))}
                 {/* Divider cell */}
-                <td className="border-l-2 border-blue-200" />
+                <td className="border-l-2 border-rule" />
                 {statCols.map((c) => (
-                  <td key={`${c}__score`} className="px-3 py-2 tabular-nums text-blue-600 bg-blue-50/30">
+                  <td key={`${c}__score`} className="td-dense score-cell">
                     {fmtScore(p.category_scores[c])}
                   </td>
                 ))}

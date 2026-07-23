@@ -79,7 +79,7 @@ export default function RankingsControls({
               onClick={() => onChange({ position: pos })}
               className={`px-2 py-0.5 text-xs rounded ${
                 filter.position === pos
-                  ? "bg-blue-600 text-white"
+                  ? "bg-ink text-paper"
                   : "bg-paper text-ink-soft hover:bg-rule"
               }`}
             >

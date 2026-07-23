@@ -25,7 +25,7 @@ export default function PuntSelector({ categories, punted, onChange }: Props) {
           onClick={() => toggle(cat)}
           className={`px-2 py-0.5 text-xs rounded border transition-colors ${
             punted.includes(cat)
-              ? "bg-red-100 border-red-300 text-red-700 line-through"
+              ? "bg-loss/10 border-loss/40 text-loss line-through"
               : "bg-paper border-rule text-ink-soft hover:bg-paper"
           }`}
         >
