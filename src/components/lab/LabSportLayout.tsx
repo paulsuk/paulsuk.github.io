@@ -25,6 +25,7 @@ export default function LabSportLayout() {
 
   const toolTabs = [
     { to: `/lab/${slug}/rankings`, label: "Rankings" },
+    { to: `/lab/${slug}/players`, label: "Players" },
     { to: `/lab/${slug}/teams`, label: "Teams" },
     ...(sportCode === "mlb" ? [{ to: `/lab/${slug}/draft`, label: "Draft" }] : []),
   ];

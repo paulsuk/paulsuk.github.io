@@ -22,6 +22,7 @@ const HistoryPage = lazy(() => import("./components/records/HistoryPage"));
 const FranchiseDetailPage = lazy(() => import("./components/franchise/FranchiseDetailPage"));
 const LeaguePlayerPage = lazy(() => import("./components/league/LeaguePlayerPage"));
 const RankingsPage = lazy(() => import("./components/lab/rankings/RankingsPage"));
+const PlayersIndexPage = lazy(() => import("./components/lab/players/PlayersIndexPage"));
 const PlayerDetailPage = lazy(() => import("./components/lab/players/PlayerDetailPage"));
 const DraftPage = lazy(() =>
   import("./components/draft/DraftPage").then((m) => ({ default: m.DraftPage }))
@@ -45,6 +46,7 @@ export default function App() {
             <Route path=":slug" element={<LabSportLayout />}>
               <Route index element={<Navigate to="rankings" replace />} />
               <Route path="rankings" element={<RankingsPage />} />
+              <Route path="players" element={<PlayersIndexPage />} />
               <Route path="players/:uid" element={<PlayerDetailPage />} />
               <Route path="teams" element={<TeamsPage />} />
               <Route path="teams/:teamId" element={<TeamDetailPage />} />
