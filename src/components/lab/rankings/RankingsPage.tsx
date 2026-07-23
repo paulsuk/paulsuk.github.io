@@ -29,7 +29,13 @@ export default function RankingsPage() {
     if (!config) return filter;
     return {
       ...filter,
-      season: filter.season || config.seasons[0]?.id || "",
+      // Default to the in-progress season when one is being served (mid-season
+      // truth beats preseason projections); fall back to the first option.
+      season:
+        filter.season ||
+        config.seasons.find((s) => s.id.endsWith("_ytd"))?.id ||
+        config.seasons[0]?.id ||
+        "",
       model: filter.model || config.models.find((m) => m.default)?.id || config.models[0]?.id || "",
     };
   }, [config, filter]);
