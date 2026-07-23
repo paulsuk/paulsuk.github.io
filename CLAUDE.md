@@ -48,10 +48,11 @@ import type { TeamProfileResponse } from "../../api/types";
 This is an editorial "light paper" design system (warm paper background, ink text,
 Fraunces display serif, hairline rules). Design tokens live in `src/index.css` under
 `@theme` (`--color-paper`, `--color-raised`, `--color-ink`, `--color-ink-soft`,
-`--color-ink-faint`, `--color-rule`, `--color-accent`, `--color-win`, `--color-loss`) plus
-reusable editorial primitives (`.card-editorial`, `.eyebrow`, `.section-rule`, `.tab-btn`
-/ `.tab-btn-active`, `.toggle-group` / `.toggle-btn-active`, `.badge-*`, `.item-card`,
-etc.). Never hardcode `gray-*`, `bg-white`, or raw hex grays in a component — use the
+`--color-ink-faint`, `--color-rule`, `--color-accent`, `--color-win`, `--color-loss`,
+`--color-tool`, `--color-tool-soft`) plus reusable editorial primitives (`.card-editorial`,
+`.eyebrow`, `.section-rule`, `.tab-btn` / `.tab-btn-active`, `.tab-btn-active-tool`,
+`.toggle-group` / `.toggle-btn-active`, `.badge-*`, `.item-card`, `.table-dense` /
+`.th-dense` / `.td-dense`, `.cell-num`, `.score-cell`, `.lab-link`, etc.). Never hardcode `gray-*`, `bg-white`, or raw hex grays in a component — use the
 token classes so the palette stays swappable in one place. The `lab/` and `draft/`
 surfaces (internal analytics tools) get the same neutral-gray→token treatment but keep
 `blue-*` as intentional "tool chrome" — that allowance does not extend to the rest of the

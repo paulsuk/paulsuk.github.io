@@ -22,6 +22,10 @@
   --color-series-6: #eb6834;
   --color-series-7: #4a3aa7;
   --color-series-8: #e34948;
+  /* Lab tool chrome (Phase 4): the lab's neutral data-highlight — distinct from
+     win/loss and the editorial accent. Score cells, active tool tabs, lab links. */
+  --color-tool: #1a56b0;
+  --color-tool-soft: #e9f0fa;
   --font-display: "Fraunces Variable", Georgia, "Times New Roman", serif;
   --font-sans: "Inter Variable", system-ui, sans-serif;
 }
@@ -69,6 +73,29 @@ body {
 .toggle-btn { @apply px-3 py-1.5 font-medium transition-colors; }
 .toggle-btn-active { @apply bg-ink text-paper; }
 .score-pill { @apply rounded-sm border border-rule bg-raised px-2 py-0.5 font-mono text-xs tabular-nums; }
+
+/* --- Lab primitives (Phase 4): density + tool chrome --- */
+.tab-btn-active-tool {
+  @apply border-tool font-semibold text-ink;
+}
+.table-dense {
+  @apply w-full text-[13px];
+}
+.th-dense {
+  @apply px-2 py-1.5;
+}
+.td-dense {
+  @apply px-2 py-1;
+}
+.cell-num {
+  @apply font-mono text-xs tabular-nums;
+}
+.score-cell {
+  @apply bg-tool-soft font-mono text-xs tabular-nums text-tool;
+}
+.lab-link {
+  @apply text-tool no-underline hover:underline;
+}
 
 /* Article content — team logos */
 .article-content .team-logo {
@@ -123,7 +150,7 @@ body {
 
 /* Article content — matchup headings (h3 with logos, recaps) */
 .article-content .article-matchup-heading {
-  @apply flex flex-wrap items-center gap-1.5 rounded-lg border border-rule bg-paper px-3 py-2 font-display text-sm font-bold text-gray-800;
+  @apply flex flex-wrap items-center gap-1.5 rounded-lg border border-rule bg-paper px-3 py-2 font-display text-sm font-bold text-ink;
   margin-top: 2rem !important;
 }
 

@@ -78,7 +78,7 @@ export default function RankingsPage() {
           <button
             onClick={refreshRankings}
             disabled={rankingsLoading}
-            className="text-xs text-meta hover:text-primary disabled:opacity-40 ml-auto"
+            className="text-xs text-meta hover:text-ink disabled:opacity-40 ml-auto"
           >
             ↻ Reload
           </button>

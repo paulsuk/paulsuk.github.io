@@ -179,14 +179,14 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="text-xs text-meta hover:text-primary disabled:opacity-40"
+              className="text-xs text-meta hover:text-ink disabled:opacity-40"
             >
               ← Prev
             </button>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="text-xs text-meta hover:text-primary disabled:opacity-40"
+              className="text-xs text-meta hover:text-ink disabled:opacity-40"
             >
               Next →
             </button>
