@@ -16,10 +16,10 @@ export function SetupScreen({
     <div className="p-6 max-w-xl mx-auto">
       <h1 className="text-2xl font-bold mb-5">Draft Board</h1>
 
-      {sessionError && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">{sessionError}</div>}
+      {sessionError && <div className="bg-loss/10 text-loss p-3 rounded mb-4 text-sm">{sessionError}</div>}
       {preloadLoading && <p className="text-ink-soft text-sm">Loading league data...</p>}
       {preloadError && (
-        <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
+        <div className="bg-loss/10 text-loss p-3 rounded mb-4 text-sm">
           <p className="font-medium">Could not load league data</p>
           <p>{preloadError}</p>
           <p className="mt-1 text-xs">Ensure 2026 is synced: <code>python main.py sync baseball</code></p>
@@ -42,7 +42,7 @@ export function SetupScreen({
                   onClick={() => onSelectTeam(t.team_key)}
                   className={`flex items-center gap-2 p-2 rounded border cursor-pointer transition-colors ${
                     myTeamKey === t.team_key
-                      ? "border-blue-500 bg-blue-50"
+                      ? "border-tool bg-tool-soft"
                       : "border-rule hover:border-ink-faint"
                   }`}
                 >
@@ -52,7 +52,7 @@ export function SetupScreen({
                     <span className="text-xs text-ink-soft">{t.manager_name}</span>
                   )}
                   {myTeamKey === t.team_key && (
-                    <span className="text-xs text-blue-600 font-semibold">me</span>
+                    <span className="text-xs text-tool font-semibold">me</span>
                   )}
                 </div>
               ))}
@@ -62,7 +62,7 @@ export function SetupScreen({
           <button
             onClick={onStart}
             disabled={starting || !myTeamKey}
-            className="w-full py-3 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 font-medium"
+            className="w-full py-3 bg-ink text-paper rounded hover:bg-ink/90 disabled:opacity-50 font-medium"
           >
             {starting ? "Starting..." : "Start Draft"}
           </button>

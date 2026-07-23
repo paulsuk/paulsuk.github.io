@@ -8,9 +8,13 @@ interface Props {
   numRounds: number;
 }
 
+// Categorical identity rides the series palette as soft tints. Column position +
+// the team header carry primary identity (composite encoding), so recycling past
+// 8 teams is safe — the dataviz all-pairs check caps distinct hues well below 10,
+// so extending the palette can't validate; recycle instead (spec §1).
 const TEAM_COLORS = [
-  "bg-blue-100", "bg-green-100", "bg-yellow-100", "bg-red-100", "bg-purple-100",
-  "bg-pink-100", "bg-indigo-100", "bg-teal-100", "bg-orange-100", "bg-cyan-100",
+  "bg-series-1/15", "bg-series-2/15", "bg-series-3/15", "bg-series-4/15",
+  "bg-series-5/15", "bg-series-6/15", "bg-series-7/15", "bg-series-8/15",
 ];
 
 export function DraftGrid({ grid, teams, playerNames, teamNames = {}, numRounds }: Props) {
@@ -46,7 +50,7 @@ export function DraftGrid({ grid, teams, playerNames, teamNames = {}, numRounds 
                     key={pick.pick_number}
                     title={name}
                     className={`p-1 border ${colorClass} ${
-                      pick.is_current ? "ring-2 ring-blue-500 font-bold" : ""
+                      pick.is_current ? "ring-2 ring-tool font-bold" : ""
                     } ${pick.is_keeper ? "opacity-60 italic" : ""}`}
                   >
                     <span className="block truncate text-center">{name || (pick.is_current ? "..." : "")}</span>

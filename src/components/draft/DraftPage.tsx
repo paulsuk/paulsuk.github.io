@@ -146,7 +146,7 @@ export function DraftPage() {
         <div className="flex items-center gap-3">
           <span className="font-bold">Pick {currentPick?.pick_number ?? "—"}</span>
           {currentPick && (
-            <span className={session.is_my_pick ? "text-green-700 font-semibold" : "text-ink-soft"}>
+            <span className={session.is_my_pick ? "text-win font-semibold" : "text-ink-soft"}>
               {session.is_my_pick ? "YOUR PICK" : `${currentTeamName} picking`}
             </span>
           )}
@@ -154,11 +154,11 @@ export function DraftPage() {
         </div>
         <div className="flex gap-2">
           <button onClick={undoPick} className="px-3 py-1 bg-rule/60 rounded hover:bg-rule text-xs">Undo</button>
-          <button onClick={() => setShowRestartDialog(true)} className="px-3 py-1 text-red-600 bg-red-50 rounded hover:bg-red-100 text-xs">Restart</button>
+          <button onClick={() => setShowRestartDialog(true)} className="px-3 py-1 text-loss bg-loss/10 rounded hover:bg-loss/20 text-xs">Restart</button>
         </div>
       </div>
 
-      {error && <div className="bg-red-100 text-red-700 px-3 py-1 text-sm shrink-0">{error}</div>}
+      {error && <div className="bg-loss/10 text-loss px-3 py-1 text-sm shrink-0">{error}</div>}
 
       <div className="flex-1 flex overflow-hidden min-h-0">
         <div className="w-2/3 p-2 overflow-auto border-r">
@@ -172,9 +172,9 @@ export function DraftPage() {
         </div>
         <div className="w-1/3 p-2 flex flex-col overflow-hidden">
           {recError && (
-            <div className="bg-red-100 text-red-700 p-2 text-xs rounded mb-2 flex items-center justify-between gap-2">
+            <div className="bg-loss/10 text-loss p-2 text-xs rounded mb-2 flex items-center justify-between gap-2">
               <span className="truncate">{recError}</span>
-              <button onClick={loadRecommendations} className="px-2 py-0.5 bg-red-600 text-white rounded hover:bg-red-700 shrink-0">Retry</button>
+              <button onClick={loadRecommendations} className="px-2 py-0.5 bg-loss text-paper rounded hover:bg-loss/90 shrink-0">Retry</button>
             </div>
           )}
           <BestAvailable candidates={candidates} onPick={handlePick} disabled={pickingId !== null} />

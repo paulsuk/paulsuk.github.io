@@ -42,7 +42,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
               key={pos}
               onClick={() => setPosFilter(pos)}
               className={`px-2 py-0.5 text-xs rounded ${
-                posFilter === pos ? "bg-blue-600 text-white" : "bg-paper"
+                posFilter === pos ? "bg-ink text-paper" : "bg-paper"
               }`}
             >
               {pos}
@@ -54,7 +54,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
             aria-label="Sort by H-score"
             onClick={() => setSortBy("hscore")}
             className={`px-2 py-0.5 text-xs rounded ${
-              sortBy === "hscore" ? "bg-indigo-600 text-white" : "bg-paper"
+              sortBy === "hscore" ? "bg-ink text-paper" : "bg-paper"
             }`}
           >
             H
@@ -63,7 +63,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
             aria-label="Sort by P-Score"
             onClick={() => setSortBy("gscore")}
             className={`px-2 py-0.5 text-xs rounded ${
-              sortBy === "gscore" ? "bg-indigo-600 text-white" : "bg-paper"
+              sortBy === "gscore" ? "bg-ink text-paper" : "bg-paper"
             }`}
           >
             G
@@ -86,7 +86,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
           <tbody>
             {/* slice(0, 100) is a render cap; sorted always contains the full filtered population */}
             {sorted.slice(0, 100).map((c, i) => (
-              <tr key={c.player_id} className="hover:bg-blue-50 border-b">
+              <tr key={c.player_id} className="hover:bg-tool-soft border-b border-rule">
                 <td className="p-1 text-ink-faint">{i + 1}</td>
                 <td className="p-1 font-medium">{c.name}</td>
                 <td className="p-1 text-xs text-ink-soft">{c.eligible_positions}</td>
@@ -103,7 +103,7 @@ export function BestAvailable({ candidates, onPick, disabled }: Props) {
                     className={`text-xs px-2 py-0.5 rounded ${
                       disabled
                         ? "bg-rule text-ink-faint cursor-not-allowed"
-                        : "bg-blue-500 text-white hover:bg-blue-600"
+                        : "bg-tool text-paper hover:bg-tool/90"
                     }`}
                   >
                     Pick

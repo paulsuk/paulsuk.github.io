@@ -14,10 +14,10 @@ interface Props {
 }
 
 const TIER_COLORS: Record<string, string> = {
-  dominant: "bg-green-500",
-  competitive: "bg-blue-400",
-  swing: "bg-yellow-400",
-  punt: "bg-red-400",
+  dominant: "bg-win",
+  competitive: "bg-tool",
+  swing: "bg-ink-faint",
+  punt: "bg-loss",
 };
 
 const TIER_LABELS: Record<string, string> = {

@@ -553,6 +553,19 @@ export interface DraftCandidate {
   [key: string]: unknown;
 }
 
+// --- Draft pool search (client-side over session candidates) ---
+export interface DraftPoolPlayer {
+  player_id: number;
+  name: string;
+  [key: string]: unknown;
+}
+
+export interface DraftPlayerSearchProps {
+  players: DraftPoolPlayer[];
+  onSelect: (playerId: number) => void;
+  placeholder?: string;
+}
+
 export interface DraftPreloadTeam {
   team_key: string;
   name: string;
