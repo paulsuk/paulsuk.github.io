@@ -125,7 +125,7 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
                 <Th key={c} label={c} col={c} sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
               ))}
               {/* Per-stat model scores — visually separated */}
-              <th className="px-3 py-2 border-l-2 border-rule" />
+              <th className="th-dense border-l-2 border-rule" />
               {statCols.map((c) => (
                 <Th
                   key={`${c}__score`}
@@ -142,8 +142,8 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
           <tbody className="divide-y divide-rule/60">
             {paginated.map((p, i) => (
               <tr key={p.player_id} className={i % 2 === 0 ? "bg-raised" : "bg-paper/50"}>
-                <td className="px-3 py-2 text-ink-faint tabular-nums">{p.rank}</td>
-                <td className="px-3 py-2">
+                <td className="td-dense text-ink-faint tabular-nums">{p.rank}</td>
+                <td className="td-dense">
                   <button
                     onClick={() => navigate(`/lab/${slug}/players/${p.player_id}`)}
                     className="font-medium text-ink hover:text-tool hover:underline text-left"
@@ -151,8 +151,8 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
                     {p.name}
                   </button>
                 </td>
-                <td className="px-3 py-2 text-ink-soft">{p.team ?? "—"}</td>
-                <td className="px-3 py-2 text-ink-soft text-xs">{p.positions ?? "—"}</td>
+                <td className="td-dense text-ink-soft">{p.team ?? "—"}</td>
+                <td className="td-dense text-ink-soft text-xs">{p.positions ?? "—"}</td>
                 <td className="td-dense cell-num font-semibold text-tool">{p.value.toFixed(2)}</td>
                 {statCols.map((c) => (
                   <td key={c} className="td-dense cell-num text-ink-soft">
