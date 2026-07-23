@@ -51,6 +51,23 @@ describe("formatStat", () => {
     expect(formatStat(41.2, "Hard Hit%")).toBe("41.2");
     expect(formatStat(0.472, "FG%")).toBe("0.472");
   });
+
+  it("treats TS% as a 0-1 fraction, not a 0-100 percent (EfficiencyPanel computes it as pts / (2 * (fga + 0.44 * fta)))", () => {
+    expect(formatStat(0.6062, "TS%")).toBe("0.606");
+  });
+
+  it("keeps x-stat display labels (StatcastPanel) at 3dp via STAT_DECIMALS", () => {
+    expect(formatStat(0.2563, "xBA")).toBe("0.256");
+    expect(formatStat(0.3456, "xwOBA")).toBe("0.346");
+    expect(formatStat(0.4567, "xSLG")).toBe("0.457");
+    expect(formatStat(0.2789, "xBA Against")).toBe("0.279");
+  });
+
+  it("still treats USG% as 0-100 (pending live-data scale verification) and pruned keys fall to the fraction branch", () => {
+    expect(formatStat(28.4, "USG%")).toBe("28.4");
+    expect(formatStat(0.345, "Whiff%")).toBe("0.345");
+    expect(formatStat(0.123, "eFG%")).toBe("0.123");
+  });
 });
 
 describe("logoUrl", () => {

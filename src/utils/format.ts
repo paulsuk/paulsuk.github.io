@@ -24,6 +24,7 @@ export function signed(v: number, dp = 2): string {
 // in "%", stored as fractions) get 3dp. Everything else is a counting stat.
 const STAT_DECIMALS: Record<string, number> = {
   AVG: 3, OBP: 3, SLG: 3, OPS: 3, BABIP: 3, ISO: 3, wOBA: 3,
+  xBA: 3, xwOBA: 3, xSLG: 3, "xBA Against": 3,
   ERA: 2, WHIP: 2, "K/9": 2, "BB/9": 2, "K/BB": 2, FIP: 2, xFIP: 2, "HR/9": 2,
 };
 
@@ -32,9 +33,15 @@ const STAT_DECIMALS: Record<string, number> = {
 // "Hard Hit%" / "Hard Hit% Against" match the exact display labels used in
 // StatcastPanel.tsx (batter vs. pitcher tiles) — reconciled against source,
 // not the shorthand "HardHit%" the spec sketched.
+// Pruned to exactly the "%"-ending labels that actually appear in the panel
+// sources (StatcastPanel.tsx, EfficiencyPanel.tsx) and are 0-100 scale — TS%
+// was removed (EfficiencyPanel computes it as a 0-1 fraction, pts / (2 *
+// (fga + 0.44 * fta))); Whiff%/Chase%/CSW%/eFG% were removed as unreachable
+// (no panel passes those labels to formatStat).
+// USG% scale is UNVERIFIED from this repo — it passes through as-is from the
+// external stats payload; kept here pending live-data confirmation.
 const PERCENT_100_KEYS = new Set([
-  "Barrel%", "Hard Hit%", "Hard Hit% Against", "Whiff%", "Chase%", "K%", "BB%", "CSW%",
-  "USG%", "TS%", "eFG%",
+  "Barrel%", "Hard Hit%", "Hard Hit% Against", "USG%",
 ]);
 
 /**
