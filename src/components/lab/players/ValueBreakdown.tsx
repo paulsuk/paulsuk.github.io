@@ -1,5 +1,5 @@
 import type { ValueBreakdownItem } from "../../../api/types";
-import { fmtCompact, signed } from "../../../utils/format";
+import { formatStat, signed } from "../../../utils/format";
 
 export default function ValueBreakdown({ items }: { items: ValueBreakdownItem[] }) {
   if (!items.length) return null;
@@ -17,16 +17,16 @@ export default function ValueBreakdown({ items }: { items: ValueBreakdownItem[] 
               <span className="w-14 text-right text-ink-soft text-xs">{item.category}</span>
               <div className="flex-1 bg-paper rounded h-2 relative">
                 <div
-                  className={`h-2 rounded ${positive ? "bg-blue-400" : "bg-red-300"}`}
+                  className={`h-2 rounded ${positive ? "bg-win/70" : "bg-loss/60"}`}
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <span className={`w-12 text-xs tabular-nums ${positive ? "text-blue-600" : "text-red-500"}`}>
+              <span className={`w-12 text-xs tabular-nums ${positive ? "text-win" : "text-loss"}`}>
                 {signed(item.score)}
               </span>
               {item.raw_stat != null && (
                 <span className="w-14 text-xs text-ink-faint tabular-nums">
-                  ({fmtCompact(item.raw_stat)})
+                  ({formatStat(item.raw_stat, item.category)})
                 </span>
               )}
             </div>

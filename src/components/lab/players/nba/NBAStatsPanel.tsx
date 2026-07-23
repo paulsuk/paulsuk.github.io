@@ -1,3 +1,4 @@
+import { formatStat } from "../../../../utils/format";
 import StatTileGrid from "../../../shared/StatTileGrid";
 
 const NBA_COLS = ["PTS", "REB", "AST", "ST", "BLK", "FG%", "FT%", "3PTM", "GP"];
@@ -5,7 +6,7 @@ const NBA_COLS = ["PTS", "REB", "AST", "ST", "BLK", "FG%", "FT%", "3PTM", "GP"];
 export default function NBAStatsPanel({ stats }: { stats: Record<string, number | null> }) {
   const tiles = NBA_COLS.filter((c) => c in stats).map((c) => ({
     label: c,
-    value: stats[c] != null ? (stats[c] as number).toFixed(1) : "—",
+    value: stats[c] != null ? formatStat(stats[c] as number, c) : "—",
   }));
 
   return (

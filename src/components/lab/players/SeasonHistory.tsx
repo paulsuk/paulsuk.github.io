@@ -1,5 +1,5 @@
 import type { SeasonHistoryRow } from "../../../api/types";
-import { fmtCompact } from "../../../utils/format";
+import { formatStat } from "../../../utils/format";
 
 export default function SeasonHistory({ rows }: { rows: SeasonHistoryRow[] }) {
   if (!rows.length) return null;
@@ -9,23 +9,23 @@ export default function SeasonHistory({ rows }: { rows: SeasonHistoryRow[] }) {
     <div className="mb-6">
       <h3 className="text-sm font-semibold text-ink-soft mb-2">Season History</h3>
       <div className="overflow-x-auto rounded border border-rule">
-        <table className="w-full text-sm">
+        <table className="table-dense">
           <thead className="bg-paper">
             <tr>
-              <th className="table-header px-3 py-2 text-left">Season</th>
+              <th className="table-header th-dense text-left">Season</th>
               {cols.map((c) => (
-                <th key={c} className="table-header px-3 py-2">{c}</th>
+                <th key={c} className="table-header th-dense">{c}</th>
               ))}
             </tr>
           </thead>
           <tbody className="divide-y divide-rule/60">
             {rows.map((row) => (
               <tr key={row.season}>
-                <td className="px-3 py-2 font-medium text-ink-soft">{row.season}</td>
+                <td className="td-dense font-medium text-ink-soft">{row.season}</td>
                 {cols.map((c) => (
-                  <td key={c} className="px-3 py-2 tabular-nums text-ink-soft text-right">
+                  <td key={c} className="td-dense cell-num text-ink-soft text-right">
                     {row.stats[c] != null
-                      ? fmtCompact(row.stats[c] as number)
+                      ? formatStat(row.stats[c] as number, c)
                       : "—"}
                   </td>
                 ))}

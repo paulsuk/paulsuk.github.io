@@ -1,4 +1,4 @@
-import { fmtCompact } from "../../../../utils/format";
+import { formatStat } from "../../../../utils/format";
 import StatTileGrid from "../../../shared/StatTileGrid";
 const BATTER_STATCAST: [string, string][] = [
   ["xBA", "xBA"], ["xwOBA", "xwOBA"], ["xSLG", "xSLG"],
@@ -21,7 +21,7 @@ export default function StatcastPanel({
     .filter(([key]) => key in stats)
     .map(([key, label]) => ({
       label,
-      value: stats[key] != null ? fmtCompact(stats[key] as number) : "—",
+      value: stats[key] != null ? formatStat(stats[key] as number, label) : "—",
     }));
 
   return (

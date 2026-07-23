@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fmtCompact, fmtTiered, signed, logoUrl } from "./format";
+import { fmtCompact, fmtTiered, formatStat, signed, logoUrl } from "./format";
 
 describe("fmtCompact", () => {
   it("strips trailing zeros and a bare decimal point", () => {
@@ -42,6 +42,14 @@ describe("signed", () => {
 
   it("supports custom decimals", () => {
     expect(signed(2.5, 1)).toBe("+2.5");
+  });
+});
+
+describe("formatStat", () => {
+  it("formats 0-100 percent keys to 1dp, fraction percent keys to 3dp", () => {
+    expect(formatStat(8.3456, "Barrel%")).toBe("8.3");
+    expect(formatStat(41.2, "Hard Hit%")).toBe("41.2");
+    expect(formatStat(0.472, "FG%")).toBe("0.472");
   });
 });
 

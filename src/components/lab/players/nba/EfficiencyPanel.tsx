@@ -1,4 +1,4 @@
-import { fmtCompact } from "../../../../utils/format";
+import { formatStat } from "../../../../utils/format";
 import StatTileGrid from "../../../shared/StatTileGrid";
 function derive(stats: Record<string, number | null>) {
   const pts = stats["PTS"] ?? 0;
@@ -25,7 +25,7 @@ function derive(stats: Record<string, number | null>) {
 export default function EfficiencyPanel({ stats }: { stats: Record<string, number | null> }) {
   const derived = derive(stats);
   const tiles = (Object.entries(derived).filter(([, v]) => v != null) as [string, number][])
-    .map(([label, val]) => ({ label, value: fmtCompact(val) }));
+    .map(([label, val]) => ({ label, value: val != null ? formatStat(val, label) : "—" }));
 
   return (
     <StatTileGrid title="Efficiency" gridClassName="grid grid-cols-3 sm:grid-cols-5 gap-2" tiles={tiles}>

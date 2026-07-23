@@ -19,7 +19,7 @@ export default function PlayerHeader({ name, team, positions, rank, value }: Pro
         </div>
         {rank != null && value != null && (
           <div className="ml-auto text-right">
-            <div className="text-2xl font-bold text-blue-600">#{rank}</div>
+            <div className="text-2xl font-bold text-tool">#{rank}</div>
             <div className="text-sm text-ink-soft">Value: {value.toFixed(2)}</div>
           </div>
         )}

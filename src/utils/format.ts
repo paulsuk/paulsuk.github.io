@@ -27,6 +27,16 @@ const STAT_DECIMALS: Record<string, number> = {
   ERA: 2, WHIP: 2, "K/9": 2, "BB/9": 2, "K/BB": 2, FIP: 2, xFIP: 2, "HR/9": 2,
 };
 
+// Percent stats served on a 0-100 scale (Statcast / NBA efficiency panels) —
+// 1dp, NOT the fraction rule. Yahoo category percents (FG%, FT%) stay fractions.
+// "Hard Hit%" / "Hard Hit% Against" match the exact display labels used in
+// StatcastPanel.tsx (batter vs. pitcher tiles) — reconciled against source,
+// not the shorthand "HardHit%" the spec sketched.
+const PERCENT_100_KEYS = new Set([
+  "Barrel%", "Hard Hit%", "Hard Hit% Against", "Whiff%", "Chase%", "K%", "BB%", "CSW%",
+  "USG%", "TS%", "eFG%",
+]);
+
 /**
  * Stat-aware value formatter for user-facing stat lines. Rate stats keep their
  * decimals by name (AVG/OPS → 3dp, ERA/WHIP → 2dp, any "%" → 3dp); counting
@@ -36,7 +46,9 @@ const STAT_DECIMALS: Record<string, number> = {
 export function formatStat(value: number, key?: string): string {
   if (key) {
     if (key in STAT_DECIMALS) return value.toFixed(STAT_DECIMALS[key]);
-    if (key.endsWith("%")) return value.toFixed(3);
+    if (key.endsWith("%")) {
+      return PERCENT_100_KEYS.has(key) ? value.toFixed(1) : value.toFixed(3);
+    }
     return value.toFixed(1);
   }
   return Math.abs(value) < 1 ? value.toFixed(3) : value.toFixed(1);

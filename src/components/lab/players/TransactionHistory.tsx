@@ -19,15 +19,15 @@ export default function TransactionHistory({ records }: { records: TransactionRe
   return (
     <div className="mb-6">
       <h3 className="text-sm font-semibold text-ink-soft mb-2">Transaction History</h3>
-      <div className="space-y-1">
+      <div className="table-dense space-y-1">
         {records.map((t, i) => (
-          <div key={i} className="flex items-center gap-3 text-sm text-ink-soft">
-            <span className="w-10 text-ink-faint">{t.season}</span>
+          <div key={i} className="flex items-center gap-3 td-dense text-ink-soft">
+            <span className="w-10 text-ink-faint cell-num">{t.season}</span>
             {t.week && <span className="text-ink-faint text-xs">Wk {t.week}</span>}
             <span className={`text-xs font-medium ${
-              t.transaction_type === "add" ? "text-green-600"
-              : t.transaction_type === "drop" ? "text-red-500"
-              : "text-blue-600"
+              t.transaction_type === "add" ? "text-win"
+              : t.transaction_type === "drop" ? "text-loss"
+              : "text-tool"
             }`}>
               {TYPE_LABEL[t.transaction_type] ?? t.transaction_type}
             </span>

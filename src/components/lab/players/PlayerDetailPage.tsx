@@ -108,7 +108,7 @@ export default function PlayerDetailPage() {
               {searchResults.map((p) => (
                 <button
                   key={p.player_id}
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 flex items-center justify-between"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-tool-soft flex items-center justify-between"
                   onClick={() => navigateToPlayer(p.player_id)}
                 >
                   <span className="font-medium text-ink">{p.name}</span>

@@ -1,4 +1,4 @@
-import { fmtCompact } from "../../../../utils/format";
+import { formatStat } from "../../../../utils/format";
 import StatTileGrid from "../../../shared/StatTileGrid";
 const BATTER_COLS = ["HR", "R", "RBI", "SB", "AVG", "OBP", "SLG", "OPS", "BB%", "K%", "WAR"];
 const PITCHER_COLS = ["W", "SV", "ERA", "WHIP", "K", "IP", "K%", "BB%", "FIP", "WAR"];
@@ -6,7 +6,7 @@ const PITCHER_COLS = ["W", "SV", "ERA", "WHIP", "K", "IP", "K%", "BB%", "FIP", "
 export default function MLBStatsPanel({ stats, isPitcher }: { stats: Record<string, number | null>; isPitcher: boolean }) {
   const tiles = (isPitcher ? PITCHER_COLS : BATTER_COLS)
     .filter((c) => c in stats)
-    .map((c) => ({ label: c, value: stats[c] != null ? fmtCompact(stats[c] as number) : "—" }));
+    .map((c) => ({ label: c, value: stats[c] != null ? formatStat(stats[c] as number, c) : "—" }));
 
   return (
     <StatTileGrid
