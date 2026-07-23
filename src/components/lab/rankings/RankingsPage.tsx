@@ -1,6 +1,6 @@
 // web/src/components/lab/rankings/RankingsPage.tsx
 import { useMemo, useState } from "react";
-import { useLabUiConfig, useRankings } from "../../../api/hooks";
+import { useLabUiConfig, usePlayerSeries, useRankings } from "../../../api/hooks";
 import type { RankingsFilter } from "../../../api/types";
 import { useLabSport } from "../../../utils/use-lab-sport";
 import RankingsControls from "./RankingsControls";
@@ -50,6 +50,8 @@ export default function RankingsPage() {
     }
   );
 
+  const { data: seriesData } = usePlayerSeries(rankingsSport, effectiveFilter.season);
+
   const teams = useMemo(() => {
     const set = new Set(
       (rankings?.players ?? []).map((p) => p.team).filter(Boolean) as string[]
@@ -96,6 +98,7 @@ export default function RankingsPage() {
             slug={slug}
             players={rankings.players}
             search={effectiveFilter.search}
+            series={seriesData?.series ?? null}
           />
         </>
       )}

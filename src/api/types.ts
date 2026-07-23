@@ -341,6 +341,12 @@ export interface RankingsResponse {
   season_meta: SeasonMeta;
 }
 
+export interface PlayerSeriesResponse {
+  season: number;
+  weeks: number[];
+  series: Record<string, (number | null)[]>;
+}
+
 export interface LabModelOption {
   id: string;
   name: string;

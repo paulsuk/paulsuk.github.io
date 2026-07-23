@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { API_URL, clearCache, fetchApi, postApi } from "./client";
-import type { Season, RecapResponse, ManagersResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse, StandingsHistoryResponse, AwardsHistoryResponse, TeamPScoresResponse, PlayoffHistoryResponse, PlayerCard, PlayerChip, PlayerRef, PlayerResolveResponse, PlayerSearchResponse } from "./types";
+import type { Season, RecapResponse, ManagersResponse, PlayoffResponse, Article, ArticleDetail, ArticleDetailResponse, FranchiseDetailResponse, LabUiConfig, RankingsResponse, PlayerDetail, TeamAnalysisResponse, StandingsHistoryResponse, AwardsHistoryResponse, TeamPScoresResponse, PlayoffHistoryResponse, PlayerCard, PlayerChip, PlayerRef, PlayerResolveResponse, PlayerSearchResponse, PlayerSeriesResponse } from "./types";
+import { DAILY_ERA_START } from "../utils/lab-config";
 
 interface ApiState<T> {
   data: T | null;
@@ -108,6 +109,15 @@ export function useRankings(
     ? `/api/lab/${sport}/rankings?${query.toString()}`
     : null;
   return useApiData<RankingsResponse>(url);
+}
+
+export function usePlayerSeries(sport: string | null, season: string) {
+  const year = Number(season);
+  const path =
+    sport && Number.isInteger(year) && year >= DAILY_ERA_START
+      ? `/api/lab/${sport}/player-series?season=${year}`
+      : null;
+  return useApiData<PlayerSeriesResponse>(path);
 }
 
 export function usePlayerDetail(

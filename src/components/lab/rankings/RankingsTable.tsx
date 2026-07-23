@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import type { RankingsPlayer } from "../../../api/types";
 import { formatStat } from "../../../utils/format";
 import { CAT_ORDER, NBA_CAT_ORDER } from "../../../utils/lab-helpers";
+import Sparkline from "../Sparkline";
 
 // Columns to display per sport — must match backend stat keys exactly.
 const NBA_DISPLAY_COLS = NBA_CAT_ORDER;
@@ -46,9 +47,10 @@ interface Props {
   slug: string;
   players: RankingsPlayer[];
   search: string;
+  series?: Record<string, (number | null)[]> | null;
 }
 
-export default function RankingsTable({ sportCode, slug, players, search }: Props) {
+export default function RankingsTable({ sportCode, slug, players, search, series }: Props) {
   const navigate = useNavigate();
   const [sortCol, setSortCol] = useState<string>("rank");
   const [sortAsc, setSortAsc] = useState(true);
@@ -120,6 +122,7 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
               <th className="table-header th-dense">Team</th>
               <th className="table-header th-dense">Pos</th>
               <Th label="P-Score" col="value" sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
+              {series && <th className="table-header th-dense">Form</th>}
               {/* Raw stats */}
               {statCols.map((c) => (
                 <Th key={c} label={c} col={c} sortCol={sortCol} sortAsc={sortAsc} onSort={handleSort} />
@@ -154,6 +157,13 @@ export default function RankingsTable({ sportCode, slug, players, search }: Prop
                 <td className="td-dense text-ink-soft">{p.team ?? "—"}</td>
                 <td className="td-dense text-ink-soft text-xs">{p.positions ?? "—"}</td>
                 <td className="td-dense cell-num font-semibold text-tool">{p.value.toFixed(2)}</td>
+                {series && (
+                  <td className="td-dense">
+                    {p.player_uid && series[p.player_uid] ? (
+                      <Sparkline values={series[p.player_uid]} />
+                    ) : null}
+                  </td>
+                )}
                 {statCols.map((c) => (
                   <td key={c} className="td-dense cell-num text-ink-soft">
                     {p.stats[c] != null ? formatStat(p.stats[c] as number, c) : "—"}

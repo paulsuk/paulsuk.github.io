@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLabUiConfig, usePlayers, useRankings } from "../../../api/hooks";
+import { useLabUiConfig, usePlayers, usePlayerSeries, useRankings } from "../../../api/hooks";
 import type { PlayerRef } from "../../../api/types";
 import { useLabSport } from "../../../utils/use-lab-sport";
 import {
@@ -13,6 +13,7 @@ import {
   NBA_POSITION_FILTERS,
 } from "../../../utils/lab-helpers";
 import PlayerSearchBox from "./PlayerSearchBox";
+import Sparkline from "../Sparkline";
 import LoadingSpinner from "../../shared/LoadingSpinner";
 import ErrorBanner from "../../shared/ErrorBanner";
 
@@ -52,6 +53,10 @@ export default function PlayersIndexPage() {
     [top],
   );
   const { data: chips } = usePlayers(sportCode, refs);
+  const { data: seriesData } = usePlayerSeries(
+    browseSeason && model ? sportCode : null,
+    browseSeason ?? "",
+  );
 
   const filters = sportCode === "nba" ? NBA_POSITION_FILTERS : MLB_POSITION_FILTERS;
 
@@ -106,6 +111,9 @@ export default function PlayersIndexPage() {
                 <th className="table-header th-dense">Team</th>
                 <th className="table-header th-dense">Pos</th>
                 <th className="table-header th-dense bg-tool-soft text-tool">Value</th>
+                {seriesData?.series && (
+                  <th className="table-header th-dense">Form</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-rule/60">
@@ -140,6 +148,13 @@ export default function PlayersIndexPage() {
                     <td className="td-dense score-cell font-semibold">
                       {p.value.toFixed(2)}
                     </td>
+                    {seriesData?.series && (
+                      <td className="td-dense">
+                        {p.player_uid && seriesData.series[p.player_uid] ? (
+                          <Sparkline values={seriesData.series[p.player_uid]} />
+                        ) : null}
+                      </td>
+                    )}
                   </tr>
                 );
               })}
